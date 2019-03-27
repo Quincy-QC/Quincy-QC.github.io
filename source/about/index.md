@@ -2,37 +2,32 @@
 layout: "about"
 title: "About"
 date: 2017-10-03 10:48:33
-description: "走在成为极客的路上"
+description: "Just do IT"
 header-img: "/img/header_img/about.jpg"
-aplayer: true
+aplayer: false
+comments: true
 fixed: false
 ---
 
-### 一句话
-
->Just do it !    (翻译：我只是个搞 IT的！哭笑脸)
-
 ### 关于我
 
->一个莫名其妙的，喜欢敲代码，喜欢研究技术的，表面上高冷、不苟言笑的，
+>一个低调、稳重，喜欢敲代码，喜欢新鲜技术，表面上高冷、不苟言笑的，
 >
->偶尔又嬉皮笑脸，偶尔又特立独行的，双重性格的技术爱好者！
+>偶尔神经兮兮、莫名其妙，喜欢游戏，偶尔又特立独行的，双重性格的技术爱好者！
 
 ### 兴趣方向
 
-> 容器云（Docker、Kubernetes等）相关生态技术研究。
+> iOS 起家，在大前端的路上越走越远。
 
 ### 参与社区
 
- > CSDN博客:http://blog.csdn.net/huwh_
+ > Github:https://github.com/Quincy-QC
  >
- > Github:https://github.com/huweihuang
+ > 码云:https://gitee.com/qiuchong
  >
- > 阿里云栖社区:https://yq.aliyun.com/u/huweihuang
- >
- > DockOne社区:http://dockone.io/people/胡伟煌
+ > leetCode:https://leetcode.com/quincy-qc
 
 ### 联系我
 
->Email: huweihuang@foxmail.com
+>Email: quincy.qiuchong@gmail.com
 

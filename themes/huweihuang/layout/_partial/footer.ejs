@@ -1,6 +1,13 @@
 <!-- Footer -->
 <footer>
     <div class="container">
+        <% if (page.busuanzi) { %>
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        <% } %>
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <ul class="list-inline text-center">
@@ -78,21 +85,11 @@
                         </a>
                     </li>
                 <% } %>
-
                 </ul>
                 <p class="copyright text-muted">
                     Copyright &copy; <%= config.author %> <%= new Date().getFullYear() %> 
                     <br>
-                    Theme by <a href="http://beantech.org">BeanTech</a> 
-                    <span style="display: inline-block; margin: 0 5px;">
-                        <i class="fa fa-heart"></i>
-                    </span> 
-                    re-Ported by <a href="http://www.huweihuang.com">胡伟煌</a> | 
-                    <iframe
-                        style="margin-left: 2px; margin-bottom:-5px;"
-                        frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
-                    </iframe>
+                    知之为知之，不知为不知，是知也。
                 </p>
             </div>
         </div>
@@ -201,4 +198,6 @@
 </script>
 <% } %>
 
-
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>

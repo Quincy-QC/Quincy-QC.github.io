@@ -49,7 +49,7 @@ layout: layout
                 <br>
                 <!--分享-->
                 <% if(config['share']) { %>
-                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
                     <!--  css & js -->
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
@@ -189,7 +189,7 @@ layout: layout
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "<%= config['disqus_username'] %>";
     var disqus_identifier = "<%= page.permalink %>";
-    var disqus_url = "<%= page.permalink %>";
+    <!-- var disqus_url = "<%= page.permalink %>"; -->
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
