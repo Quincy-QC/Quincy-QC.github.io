@@ -22,10 +22,10 @@ tags:
 # Build GitHub Pages  
 
 1. 进入 [GitHub](https://github.com/new) 主页创建新仓库，
-![GitHub](/img/article/1.png)
+![GitHub](/img/article/20190212/1.png)
 
 2. 进入刚刚创建的仓库，点击 Setting，找到下面的 GitHub Pages，
-![GitHub](/img/article/2.png)
+![GitHub](/img/article/20190212/2.png)
 任意选择一个主题之后既可以通过 **用户名.github.io** 访问你的博客了。
 
 # Set Up Hexo  
@@ -55,7 +55,7 @@ git clone https://github.com/huweihuang/hexo-theme-huweihuang.git ./hexo-huweihu
 
 4. 部署到 GitHub
 继续在上述的 _config.yml 文件下编辑，
-![blog](/img/article/3.png)
+![blog](/img/article/20190212/3.png)
 完成之后就可以通过 **hexo d**上传同步到 GitHub。
 
 # More Questions
@@ -122,7 +122,7 @@ disqus_username: username
 1. 首先，自然是去 [Disqus](https://disqus.com) 官网注册，同时前往右上角的**头像-View Profile**获取到对应的用户信息，回来填写到对应的 disqus_username 上，然后预览发现什么都没有发生。
 
 2. 然后，我们需要前往右上角的**头像-Install on Site**，将你的账号与你的网页关联起来，同时在这时候你会找到你的 Shortname, 他才是最终填写到 disqus_username 位置上的名称，
-![Disqus](/img/article/4.png)
+![Disqus](/img/article/20190212/4.png)
 然后预览你可能会遇到*We were unable to load Disqus.*，如果没有，恭喜你，你已经成功启动了评论功能，如果没有，那你还得看下一步。
 
 3. 参考 [issue #876](https://github.com/iissnan/hexo-theme-next/issues/876)，可能的原因是我们需要把 disqus_url 变量赋值去掉，有disqus_identifier 就可以。至于页面的链接，Disqus 会自动取 `window.location.href`，Hexo 生成的都是静态的页面，这个值也是正确的。然后，我们预览最终会出现评论页面了。
