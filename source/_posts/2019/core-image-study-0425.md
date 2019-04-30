@@ -13,7 +13,7 @@ tags:
 
 # Introduction
 
-Core Image 是一种图像处理和分析技术，旨在为静态或者视频图片提供近乎实时的处理。它对来自Core Graphics，Core Video，Image I/O框架中的图片数据类型进行操作，使用GPU或CPU渲染路径。Core Image通过提供一个易于使用的API隐藏底层图片处理的细节，我们不需要知道OpenGL，OpenGL ES，Metal的细节来可以利用GPU的能力，也不需要知道任何关于GCD的知识就可以进行多核处理，所有的细节Core Image都会帮你处理。
+Core Image 是一种图像处理和分析技术，旨在为静态或者视频图片提供近乎实时的处理。它对来自Core Graphics，Core Video，Image I/O框架中的图片数据类型进行操作，使用GPU或CPU渲染路径。Core Image通过提供一个易于使用的API隐藏底层图片处理的细节，我们不需要知道OpenGL，OpenGL ES，Metal的细节来可以利用GPU的能力，也不需要知道任何关于GCD的知识就可以进行多核处理，所有的细节Core Image都会帮我们处理。
 
 ![Core Image](/img/article/20190425/1.png)
 
@@ -28,7 +28,7 @@ MacOS还提供一种打包自定义滤镜以供其他应用使用的方法。
 
 # Processing Images
 
-处理图片意味着应用滤镜 -- 图片滤镜是一种逐像素检测输入图片并通过算法应用一些效果来生成输出图片的软件。图片处理主要依靠描述滤镜及其输入输出的CIFilter和CIImage类，你可以使用Core Image与其他系统框架或者创建通过CIContext创建自己的渲染工作流来应用滤镜、显示或导出结果。
+处理图片意味着应用滤镜 -- 图片滤镜是一种逐像素检测输入图片并通过算法应用一些效果来生成输出图片的软件。图片处理主要依靠描述滤镜及其输入输出的CIFilter和CIImage类，我们可以使用Core Image与其他系统框架或者创建通过CIContext创建自己的渲染工作流来应用滤镜、显示或导出结果。
 
 在图片上应用滤镜的基本代码：
 ``` Swift
@@ -43,9 +43,9 @@ if let result = result {
 }
 ```
 
-滤镜处理并制作图片，CIImage实例是表示一张图片的不可变对象，这些对象不直接表示图片位图数据，相反，CIImage对象是制作图片的一种方式。一种方式可能要求直接从文件中加载图片，另一种可能是从滤镜或过滤器链的输出，Core Image 仅当你要求将一张图片渲染作为显示或者输出时执行这些方法。
+滤镜处理并制作图片，CIImage实例是表示一张图片的不可变对象，这些对象不直接表示图片位图数据，相反，CIImage对象是制作图片的一种方式。一种方式可能要求直接从文件中加载图片，另一种可能是从滤镜或过滤器链的输出，Core Image 仅当我们要求将一张图片渲染作为显示或者输出时执行这些方法。
 
-应用滤镜的方式，创建一个或多个CIImage对象表示被滤镜处理的图片同时配置滤镜的输入参数，你可以从以下几种图片数据中创建CIImage对象：
+应用滤镜的方式，创建一个或多个CIImage对象表示被滤镜处理的图片同时配置滤镜的输入参数，我们可以从以下几种图片数据中创建CIImage对象：
 - 被加载图片文件的URL引用或者被加载包含图片文件数据的NSData对象
 - Quartz2D，UIKit，或者AppKit的图片代表（CGImageRef，UIImage，NSBitmapImageRep）
 - Metal，OpenGL，OpenGl ES纹理
@@ -146,7 +146,7 @@ for filter in adjustments {
 
 # Subclassing CIFilter: Reciptes for Custom Effects
 
-我们可以通过图片的输出作为另一个的输入合并多个你喜欢的滤镜来创建自定义的效果，当你多次通过这个方式创建效果时，可以考虑继承CIFilter来封装一个滤镜。
+我们可以通过图片的输出作为另一个的输入合并多个喜欢的滤镜来创建自定义的效果，当多次通过这个方式创建效果时，可以考虑继承CIFilter来封装一个滤镜。
 
 ## Subclassing CIFilter to Create the CIColorInvert Filter
 
@@ -237,7 +237,7 @@ let result = colorCube?.outputImage
 
 # Getting the Best Performance
 
-Core Image提供多种选项创建图片，上下文，渲染上下文。看你如何选择完成一项任务：
+Core Image提供多种选项创建图片，上下文，渲染上下文。看我们如何选择完成一项任务：
 - 应用多久执行一次任务
 - 应用使用静态还是视频图片
 - 是否需要支持实时处理和分析
