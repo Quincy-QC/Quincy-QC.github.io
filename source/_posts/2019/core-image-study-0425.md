@@ -63,7 +63,7 @@ CIFilter对象是代表图片处理效果和控制效果行为系列参数的可
 
 每个Core Image提供一个CIImage输出对象，可以把这个输出对象作为另一个滤镜的输入。
 
-!(Construct a filter chain by connecting filter inputs and outputs)[/img/20190425/2.png]
+![Construct a filter chain by connecting filter inputs and outputs](/img/article/20190425/2.png)
 
 Core Image 优化了滤镜链的应用，以快速高效的方式渲染结果，链中的每个CIImage对象不是完全渲染过的图片，而是渲染的方式，Core Image不需要单独执行每个滤镜操作，这样会非常浪费时间和内存，相反，Core Image将滤镜组合成一个单独的操作，甚至以不同的顺序重新组织滤镜，从而更有效的生成相同的结果。
 
@@ -260,6 +260,10 @@ Core Image提供多种选项创建图片，上下文，渲染上下文。看我�
 [What You Need to Know Before Writing a Custom Filter](https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_advanced_concepts/ci.advanced_concepts.html#//apple_ref/doc/uid/TP30001185-CH9-SW1)
 
 [Creating Custom Filters](https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_custom_filters/ci_custom_filters.html#//apple_ref/doc/uid/TP30001185-CH6-TPXREF101)
+
+# Ending
+
+这章主要是对图片处理的学习，主要就是滤镜的使用，人脸解析功能，更加深入的就是自定义滤镜，多适用于对图片要求较高或本身就是图片处理的应用。
 
 # Reference
 
