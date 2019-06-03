@@ -32,7 +32,7 @@ Layer对象是三维空间中的二维表面，是Core Animation所做事情的�
 
 ![How Core Animation draws content](/img/article/20190503/2.png)
 
-因为它操作静态位图，图层绘图与更传统的视图绘图有很大的不同。使用视图绘图，视图本身的修改经常会出发**drawRect:**方法的调用，使用新参数重新绘制内容，但这种方式绘图代价很高因为是在主线程使用CPU完成的。Core Animation尽可能通过在硬件中操作缓存位图来达到相同或类似的效果，以此避免这种开销。
+因为它操作静态位图，图层绘图与更传统的视图绘图有很大的不同。使用视图绘图，视图本身的修改经常会出发`drawRect:`方法的调用，使用新参数重新绘制内容，但这种方式绘图代价很高因为是在主线程使用CPU完成的。Core Animation尽可能通过在硬件中操作缓存位图来达到相同或类似的效果，以此避免这种开销。
 
 尽管Core Animation尽可能地使用缓存内容，但应用任然必须提供初始内容并不时更新。
 
@@ -104,23 +104,23 @@ override var layer: CALayer {
 ## 提供Layer的Content
 
 Layers是管理内容的数据对象，一个层级的内容包含我们想要展示可视数据的位图，有以下三种方式提供位图的内容：
-- 直接给**contents**属性赋值（适用于层级内容基本不会改变的情况）
+- 直接给`contents`属性赋值（适用于层级内容基本不会改变的情况）
 - 实现Layer的代理方法完成内容的绘制（适用于层级内容可能周期性改变并且可以有外部对象提供，比如View）
-- 定义一个Layer的子类同时复写**drawing**方法来自己提供内容（适用于自定义Layer子类或者想要改变层级的基本会话操作）
+- 定义一个Layer的子类同时复写`drawing`方法来自己提供内容（适用于自定义Layer子类或者想要改变层级的基本会话操作）
 
 ### Content赋值图片
 
-因为一个层级只是管理位图的容器，我们可以直接给**Contents**属性赋值图片。层级可以直接使用提供的图片，而不用拷贝一份图片，这个操作可以让图片在不同地方使用时节约内存。赋值的图片类型必须是**CGImageRef**类型，同时图片的分辨率要适配原生设备。允许的话，需要适当调整图片的**ContentsScale**属性。
+因为一个层级只是管理位图的容器，我们可以直接给`Contents`属性赋值图片。层级可以直接使用提供的图片，而不用拷贝一份图片，这个操作可以让图片在不同地方使用时节约内存。赋值的图片类型必须是*CGImageRef*类型，同时图片的分辨率要适配原生设备。允许的话，需要适当调整图片的`ContentsScale`属性。
 
 ### 通过代理提供Content
 
 如果需要动态修改层级的Content，我们可以使用提供的代理。在显示时，层级会调用以下代理方法：
-- **displayLayer:**方法，该实现负责创建位图并将其分配给**contents**属性
-- **drawLayer:inContext:**方法，Core Animation创建一个位图，创建一个图形上下文来绘制位图，然后调用这个方法填充位图。这个方法就是在提供的图形上下文绘图。
+- `displayLayer:`方法，该实现负责创建位图并将其分配给`contents`属性
+- `drawLayer:inContext:`方法，Core Animation创建一个位图，创建一个图形上下文来绘制位图，然后调用这个方法填充位图。这个方法就是在提供的图形上下文绘图。
 
-代理必须实现**displayLayer:**和**drawLayer:inContext**两种方法之一，如果同时实现，只会调用**displayLayer**方法。
+代理必须实现`displayLayer:`和`drawLayer:inContext`两种方法之一，如果同时实现，只会调用`displayLayer`方法。
 
-当应用程序是在想要显示的地方加载或创建位图时，复写**displayLayer:**方法更加合适：
+当应用程序是在想要显示的地方加载或创建位图时，复写`displayLayer:`方法更加合适：
 ``` objectivec
 - (void)displayLayer:(CALayer *)theLayer {
     // Check the value of some state property
@@ -135,9 +135,9 @@ Layers是管理内容的数据对象，一个层级的内容包含我们想要�
 }
 ```
 
-> PS：本来这边有个问题，但是后面苹果也自己概述了，对于UIKit下的视图（层支持），我们直接用默认的**drawRect**方法进行绘制内容。而对于OS X环境下，Layer与View不是直接相关联的，**drawRect**与**drawLayer**方法两者之间的区别。**drawRect**是View的视图渲染方法，**drawLayer**是Layer的代理方法，两者都可以绘图。目前的调用机制是这样：同时实现两个方法会只调用**drawLayer**里的实现；无法单独实现**drawLayer**方法，必须空实现**drawRect**方法；**drawLayer**方法也可以由**setNeedsDisplay**方法调用，同**drawRect**方法一样。两者用法的区别：是否需要获取视图在动画过程中的Layer属性，**drawLayer**方法中实现的内容可以实时获取Layer的属性值，**drawRect**方法只能获取Layer的结果值。[是否对仍待考究](https://stackoverflow.com/questions/4979192/ios-using-uiviews-drawrect-vs-its-layers-delegate-drawlayerincontext/36050120#36050120)
+> PS：本来这边有个问题，但是后面苹果也自己概述了，对于UIKit下的视图（层支持），我们直接用默认的`drawRect`方法进行绘制内容。而对于OS X环境下，Layer与View不是直接相关联的，`drawRect`与`drawLayer`方法两者之间的区别。`drawRect`是View的视图渲染方法，`drawLayer`是Layer的代理方法，两者都可以绘图。目前的调用机制是这样：同时实现两个方法会只调用`drawLayer`里的实现；无法单独实现`drawLayer`方法，必须空实现`drawRect`方法；`drawLayer`方法也可以由`setNeedsDisplay`方法调用，同`drawRect`方法一样。两者用法的区别：是否需要获取视图在动画过程中的Layer属性，`drawLayer`方法中实现的内容可以实时获取Layer的属性值，`drawRect`方法只能获取Layer的结果值。[是否对仍待考究](https://stackoverflow.com/questions/4979192/ios-using-uiviews-drawrect-vs-its-layers-delegate-drawlayerincontext/36050120#36050120)
 
-如果没有预先编码的图片或者对象来创建位图，可以使用**drawLayer**方法动态绘制内容：
+如果没有预先编码的图片或者对象来创建位图，可以使用`drawLayer`方法动态绘制内容：
 ``` objectivec
 - (void)drawLayer:(CALayer *)theLayer inContext:(CGContextRef)theContext {
     CGMutablePathRef thePath = CGPathCreateMutable();
@@ -160,18 +160,18 @@ Layers是管理内容的数据对象，一个层级的内容包含我们想要�
 }
 ```
 
-对于带有自定义内容的层支持视图，我们应该继续复写视图方法来进行绘图。层支持的绘图自动使自己成为其层的委托，并实现委托所需的委托方法，我们不应该更改这个配置，所以，对于UIView我们还是实现**drawRect**方法来绘制内容.
+对于带有自定义内容的层支持视图，我们应该继续复写视图方法来进行绘图。层支持的绘图自动使自己成为其层的委托，并实现委托所需的委托方法，我们不应该更改这个配置，所以，对于UIView我们还是实现`drawRect`方法来绘制内容.
 
 ### 通过子类提供Content
 
 当实现一个自定义Layer类时，我们可以复写Layer类的绘图方法来进行任何绘图：
-- 复写**display**方法，直接设置**contents**属性
-- 复写**drawInContext:**方法，在提供的图形上下文绘制
+- 复写`display`方法，直接设置`contents`属性
+- 复写`drawInContext:`方法，在提供的图形上下文绘制
 
 ### 调整Content
 
-当我们设置一个图层的**contents**属性时，**contentsGravity**属性决定了如何操作该图片来适应边界。默认情况下，如果一张图片大于当前边界，图层对象会缩放图片以适应可用空间。如果图层边界的宽高比与图像的宽高比不同，就会导致图像的失真。
-**contentsGravity**属性可以被分为以下两类：
+当我们设置一个图层的`contents`属性时，`contentsGravity`属性决定了如何操作该图片来适应边界。默认情况下，如果一张图片大于当前边界，图层对象会缩放图片以适应可用空间。如果图层边界的宽高比与图像的宽高比不同，就会导致图像的失真。
+`contentsGravity`属性可以被分为以下两类：
 - 基于位置的重力常量允许我们将图片固定在边缘或角落上，无需缩放图片
 - 基于缩放的重力常量允许我们使用几种选项之一来拉伸图像，可以保持宽高比，也可以拉伸
 
@@ -189,11 +189,11 @@ Scaling-based gravity constants for layers:
 
 除了基于图像的内容外，层级可以显示填充背景和边框。背景色在层级内容图片背后渲染，边框在图片上面渲染，如果层级包含子层级，他们也在边框下面。因为背景色位于图像后面，所以这种颜色通过图像的任何透明部分发光。
 
-如果设置不透明的背景色，考虑设置层级的**opaque**属性为YES，这样做可以在屏幕上合成图层时提高性能，就不需要使用图层的后备存储来管理alpha通道。但是，如果一个层的角半价不为零，则不能设为不透明。
+如果设置不透明的背景色，考虑设置层级的`opaque`属性为YES，这样做可以在屏幕上合成图层时提高性能，就不需要使用图层的后备存储来管理alpha通道。但是，如果一个层的角半价不为零，则不能设为不透明。
 
 ### Layers支持倒角
 
-我们可以为层级创建一个圆角矩形效果，倒角是一种视觉装饰，它掩盖了层级边界矩形的部分角，允许底层内容显示。因为它涉及到透明层蒙版，除非**maskToBounds**属性设置为YES，否则倒角不会影响图层图像。但是，倒角总是影响图层的背景颜色和边框的绘制。
+我们可以为层级创建一个圆角矩形效果，倒角是一种视觉装饰，它掩盖了层级边界矩形的部分角，允许底层内容显示。因为它涉及到透明层蒙版，除非`maskToBounds`属性设置为YES，否则倒角不会影响图层图像。但是，倒角总是影响图层的背景颜色和边框的绘制。
 
 ### Layers支持内置阴影
 
@@ -203,7 +203,7 @@ CALayer类包含几种配置阴影效果的属性。阴影通过增加深度使�
 
 ![Applying a shadow to a layer](/img/article/20190503/11.png)
 
-当向图层添加阴影时，阴影是图层内容的一部分，但实际上扩展到图层的边界之外，所以，当图层启用**maskToBounds**属性时，阴影效果会被剪切到边缘。如果图层包含透明内容，这是会产生一个奇怪的效果，直接在图层下面的阴影部分仍然是可见的，但是超出部分不可见。所以，这是如果想要一个阴影，但也想用**maskTobounds**属性，我们可以使用两层层级，将该图层嵌入到相同大小应用阴影效果的图层中去。
+当向图层添加阴影时，阴影是图层内容的一部分，但实际上扩展到图层的边界之外，所以，当图层启用`maskToBounds`属性时，阴影效果会被剪切到边缘。如果图层包含透明内容，这是会产生一个奇怪的效果，直接在图层下面的阴影部分仍然是可见的，但是超出部分不可见。所以，这是如果想要一个阴影，但也想用`maskTobounds`属性，我们可以使用两层层级，将该图层嵌入到相同大小应用阴影效果的图层中去。
 
 # Animating Layer Content
 
@@ -219,7 +219,7 @@ Core Animation提供的基础设施可以让我们更加容易的创建层级动
 theLayer.opacity = 0.0
 ```
 
-如果想要显式做出如上改变可以创建**CABasicAnimation**对象同时配置动画参数，可以在添加动画前设置动画的起始与结束值，改变持续时间，或者修改其他动画参数。下面代码展示了如何使用一个对话对象淡化一个层级，创建对象时，指定我们想要动画的属性路径，然后设置动画参数。使用**addAnimation:forKey:**方法调用动画。
+如果想要显式做出如上改变可以创建*CABasicAnimation*对象同时配置动画参数，可以在添加动画前设置动画的起始与结束值，改变持续时间，或者修改其他动画参数。下面代码展示了如何使用一个对话对象淡化一个层级，创建对象时，指定我们想要动画的属性路径，然后设置动画参数。使用`addAnimation:forKey:`方法调用动画。
 
 ``` Swift
 let fadeAnimation = CABasicAnimation(keyPath: "opacity")
@@ -232,7 +232,7 @@ layer.add(fadeAnimation, forKey: "opacity")
 layer.opacity = 0.0
 ```
 
-> Tip：当创建显式动画时，推荐使用**fromValue**属性。如果没有指定这个属性，Core Animation默认使用层级的当前值作为初始值。如果已经当前值等于初始值，可能不会得到想要的效果。
+> Tip：当创建显式动画时，推荐使用`fromValue`属性。如果没有指定这个属性，Core Animation默认使用层级的当前值作为初始值。如果已经当前值等于初始值，可能不会得到想要的效果。
 
 和隐式动画不同，显式动画不会改变层级的真正属性值，显式动画只提供动画。在动画的最后，Core Animation移除动画对象，在层级上使用当前值重新绘制。如果我们想要显式动画是永久更改，还必须更新层级的属性。
 
@@ -240,7 +240,7 @@ layer.opacity = 0.0
 
 ## 使用关键帧动画修改层级属性
 
-基于属性的动画将属性从初始值更改为结束值，**CAKeyframeAnimation**对象允许我们通过一组目标值进行动画处理，其方式可能是线性的，也可能不是线性的。关键帧动画包含一组目标数据和每个值对应的时间组成。在最简单的配置中，使用指定值和时间。对于层位置的改变，我们还可以使用路径作为改变。动画对象获取指定关键帧，并通过给定时间段内从一个值穿插下一个值来构建动画。
+基于属性的动画将属性从初始值更改为结束值，*CAKeyframeAnimation*对象允许我们通过一组目标值进行动画处理，其方式可能是线性的，也可能不是线性的。关键帧动画包含一组目标数据和每个值对应的时间组成。在最简单的配置中，使用指定值和时间。对于层位置的改变，我们还可以使用路径作为改变。动画对象获取指定关键帧，并通过给定时间段内从一个值穿插下一个值来构建动画。
 
 ``` Swift
 let path = CGMutablePath()
@@ -268,7 +268,7 @@ myView.layer.add(animation, forKey: "position")
 
 关键帧动画的时间和节奏比基本动画更复杂，我们可以使用以下属性控制它：
 - *calculationMode*属性定义了用于计算动画计时的算法，这个属性值影响其他与时间相关属性的使用。
-    1. 线性和立方动画 -- 当*calculationMode*属性设置为*kCAAnimationLinear*或者*kCAAnimationCubic**时的动画 -- 通过提供的时间信息生成动画，这个模式可以让我们最大程度控制动画时间
+    1. 线性和立方动画 -- 当*calculationMode*属性设置为*kCAAnimationLinear*或者*kCAAnimationCubic`时的动画 -- 通过提供的时间信息生成动画，这个模式可以让我们最大程度控制动画时间
     2. 定步动画 -- 当*calculationMode*属性设置为*kCAAnimationPaced*或者*kCAAnimationCubicPaced*时的动画 -- 不依赖*keyTimes*或*timingFunctions*属性提供的外部计时值，相反，计时值是隐式的，以提供恒定速度的动画
     3. 离散动画 -- 当*calculationMode*属性设置为*kCAAnimationDiscrete*时的动画 -- 将动画属性从一个关键帧值直接跳转到另一个，而不需要任何中间值。这种计算模式使用*keyTimes*属性中的值，但忽略*timeingFunctions*属性
 - *keyTimes*属性指定应用每个关键帧值的时间标记，仅当计算模式为*kCAAnimationLinear*，*kCAAnimationDiscrete*, *kCAAnimationCubic*时使用，他不是用于定步动画
@@ -277,8 +277,8 @@ myView.layer.add(animation, forKey: "position")
 ## 停止正在运行的显式动画
 
 动画正常运行到结束，但我们可以使用以下技术提前停止动画：
-- 从层级移除一个单独的动画对象，可以调用**removeAnimationForKey:**方法。这个方法使用的键是**addAnimation:forKey**方法传递进去的标识符，不可为空
-- 从层级移除所有动画，可以调用**removeAllAnimations**方法。这个方法立即移除所有动画同时使用原始状态重绘层级
+- 从层级移除一个单独的动画对象，可以调用`removeAnimationForKey:`方法。这个方法使用的键是`addAnimation:forKey`方法传递进去的标识符，不可为空
+- 从层级移除所有动画，可以调用`removeAllAnimations`方法。这个方法立即移除所有动画同时使用原始状态重绘层级
 
 ## 同时运行多个动画
 
@@ -308,8 +308,8 @@ myView.layer.add(group, forKey: "group")
 ## 监测动画的结束
 
 Core Animation提供动画起始与结束的监测，这些通知是执行与动画相关任务的好时机。有两种方式监听动画的状态：
-- 对于*CATransaction*的类方法，设置**setCompletionBlock:**方法，在动画结束后会执行回调
-- 对于*CAAnimation*对象，可以实现他的代理方法**animationDidStart:**和**animationDidStop:finished:**
+- 对于*CATransaction*的类方法，设置`setCompletionBlock:`方法，在动画结束后会执行回调
+- 对于*CAAnimation*对象，可以实现他的代理方法`animationDidStart:`和`animationDidStop:finished:`
 
 如果想要一个动画接着一个动画执行，不要使用动画监听。可以使用*beginTime*属性开始一个动画，设置另一个动画的开始时间是这个动画的结束时间。
 
@@ -358,11 +358,11 @@ myView2.isHidden = true
 
 ## 自定义动画的时间
 
-时间控制是动画的重要组成部分，Core Animation可以通过**CAMediaTiming**代理的方法和属性来指定动画的时间信息。*CAAnimation*和*CALayer*都已经遵循了这个代理，但是封装这些动画的隐式转换对象通常提供了优先级默认的时间信息。
+时间控制是动画的重要组成部分，Core Animation可以通过*CAMediaTiming*代理的方法和属性来指定动画的时间信息。*CAAnimation*和*CALayer*都已经遵循了这个代理，但是封装这些动画的隐式转换对象通常提供了优先级默认的时间信息。
 
 在考虑时间与动画时，理解层级与动画的合作关系是关键的，每个层级有自己的用于管理动画计时的本地时间。通常情况下，两个不同层级的本地时间是相近的，我们可以为每个层级指定相同的时间值而用户不会注意到，但是，一个层级的本地时间会由它的父级或它自己的时间参数改变。例如，改变层级的*speed*属性会导致该图层及其子层级的持续时间按比例改变。
 
-为了帮助我们确定给定层级适应的时间值，*CALayer*类定义了**convertTime:fromLayer:**与**convertTime:toLayer:**方法。我们可以使用这些方法将固定时间转换成层级的本地时间或者从一个层级的时间转换成另一个层级的。这个方法描述了可能影响层级本地时间，返回我们可能在其他层级使用的媒体时间属性。下面代码展示了从层级获取当前本地时间的例子，**CACurrentMediaTime**是返回电脑当前时间的方法，用来转换方法获取并转换成层级时间。
+为了帮助我们确定给定层级适应的时间值，*CALayer*类定义了`convertTime:fromLayer:`与`convertTime:toLayer:`方法。我们可以使用这些方法将固定时间转换成层级的本地时间或者从一个层级的时间转换成另一个层级的。这个方法描述了可能影响层级本地时间，返回我们可能在其他层级使用的媒体时间属性。下面代码展示了从层级获取当前本地时间的例子，`CACurrentMediaTime`是返回电脑当前时间的方法，用来转换方法获取并转换成层级时间。
 
 ``` Swift
 let localLayerTime = view.layer.convertTime(CACurrentMediaTime(), from: nil)
@@ -398,7 +398,7 @@ func resumeLayer(layer: CALayer) {
 
 对层做的每一项操作必须是Transactions的一部分，*CATransaction*类管理动画的创建与分组，并在适当的实际执行他们。多数情况下，我们不需要自己创建Transactions，当对层级添加隐式或显式动画时，Core Animation自动创建隐式transaction。当然，我们也可以创建显式transactions更精确的管理动画。
 
-我们可以通过*CATransaction*类创建和管理transactions，调用**begin**方法开始一个新的transaction（隐式），**commit**方法结束transaction。在这些调用之间是我们希望对transaction的一部分改变。
+我们可以通过*CATransaction*类创建和管理transactions，调用`begin`方法开始一个新的transaction（隐式），`commit`方法结束transaction。在这些调用之间是我们希望对transaction的一部分改变。
 
 ``` Swift
 CATransaction.begin()
@@ -407,7 +407,7 @@ myView.layer.opacity = 0.0
 CATransaction.commit()
 ```
 
-使用transactions的主要原因之一是在显式transaction的范围内，可以修改持续时间、计时函数和其他参数。我们也可以为整个transaction安排一个完成回调，在一组动画完成后发出通知。修改动画参数需要使用**setValue:forKey:**方法修改字典中对应的键。
+使用transactions的主要原因之一是在显式transaction的范围内，可以修改持续时间、计时函数和其他参数。我们也可以为整个transaction安排一个完成回调，在一组动画完成后发出通知。修改动画参数需要使用`setValue:forKey:`方法修改字典中对应的键。
 
 ``` Swift
 CATransaction.begin()
@@ -438,7 +438,7 @@ Core Animation使用action对象实现它的隐式层级动画行为。action对
 
 ## 自定义实现CAAction协议的Action对象
 
-创建自己的action对象，需要一个类实现*CAAction*协议并实现**runActionForKey:object:arguments:**方法，在这个方法中，使用可用的信息来执行我们想要在该层上执行的任何操作。我们可能用这个方法添加一个动画或者一些其他任务。
+创建自己的action对象，需要一个类实现*CAAction*协议并实现`runActionForKey:object:arguments:`方法，在这个方法中，使用可用的信息来执行我们想要在该层上执行的任何操作。我们可能用这个方法添加一个动画或者一些其他任务。
 
 当我们定义一个action对象，我们需要觉得触发的条件，这个action的触发是我们用来注册这个action使用的key，也可以在以下情况下被触发：
 - 层级的一个属性改变了，可以是层级的任意属性，不仅仅是动画的这个（我们还可以把自定义属性的actions和层级相关联），标识action的键是这个属性的名字
@@ -451,22 +451,22 @@ Core Animation使用action对象实现它的隐式层级动画行为。action对
 在action操作之前，层级需要找到相应的action对象，层级相关action的键是正在修改属性的名称或特殊字符。当适当的事件发生在层级，层级调用*actionForKey:*方法查找对应键的action对象，我们可以在搜索过程中插入多个点并为该键提供相关的action对象。
 
 Core Animation查找action对象的顺序如下：
-1. 如果层级的代理实现了**actionForLayer:forKey:**方法，层级会调用这个方法。代理必须执行以下一项：
+1. 如果层级的代理实现了`actionForLayer:forKey:`方法，层级会调用这个方法。代理必须执行以下一项：
     - 返回给定键的action对象
     - 返回nil，如果不处理action，查找继续
     - 返回NSNull对象，查找结束
 2. 层级在actions字典中查找对应的键
 3. 层级在[style](https://developer.apple.com/documentation/quartzcore/calayer/1410875-style)字典中包含该键的actions字典（换句话说，包含actions键的style字典也是字典，层级在第二层字典查找对应键）
-4. 层级调用**defaultActionForKey:**方法
+4. 层级调用`defaultActionForKey:`方法
 5. 层级执行Core Animation定义的隐式action
 
-如果我们在任意查询点提供了action对象，层级将停止查询并执行返回的action对象。当查找到一个action对象，层级调用**runActionForKey:object:arguments:**方法执行操作。如果给定键定义的action已经是*CAAnimation*类的实例，则可以使用这个方法的默认实现执行动画。如果是我们自定义实现*CAAction*协议的对象，则必须使用该方法对象实现来执行适当的操作。
+如果我们在任意查询点提供了action对象，层级将停止查询并执行返回的action对象。当查找到一个action对象，层级调用`runActionForKey:object:arguments:`方法执行操作。如果给定键定义的action已经是*CAAnimation*类的实例，则可以使用这个方法的默认实现执行动画。如果是我们自定义实现*CAAction*协议的对象，则必须使用该方法对象实现来执行适当的操作。
 
 在何处安装action对象取决于我们如何修改层级：
-- 对于可能只在特定环境应用的actions，或对于已经使用代理的对象，提供代理并实现**actionForLayer:forKey**方法
+- 对于可能只在特定环境应用的actions，或对于已经使用代理的对象，提供代理并实现`actionForLayer:forKey`方法
 - 对于层级对象补偿使用代理，可以添加action到层级的actions字典中
 - 对于与层对象上定义的自定义属性相关的actions，可以在style字典中包含该action
-- 对于层行为的基本actions，继承层级并复写**defaultActionForKey:**方法
+- 对于层行为的基本actions，继承层级并复写`defaultActionForKey:`方法
 
 ``` objectivec
 - (id<CAAction>)actionForLayer:(CALayer *)theLayer

@@ -152,9 +152,9 @@ for filter in adjustments {
 
 当我们继承CIFilter后，我们可以通过重新编写默认值或合并滤镜来修改已有的滤镜。Core Image用这项技术实现一些内置滤镜。
 继承一个滤镜我们需要实现以下内容：
-- 定义滤镜的输入参数属性，必须以**input**作为参数名开头，比如*inputImage*
-- 如有必要复写**setDefaults**方法
-- 如些**outputImage**方法
+- 定义滤镜的输入参数属性，必须以`input`作为参数名开头，比如*inputImage*
+- 如有必要复写`setDefaults`方法
+- 如些`outputImage`方法
 
 Core Image提供的CIColorInvert滤镜是CIColorMatrix滤镜的改进，顾名思义，CIColorInvert为CIColorMatrix提供向量，将输入图片的颜色反转。
 
