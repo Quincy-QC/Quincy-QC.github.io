@@ -6,8 +6,8 @@ date: 2019-05-19 18:20:03
 subtitle: "Open Graphics Library for Embedded Systems"
 header-img: "/img/article_header/article_header.png"
 busuanzi: true
-tags:
-- 
+tags: 
+- iOS
 
 ---
 
@@ -437,7 +437,7 @@ glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &height);
 
 对于on-demand绘制，实现我们自己的方法绘制并呈现渲染缓冲区，并在需要显示新内容的时候调用它。
 
-对于动画循环绘制，使用`CADispalyLink`对象。`displayLink`是由Core Animation提供的一种定时器，允许我们将绘图同步到屏幕的刷新率。下面代码展示了我们如何检索显示视图的屏幕，使用这个屏幕创建一个新的`displayLink`对象并添加到运行环中。
+对于动画循环绘制，使用`CADisplayLink`对象。`displayLink`是由Core Animation提供的一种定时器，允许我们将绘图同步到屏幕的刷新率。下面代码展示了我们如何检索显示视图的屏幕，使用这个屏幕创建一个新的`displayLink`对象并添加到运行环中。
 
 > *GLKViewController*类自动使用`CADisplayLink`对象来动画`GLKView`的内容，只有当我们需要超出*GLKit*框架所提供的行为时，才直接使用`CADisplayLink`类
 
