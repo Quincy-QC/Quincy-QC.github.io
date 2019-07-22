@@ -281,7 +281,7 @@ void glUniformfv(GLint location, GLsizei count, const GLfloat* value);
 
 UBO必须配合Uniform Block（命名统一变量块）一起使用，在显存中创建缓存对象（Buffer），在buffer中存储统一变量数据，将buffer与指定的point（不得大于`GL_MAX_UNIFORM_BUFFER_BINDINGS`，通过`glGet`函数查询）绑定，将统一变量缓冲区的索引和point绑定，这样通过point将变量和缓存链接。
 
-[UBO原理图](/img/article/20190706/1.png)
+![UBO原理图](/img/article/20190706/1.png)
 
 首先检索统一变量块索引：
 ``` objc
@@ -364,6 +364,15 @@ glBindBufferRange(GLenum target, GLuint index, GLuint buffer, GLintptr offset, G
 
 下面举个例子：
 对于着色器代码，除非我们使用std140统一变量块布局（默认），否则需要查询程序对象得到字节偏移和跨距，以在统一变量缓冲区对象中设置统一变量数据。std140布局保证使用由OpengGL ES 3.0规范定义的明确布局规范进行特定包装。因此，使用std140，我们就可以在不同的OpengGL ES 3.0实现之间共享统一变量块。
+其他限定符：
+限定符 | 描述
+-|-
+shared | 限定符指定多个着色器或者多个程序中统一变量块的内存布局相同。要使用这个限定符，不同定义中的row_major/column_major值必须相等。覆盖std140和packed（默认）
+packed | 指定编译器可以优化统一变量块的内存布局。使用这个限定符时必须查询偏移位置，而且统一变量块无法在顶点/片段着色器或者程序间共享。覆盖std140和shared
+std140 | 指定统一变量块的布局基于OpenGL ES 3.0规范的“标准统一变量块布局”一节中定义的一组标准规则。覆盖shared和packed
+row_major | 矩阵在内存中以行优先顺序布局
+column_major | 矩阵在内存中以列优先顺序布局（默认）
+
 着色器代码：
 ``` objc
 layout (std140) uniform LightBlock {
