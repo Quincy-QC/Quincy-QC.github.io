@@ -157,7 +157,7 @@ glDrawElements(GL_TRIANGLES, 36, GL_USINGED_BYTE, indices);
 
 使用图元重启，可以通过在索引列表中插入一个特殊索引来重启一个用于索引绘图调用（如`glDrawElements`、`glDrawElementsInstances`或`glDrawRangeElements`）的图元。这个特殊索引是该索引类型的最大索引（例如，索引类型为`GL_UNSIGNED_BYTE`或`GL_UNSIGNED_SHORT`时，分别为255或者65535）。
 
-例如，假定两个三角形条带分别有元素索引(0, 1, 2, 3)和(8, 9, 10, 11)。如果我们想利用图元重启在一次调用`glDrawElements*`中绘制两个条带，索引类型为GL_UNSIGNED_SHORT，则组合的元素索引列表为(0, 1, 2, 3, 255, 8, 9, 10, 11)。
+例如，假定两个三角形条带分别有元素索引(0, 1, 2, 3)和(8, 9, 10, 11)。如果我们想利用图元重启在一次调用`glDrawElements*`中绘制两个条带，索引类型为`GL_UNSIGNED_BYTE`，则组合的元素索引列表为(0, 1, 2, 3, 255, 8, 9, 10, 11)。
 
 可以用如下代码启用和禁用图元启用：
 ``` objc

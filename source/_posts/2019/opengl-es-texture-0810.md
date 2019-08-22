@@ -353,7 +353,7 @@ OpenGL ES 3.0中的最后一种纹理格式类型是深度纹理。深度纹理�
 内部格式 | 格式 | 类型
 - | - | -
 GL_DEPTH_COMPONENT16 | GL_DEPTH_COMPONENT | GL_UNSIGNED_SHORT
-GL_DEPTH_COMPONENT16 | GL_DEPTH_COMPONENT | GL_UNSIGNED_INT
+GL_DEPTH_COMPONENT16 | GL_DEPTH_COMPONENT | GL_UNSIGNED_INTp
 GL_DEPTH_COMPONENT24 | GL_DEPTH_COMPONENT | GL_UNSIGNED_INT
 GL_DEPTH_COMPONENT43F | GL_DEPTH_COMPONENT | GL_FLOAT
 GL_DEPTH24_STENCIL8 | GL_DEPTH_STENCIL | GL_UNSIGNED_INT_24_8
@@ -491,7 +491,7 @@ GL_ALPHA | (0.0, 0.0, 0.0, A)
     /**
      创建上下文
 
-     @param data#> 指向要渲染的绘制u图像的内存地址 description#>
+     @param data#> 指向要渲染的绘制图像的内存地址 description#>
      @param width#> 图像宽度，单位为像素 description#>
      @param height#> 图像高度，单位为像素 description#>
      @param bitsPerComponent#> 内存中像素的每个组件的位数，比如32位RGBA，就设置为8 description#>
