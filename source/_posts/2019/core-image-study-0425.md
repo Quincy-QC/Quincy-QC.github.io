@@ -67,7 +67,7 @@ CIFilter对象是代表图片处理效果和控制效果行为系列参数的可
 
 Core Image 优化了滤镜链的应用，以快速高效的方式渲染结果，链中的每个CIImage对象不是完全渲染过的图片，而是渲染的方式，Core Image不需要单独执行每个滤镜操作，这样会非常浪费时间和内存，相反，Core Image将滤镜组合成一个单独的操作，甚至以不同的顺序重新组织滤镜，从而更有效的生成相同的结果。
 
-!(Core Image optimizes a filter chain to a single operation)[/img/20190425/2.png]
+![Core Image optimizes a filter chain to a single operation](/img/20190425/2.png)
 
 我们可以看出，Crop滤镜操作从最后移动到优先执行，这个滤镜用于输出裁剪后的图片，因此不需要对裁剪外的像素使用颜色和锐化过滤器，所以Core Image首先执行裁剪，确保消耗巨大的图形处理操作只适用于最终输出可见的像素内。
 
