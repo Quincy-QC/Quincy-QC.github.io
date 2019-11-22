@@ -78,6 +78,16 @@ Would you like to do view based testing? [ Yes / No ]
 
 发布成功之后进行`pod repo update`更新，同时还需要进行`rm ~/Library/Caches/CocoaPods/search_index.json`索引缓存删除，然后我们就可以通过`pod search`进行查找对应的库啦。
 
+# 删pod库特定版本
+
+可以删除一个pod的特定版本来纠正意外推送。
+
+`pod trunk delete podName version`
+
+你也可以放弃整个pod和所有版本。
+
+`pod trunk deprecate podName`
+
 # 总结
 
 通过上面步骤就可以简单的创建我们自己的远程类库，更加愉快的开发啦！
