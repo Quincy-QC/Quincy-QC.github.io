@@ -2,7 +2,7 @@
 title: "基于Cocoapods创建私有公有库"
 catalog: true
 toc_nav_num: true
-date: 2019-12-21 18:30:24
+date: 2019-11-21 18:30:24
 subtitle: "Making a Cocoapod"
 header-img: "/img/article_header/article_header.png"
 busuanzi: true

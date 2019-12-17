@@ -2,7 +2,7 @@
 title: "使用Swift Package Manager管理依赖项"
 catalog: true
 toc_nav_num: true
-date: 2019-12-22 19:23:09
+date: 2019-11-22 19:23:09
 subtitle: "Swift Package Manager"
 header-img: "/img/article_header/article_header.png"
 busuanzi: true
