@@ -414,6 +414,8 @@ Then the 1st smallest distance pair is (1,1), and its distance is 0.
 2. 0 <= nums[i] < 1000000.
 3. 1 <= k <= len(nums) * (len(nums) - 1) / 2.
 
+**Algorithm:**
+
 ``` swift
 class Solution {
     func smallestDistancePair(_ nums: [Int], _ k: Int) -> Int {
