@@ -513,3 +513,83 @@ class Solution {
 ```
 
 From leetCode [786. K-th Smallest Prime Fraction](https://leetcode.com/problems/k-th-smallest-prime-fraction/)
+
+# Minimum Cost to Hire K Workers
+
+There are N workers.  The i-th worker has a quality[i] and a minimum wage expectation wage[i].
+
+Now we want to hire exactly K workers to form a paid group.  When hiring a group of K workers, we must pay them according to the following rules:
+1. Every worker in the paid group should be paid in the ratio of their quality compared to other workers in the paid group.
+2. Every worker in the paid group must be paid at least their minimum wage expectation.
+
+Return the least amount of money needed to form a paid group satisfying the above conditions.
+
+**Example 1:**
+
+```
+Input: quality = [10,20,5], wage = [70,50,30], K = 2
+Output: 105.00000
+Explanation: We pay 70 to 0-th worker and 35 to 2-th worker.
+```
+
+**Example 2:**
+
+```
+Input: quality = [3,1,10,10,1], wage = [4,8,2,2,7], K = 3
+Output: 30.66667
+Explanation: We pay 4 to 0-th worker, 13.33333 to 2-th and 3-th workers seperately. 
+```
+
+**Note:**
+
+1. 1 <= K <= N <= 10000, where N = quality.length = wage.length
+2. 1 <= quality[i] <= 10000
+3. 1 <= wage[i] <= 10000
+4. Answers within 10^-5 of the correct answer will be considered correct.
+
+**Algorithm:**
+
+``` swift
+class Solution {
+    func mincostToHireWorkers(_ quality: [Int], _ wage: [Int], _ K: Int) -> Double {
+        func insert<T: Comparable>(_ new: (T, Int), _ arr: inout [(T, Int)]) {
+            var l = 0, r = arr.count-1
+            while l <= r {
+                let mid = (l+r) >> 1
+                if (mid == 0 && new.0 <= arr[mid].0) ||
+                    (mid > 0 && new.0 <= arr[mid].0 && new.0 > arr[mid-1].0) {
+                    arr.insert(new, at: mid)
+                    return
+                } else if new.0 > arr[mid].0 {
+                    l = mid + 1
+                } else {
+                    r = mid - 1
+                }
+            }
+            arr.insert(new, at: arr.count)
+        }
+        var arr = [(Double, Int)]()
+        for i in quality.indices {
+            insert((Double(wage[i]) / Double(quality[i]), i), &arr)
+        }
+        var res = pow(10.0, 10.0)
+        var qualities = [(Int, Int)]()
+        var sump = 0
+        for i in 0..<arr.count {
+            let temp = quality[arr[i].1]
+            insert((temp, arr[i].1), &qualities)
+            sump += temp
+            if qualities.count > K {
+                sump -= qualities.popLast()!.0
+            }
+            if qualities.count == K {
+                let ratio = arr[i].0
+                res = min(res, Double(sump) * ratio)
+            }
+        }
+        return res
+    }
+}
+```
+
+From leetCode [857. Minimum Cost to Hire K Workers](https://leetcode.com/problems/minimum-cost-to-hire-k-workers/)
