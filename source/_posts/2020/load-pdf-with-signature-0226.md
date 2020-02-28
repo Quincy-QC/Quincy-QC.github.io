@@ -57,7 +57,7 @@ PDF文件只能使用本地文件，所以对于网络资源需要先进行下�
 ``` objectivec
  - (void)loadPDFFile:(NSString*)filePath {  
     NSString *viwerPath = [[NSBundle mainBundle] pathForResource:@"viewer" ofType:@"html" inDirectory:@"minified/web"];
-    NSString *urlStr = [NSString stringWithFormat:@"%@?file=%@#page=1", viwerPath,filePath];
+    NSString *urlStr = [NSString stringWithFormat:@"%@?file=%@#page=1", viwerPath, filePath];
     urlStr = [urlStr stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
     [self loadRequest:request];
@@ -73,6 +73,16 @@ PDF文件只能使用本地文件，所以对于网络资源需要先进行下�
 //      _this3.setFlags(_util.AnnotationFlag.HIDDEN);
 //    }
 ```
+
+## 在线使用
+
+我们可以使用`mozilla`部署在`github pages`上的`Viewer`就行PDF加载，和本地`viewer.html`加载PDF文件类型，使用如下路径加载：
+
+``` objectivec
+NSString *urlStr = [NSString stringWithFormat:@"http://mozilla.github.io/pdf.js/web/viewer.html?file=%@#page=1", filePath];
+```
+
+但是源码的本身是默认不显示签章，所以如果想使用在线预览方式，需要我们自定义`HTML`修改部分代码并部署到网页，就可以实现在线预览。
 
 ## 最终效果
 
