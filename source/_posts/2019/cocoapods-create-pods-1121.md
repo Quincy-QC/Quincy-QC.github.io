@@ -60,6 +60,15 @@ Would you like to do view based testing? [ Yes / No ]
 
 在上传之前我们需要验证下本地库是否正确，使用`pod lib lint Project.podsepc --verbose --allow-warnings`进行验证。（`pod spec lint Project.podspec`是用于验证远程库）
 
+如果出现如下问题：
+``` objc
+The 'Pods-App' target has transitive dependencies that include static binaries: during validation.
+```
+这个错误是因为依赖库（s.dependency）包含了.a静态库造成的，虽然这不影响pod的使用，但是会使验证无法通过。可以用`--use-libraries`来让验证通过。
+
+如果库依赖私有库，则需要添加`--resources=xxx.git`
+
+
 ## 上传远程仓库并Tag
 
 验证成功后需要将代码上传到远程仓库，代码上传远程仓库之后需要打对应的版本号Tag。
