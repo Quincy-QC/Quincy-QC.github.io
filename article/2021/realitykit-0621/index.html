@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          RealityKit基础概念 - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2021/realitykit-0621/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS - Swift" title="iOS - Swift">iOS - Swift</a>
+                            
+                        </div>
+                        <h1>RealityKit基础概念</h1>
+                        <h2 class="subheading">RealityKit Experience</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2021-06-21
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="前言">前言</h1>
+<p>最近Apple刚好在<code>WWDC21</code>上发布了<a href="https://developer.apple.com/documentation/realitykit/capturing_photographs_for_realitykit_object_capture/" target="_blank" rel="noopener">Object Capture</a>，基于这个契机，我们就想用苹果提供生成的模型加上最新的<code>RealityKit</code>框架进行一次实景AR开发，这篇文章就简单介绍<code>RealityKit</code>的基础概念。</p>
+<h1 id="介绍">介绍</h1>
+<p><code>RealityKit</code>框架专门为增强现实量身定制，能够提供逼真的图像渲染、相机特效、动画、物理特效等等。借助原生<code>ARKit</code>整合、基于物理的超逼真渲染、变换和骨骼动画、空间音频和刚体物理，<code>RealityKit</code>可以比以往更加快速轻松地进行增强现实开发。</p>
+<h1 id="基础概念">基础概念</h1>
+<p>如下图<code>ARView</code>的结构层次：<br>
+<img src="/img/article/20210621/1.png" alt="RealityKit"></p>
+<p>首先<code>ARView</code>就是用于展示AR体验的视图，可以将它添加到父视图中，通过初始化<code>cameraMode</code>的不同，可以确定是否需要使用相机生成真实的AR场景还是虚拟场景，这个比较简单。看下API：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">init</span>(frame frameRect: <span class="type">CGRect</span>, cameraMode: <span class="type">ARView</span>.<span class="type">CameraMode</span>, automaticallyConfigureSession: <span class="type">Bool</span>)</span><br></pre></td></tr></table></figure>
+<p>其次是<code>Scene</code>就是保存AR视图呈现的容器，我们不需要直接创建，可以通过<code>ARView·</code>获取到<code>scene</code>这个熟悉，后续我们的模型都是直接或者间接添加到这个<code>scene</code>上。</p>
+<p>然后就是<code>Entity</code>了，这里有<code>Anchor Entity</code>，<code>Model Entity</code>，其实本质都是继承与<code>Entity</code>，同时，如果我们想要自定义一些<code>Entity</code>，我们可以通过继承<code>Entity</code>，同时实现相应的协议，同时加载相应的<code>Component</code>，就可以创建具有不同外观和行为的实体，如下图：<br>
+<img src="/img/article/20210621/2.png" alt="RealityKit"></p>
+<p>这边又有两个概念，一个是协议，一个是<code>Component</code>，其实概括来讲就是协议让<code>Entity</code>拥有了某项能力，而<code>Component</code>则是用来真正装备该能力的组件修饰，所以，如果我想要一个<code>Entity</code>拥有外观属性（大小、颜色），那我们我们就需要继承<code>HasModel</code>这个协议，同时配置<code>Component</code>这个属性赋予这个实体真正的外观属性，后面再深入介绍。</p>
+<p>苹果默认提供了两个基础<code>Entity</code>，一个是<code>Anchor Entity</code>，一个是<code>Model Entity</code>，现在我们就来具体介绍这两个<code>Entity</code>。</p>
+<h1 id="entity">Entity</h1>
+<p>一个基类<code>Entity</code>默认实现了<code>HasTransform</code>和<code>HasSynchronization</code>协议，拥有<code>Transform component</code>与<code>Synchronization component</code>两个组件，分别用于空间转换（大小、位移，旋转）与联网时的同步操作，同时还实现了<code>HasHierarchy</code>协议，允许所有的<code>Entity</code>拥有层级关系（父实体，子实体）。</p>
+<h2 id="anchorentity">AnchorEntity</h2>
+<p><code>Anchor Entity</code>默认实现了<code>HasAnchoring</code>协议，实现该协议之后就是允许该实体能够将该虚拟内容渲染到真实世界，我们一般用来把他作为基础实体，然后后续具体的实体添加到这个<code>Anchor Entity</code>上，后续添加到<code>ARView</code>上继续渲染，可以把他当成一个载体，本身并没有形状或者外观。</p>
+<h2 id="modelentity">ModelEntity</h2>
+<p>另一个默认提供的实体是<code>Model Entity</code>，实现了<code>HasModel</code>, <code>HasPhysics</code>两个协议。</p>
+<ul>
+<li><code>HasModel</code>这个协议本身就继承于<code>HasTransform</code>协议，他针对与<code>HasTransform</code>协议，又增加了一个<code>Model component</code>组件，允许设置该实体的外观大小包括纹理等信息。</li>
+<li><code>HasPhysics</code>这个协议是<code>HasPhysicsBody</code>与<code>HasPhysicsMotion</code>协议的总和。
+<ul>
+<li><code>HasPhysicsBody</code>又继承于<code>HasCollision</code>，<code>HasCollision</code>又继承于<code>HasTransform</code>。<code>HasCollision</code>增加的组件特性就是碰撞体积与控制模式（是否需要记录细节碰撞信息）；<code>HasPhysicsBody</code>新增的组件特性是允许对该物体施加外力并进行运动。</li>
+<li><code>HasPhysicsMotion</code>新增的组件特性是基础运动模式，能够在创建后无需外力就保持一个持续的运动，同时判断是否允许外界改变行为；</li>
+</ul>
+</li>
+</ul>
+<h2 id="自定义entity">自定义Entity</h2>
+<p>所以，基于上面的介绍，我们自定义<code>Entity</code>也就很简单了，只要针对于我们的场景，选择不同的协议与添加对于的<code>Component</code>就可以得到我们定制的实体，用于展示，非常Swift。</p>
+<h1 id="简单实现">简单实现</h1>
+<p>那么我们就来简单实现一个非AR场景下的Box实体，并增加一个自旋动作。<br>
+首选我们就自定义一个实体，有以下需求：</p>
+<ul>
+<li>直接添加到<code>Scene</code>上，需要有<code>Anchor Entity</code>的锚点添加特性，所以继承<code>HasAnchoring</code>协议</li>
+<li>需要自定义一个形状box和颜色，所以继承<code>HasModel</code>协议</li>
+<li>需要增加一个自旋匀速运动，所以继承<code>HasPhysics</code>协议</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Box</span>: <span class="title">Entity</span>, <span class="title">HasAnchoring</span>, <span class="title">HasModel</span>, <span class="title">HasPhysics</span> </span>&#123;</span><br><span class="line">    <span class="keyword">required</span> <span class="keyword">init</span>(world: <span class="type">SIMD3</span>&lt;<span class="type">Float</span>&gt;) &#123;</span><br><span class="line">        <span class="keyword">super</span>.<span class="keyword">init</span>()</span><br><span class="line">        </span><br><span class="line">        position = world</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置大小，颜色，形状</span></span><br><span class="line">        model = <span class="type">ModelComponent</span>(</span><br><span class="line">            mesh: .generateBox(size: <span class="number">0.5</span>),</span><br><span class="line">            materials: [<span class="type">SimpleMaterial</span>(color: .cyan, roughness: <span class="number">0.5</span>, isMetallic: <span class="literal">true</span>)]</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置碰撞体积</span></span><br><span class="line">        collision = <span class="type">CollisionComponent</span>(</span><br><span class="line">            shapes: [.generateBox(size: [<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>])],</span><br><span class="line">            mode: .<span class="keyword">default</span>,</span><br><span class="line">            <span class="built_in">filter</span>: .<span class="keyword">default</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置物理模型大小，密度，运动模式(非动态)</span></span><br><span class="line">        physicsBody = &#123;</span><br><span class="line">            <span class="keyword">var</span> <span class="built_in">c</span> = <span class="type">PhysicsBodyComponent</span>(</span><br><span class="line">                shapes: [<span class="type">ShapeResource</span>.generateBox(size: [<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>])],</span><br><span class="line">                density: <span class="number">0.95</span>,</span><br><span class="line">                material: .generate(),</span><br><span class="line">                mode: .kinematic</span><br><span class="line">            )</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">c</span></span><br><span class="line">        &#125;()</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 给定y方向恒定角速度转动</span></span><br><span class="line">        physicsMotion = <span class="type">PhysicsMotionComponent</span>(linearVelocity: [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>], angularVelocity: [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>])</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">required</span> <span class="keyword">init</span>() &#123;</span><br><span class="line">        <span class="built_in">fatalError</span>(<span class="string">"init() has not been implemented"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，一个简单的自定义实体就已经定制完了。</p>
+<p>然后创建我们的<code>ARView</code>，添加到主视图，并通过<code>ARView</code>获取的<code>Scene</code>添加<code>Box</code>实例，然后就能肯定一个沿着y轴恒定速度旋转的盒子了。<br>
+代码如下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.viewDidLoad() </span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> arView = <span class="type">ARView</span>(frame: view.bounds, cameraMode: .nonAR, automaticallyConfigureSession: <span class="literal">false</span>)</span><br><span class="line">        view.addSubview(arView)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> box = <span class="type">Box</span>(world: [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line">        arView.scene.addAnchor(box)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果图：<br>
+<img src="/img/article/20210621/3.png" alt="RealityKit"></p>
+<h1 id="结语">结语</h1>
+<p>一个简单的旋转模型就实现了，是不是很简单，可以自己尝试下。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2020/nstimer-circular-reference-issue-0330/" data-toggle="tooltip" data-placement="top" title="NSTimer循环引用解决方案">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#前言"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#介绍"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x4ECB;&#x7ECD;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#基础概念"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x57FA;&#x7840;&#x6982;&#x5FF5;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#entity"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Entity</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#anchorentity"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">AnchorEntity</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#modelentity"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">ModelEntity</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#自定义entity"><span class="toc-nav-number">4.3.</span> <span class="toc-nav-text">&#x81EA;&#x5B9A;&#x4E49;Entity</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#简单实现"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x7B80;&#x5355;&#x5B9E;&#x73B0;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#结语"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">&#x7ED3;&#x8BED;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2021/realitykit-0621/";
+    <!-- var disqus_url = "/article/2021/realitykit-0621/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

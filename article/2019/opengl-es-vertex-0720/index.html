@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          OpenGL ES学习--顶点属性、顶点数组和缓冲区对象 - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/opengl-es-vertex-0720/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                            
+                        </div>
+                        <h1>OpenGL ES学习--顶点属性、顶点数组和缓冲区对象</h1>
+                        <h2 class="subheading">About OpenGL ES</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-07-20
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>顶点数据也称作顶点属性，指定每个顶点的数据。这种逐顶点数据可以为每个顶点指定，也可以用于所有顶点的常量。例如，如果想要绘制一个固定颜色的三角形，可以指定一个常量值，用于三角形的全部3个顶点。但是，组成三角形的3个顶点的位置不同，所以我们必须指定一个顶点数组来存储3个位置值。</p>
+</blockquote>
+<h1 id="指定顶点属性数据">指定顶点属性数据</h1>
+<p>顶点属性数据可以用一个顶点数组对每个顶点指定，也可以将一个常量值用于一个图元的所有顶点。</p>
+<p>所有OpenGL ES 3.0实现必须支持最少16个顶点属性，可以通过<code>glGet*</code>函数查询特定支持的顶点属性的准确数量：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GLint maxVertexAttribs; </span><br><span class="line">glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &amp;maxVertexAttribs);</span><br></pre></td></tr></table></figure>
+<h2 id="常量顶点属性">常量顶点属性</h2>
+<p>常量顶点属性对于一个图元的所有顶点都相同，所以对一个图元的所有顶点只需指定一个值。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加载indx指定的通用顶点属性(x, 0.0, 0.0, 1.0)</span></span><br><span class="line">glVertexAttrib1f(GLuint indx, GLfloat x);</span><br><span class="line">glVertexAttrib1fv(GLuint indx, <span class="keyword">const</span> GLfloat *values);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加载indx指定的通用顶点属性(x, y, 0.0, 1.0)</span></span><br><span class="line">glVertexAttrib2f(GLuint indx, GLfloat x, GLfloat y);</span><br><span class="line">glVertexAttrib2fv(GLuint indx, <span class="keyword">const</span> GLfloat *values);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加载indx指定的通用顶点属性(x, y, z, 1.0)</span></span><br><span class="line">glVertexAttrib3f(GLuint indx, GLfloat x, GLfloat y, GLfloat z);</span><br><span class="line">glVertexAttrib3fv(GLuint indx, <span class="keyword">const</span> GLfloat *values);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加载indx指定的通用顶点属性(x, y, z, w)</span></span><br><span class="line">glVertexAttrib4f(GLuint indx, GLfloat x, GLfloat y, GLfloat z, GLfloat w);</span><br><span class="line">glVertexAttrib4fv(GLuint indx, <span class="keyword">const</span> GLfloat *values);</span><br></pre></td></tr></table></figure>
+<h2 id="顶点数组">顶点数组</h2>
+<p>顶点数组指定每个顶点的属性，是保存在应用程序地址空间的缓冲区。它们作为顶点缓冲对象的基础，提供指定顶点属性数据的一种高效、灵活的手段。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 指定顶点属性</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param indx#&gt; 指定通用顶点属性索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param size#&gt; 顶点数组中为索引引用的顶点属性所指定的分量数量，有效值为1~4 description#&gt;</span></span><br><span class="line"><span class="comment"> @param type#&gt; 数据格式 description#&gt;</span></span><br><span class="line"><span class="comment"> @param normalized#&gt; 用于表示非浮点数据格式类型在转换为浮点值时是否应该规范化 description#&gt;</span></span><br><span class="line"><span class="comment"> @param stride#&gt; 每个顶点由size指定的顶点属性分量顺序存储。stride指定顶点索引I和I+1表示的顶点数据之间的位移。如果stride为0，则每个顶点的属性数据顺序存储。如果stride大于0，则使用该值作为获取下一个索引表示的顶点数据的跨距 description#&gt;</span></span><br><span class="line"><span class="comment"> @param ptr#&gt; 如果使用客户端顶点数组，则是保存顶点属性数据的缓冲区指针。如果使用顶点缓冲区对象，则表示该缓冲区内的偏移量 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glVertexAttribPointer(GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, <span class="keyword">const</span> GLvoid *ptr);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 指定顶点属性，数据格式类型被当做整数对待</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param index#&gt; 指定通用顶点属性索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param size#&gt; 顶点数组中为索引引用的顶点属性所指定的分量数量，有效值为1~4 description#&gt;</span></span><br><span class="line"><span class="comment"> @param type#&gt; 数据格式 description#&gt;</span></span><br><span class="line"><span class="comment"> @param stride#&gt; 每个顶点由size指定的顶点属性分量顺序存储。stride指定顶点索引I和I+1表示的顶点数据之间的位移。如果stride为0，则每个顶点的属性数据顺序存储。如果stride大于0，则使用该值作为获取下一个索引表示的顶点数据的跨距 description#&gt;</span></span><br><span class="line"><span class="comment"> @param pointer#&gt; 如果使用客户端顶点数组，则是保存顶点属性数据的缓冲区指针。如果使用顶点缓冲区对象，则表示该缓冲区内的偏移量 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glVertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, <span class="keyword">const</span> GLvoid *pointer);</span><br></pre></td></tr></table></figure>
+<p>分配和存储顶点属性数据有两种常用的方法：</p>
+<ul>
+<li>在一个缓冲区中存储顶点属性–这种方法称为结构数组。结构表示顶点的所有属性，每个顶点有一个属性的数组。</li>
+<li>在单独的缓冲区中保存每个顶点属性–这种方法称为数组结构。</li>
+</ul>
+<h3 id="哪种存储顶点属性的方法高效">哪种存储顶点属性的方法高效</h3>
+<p>在大部分情况下，答案是结构数组。原因是，每个顶点的属性数据可以顺序方法读取，这最有可能造成高效的内存访问模式。使用结构数组的缺点在应用程序需要修改特定属性时变得很明显。如果顶点属性数据的一个自己需要修改，这将造成顶点缓冲区的跨距更新。当顶点缓冲区以缓冲区对象的形式提供时，需要重新加载整个顶点属性缓冲区。可以通过将动态的顶点属性保存在单独的缓冲区来避免这种效率低下的情况。</p>
+<h3 id="顶点属性使用哪种数据格式">顶点属性使用哪种数据格式</h3>
+<p><code>glVertexAttribPointer</code>中的<code>type</code>参数指定的顶点属性格式不仅影响顶点属性数据的图形内存存储需求，而且影响整体性能，这是渲染帧所需内存带宽的一个函数。数据空间占用越小，需要的内存带宽越小。OpenGL ES 3.0支持名为<code>GL_HALF_FLOAT</code>的16位浮点顶点格式，建议尽可能使用。纹理坐标、法线、副法线、切向量等都是使用<code>GL_HALF_FLOAT</code>存储每个分量的候选。颜色可以存储为<code>GL_UNSIGNED_BYTE</code>，每个顶点颜色具有4个分量。顶点位置可以存储为<code>GL_FLOAT</code>。</p>
+<h3 id="glvertexattribpointer中的规范化标识如何工作"><code>glVertexAttribPointer</code>中的规范化标识如何工作</h3>
+<p>在用于顶点着色器之前，顶点属性在内部保存为单精度浮点数，如果数据类型表示顶点属性不是浮点数，顶点属性将在用于顶点着色器之前转换为单精度浮点数。规范化标志控制非浮点顶点属性数据到单精度浮点值的转换。如果规范化标识为假，则顶点数据被直接转换为浮点数。这类似于将非浮点类型的变量转换为浮点变量。例子：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GLfloat f;</span><br><span class="line">GLbyte b;</span><br><span class="line">f = (GLfloat)b;     <span class="comment">// f represents values in the range [-128.0, 127.0]</span></span><br></pre></td></tr></table></figure>
+<p>如果规范化标志位真，且如果数据类型为<code>GL_BYTE</code>、<code>GL_SHORT</code>或者<code>GL_FIXED</code>，则顶点数据被映射到[-1.0, 1.0]范围内，如果数据类型为<code>GL_UNSIGNED_BYTE</code>或<code>GL_UNSIGNED_SHORT</code>，则被映射到[0.0, 1.0]范围内。</p>
+<p>下表说明了设置规范化标志时非浮点数据类型的转换，表中第二列的<code>c</code>值指的是第一列中指定格式的一个值：</p>
+<table>
+<thead>
+<tr>
+<th>顶点数据格式</th>
+<th>转换为浮点数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_BYTE</td>
+<td>max(c/(2<sup>7</sup>-1), -1.0)</td>
+</tr>
+<tr>
+<td>GL_UNSIGNED_BYTE</td>
+<td>c/(2<sup>8</sup>-1)</td>
+</tr>
+<tr>
+<td>GL_SHORT</td>
+<td>max(c/(2<sup>16</sup>-1), -1.0)</td>
+</tr>
+<tr>
+<td>GL_UNSIGNED_SHORT</td>
+<td>c/(2<sup>16</sup>-1)</td>
+</tr>
+<tr>
+<td>GL_FIXED</td>
+<td>c/(2<sup>16</sup>)</td>
+</tr>
+<tr>
+<td>GL_FLOAT</td>
+<td>c</td>
+</tr>
+<tr>
+<td>GL_HALF_FLOAT_OES</td>
+<td>c</td>
+</tr>
+</tbody>
+</table>
+<p>在顶点着色器中，也有可能按照整数的形式访问整数型顶点属性数据，而不是将其转换为浮点数，可以使用<code>glVertexAttribIPointer</code>函数。</p>
+<h3 id="在常量顶点属性和顶点数组之间选择">在常量顶点属性和顶点数组之间选择</h3>
+<p>应用程序可以让OpenGL ES使用常量数据或者来自顶点数组的数据。<code>glEnableVertexAttribArray</code>和<code>glDisableVertexAttribArray</code>命令分别用于启用和禁用通用顶点属性数组。如果某个通用属性索引的顶点属性数组被禁用，将使用为该索引指定的常量顶点属性数据。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// glsl.vsh</span></span><br><span class="line"><span class="meta">#version 300 es</span></span><br><span class="line">layout(location = <span class="number">0</span>) <span class="keyword">in</span> vec4 a_color;</span><br><span class="line">layout(location = <span class="number">1</span>) <span class="keyword">in</span> vec4 a_position;</span><br><span class="line"><span class="keyword">out</span> vec4 v_color;</span><br><span class="line"><span class="keyword">void</span> mian() &#123;</span><br><span class="line">    v_color = a_color;</span><br><span class="line">    gl_Position = a_position;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// glsl.fsh</span></span><br><span class="line"><span class="meta">#version 300 es</span></span><br><span class="line">precision mudiump <span class="keyword">float</span>;</span><br><span class="line"><span class="keyword">in</span> vec4 v_color;</span><br><span class="line"><span class="keyword">out</span> vec4 o_fragColor;</span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">    o_fragColor = v_color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GLfloat color[<span class="number">4</span>] = &#123;<span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f&#125;;</span><br><span class="line">GLfloat vertexPos[<span class="number">9</span>] = &#123;<span class="number">0.0</span>f, <span class="number">0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">                        <span class="number">-0.5</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">                        <span class="number">0.5</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f&#125;;</span><br><span class="line">glVertexAttrib4fv(<span class="number">0</span>, color);</span><br><span class="line">glVertexAttribPointer(<span class="number">1</span>, <span class="number">3</span>, GL_FLOAT, GL_FALSE, <span class="number">0</span>, vertexPos);</span><br><span class="line">glEnableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">glDrawArrays(GL_TRIANGLES, <span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line">glDisableVertexAttribArray(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<p>代码示例中使用的顶点属性<code>color</code>是一个常量，用<code>glVertexAttrib4fv</code>指定，不启用顶点属性数组0。<code>vertexPos</code>属性用<code>glVertexAttribPointer</code>以一个顶点数组指定，并用<code>glEnableVertexAttribArray</code>启用数组。<code>color</code>值对于所绘制的三角形的所有顶点均相同，而<code>vertexPos</code>属性对于三角形的各个顶点可以不同。</p>
+<h1 id="在顶点着色器中声明顶点属性变量">在顶点着色器中声明顶点属性变量</h1>
+<p>在顶点着色器中，变量通过使用<code>in</code>限定符声明为顶点属性。属性变量也可以包含一个布局限定符，提供属性索引：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">layout(location = <span class="number">0</span>) <span class="keyword">in</span> vec4 a_position;</span><br><span class="line">layout(location = <span class="number">1</span>) <span class="keyword">in</span> vec2 a_texcoord;</span><br><span class="line">layout(location - <span class="number">2</span>) <span class="keyword">in</span> vec3 a_normal;</span><br></pre></td></tr></table></figure>
+<p>属性可以在顶点着色器内部声明–但是如果没有使用，就不会被认为是活动属性，从而不会被计入限制。如果在顶点着色器中使用的属性数量大于<code>GL_MAX_VERTEX_ATTRIBS</code>，这个顶点着色器就无法链接。</p>
+<p>当程序成功链接，我们就需要找出连接到该程序的顶点着色器使用的活动顶点属性数量。注意：这一步骤只需要在我们对属性不使用布局限定符时才有必要。<br>
+首先通过<code>glGetProgramiv</code>函数传入<code>GL_ACTIVE_ATTRIBUTE</code>获取活动的属性数量，传入<code>GL_ACTIVE_ATTRIBUTE_MAX_LENGTH</code>获取属性的最长字符数量，最后使用<code>glGetActiveAttrib</code>函数查询顶点着色器各属性索引点对应的属性变量名称：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">GLint attribsCount;</span><br><span class="line">GLint attribMaxLength;</span><br><span class="line">glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &amp;attribsCount);</span><br><span class="line">glGetProgramiv(program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &amp;attribMaxLength);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; attribsCount; i++) &#123;</span><br><span class="line">    GLsizei length;</span><br><span class="line">    GLint size;</span><br><span class="line">    GLenum type;</span><br><span class="line">    GLchar *name = malloc(attribMaxLength * <span class="keyword">sizeof</span>(GLchar));</span><br><span class="line">    glGetActiveAttrib(program, i, attribMaxLength, &amp;length, &amp;size, &amp;type, name);</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"length: %d, size: %d, type: %u, name: %s"</span>, length, size, type, name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="将顶点属性绑定到顶点着色器中的属性变量">将顶点属性绑定到顶点着色器中的属性变量</h2>
+<p>在OpenGL ES 3.0中，可以使用3种方法将通用顶点属性索引映射到顶点着色器中的一个属性变量名称：</p>
+<ul>
+<li>索引可以在顶点着色器源代码中用<code>layout(location = N)</code>限定符指定（推荐）；</li>
+<li>OpenGL ES 3.0将通用顶点属性索引绑定到属性名称；</li>
+<li>应用程序可以将顶点属性索引绑定到属性名称；</li>
+</ul>
+<p>将属性绑定到一个位置的最简单方法是简单地使用<code>layout(location = N)</code>限定符，这种方法需要的代码最少。但是，在某些情况下，其他两个选项可能更合适。<code>glBindAttribLocation</code>命令可用于将通用顶点属性索引绑定到顶点着色器中的一个属性变量。这种绑定在下一次程序链接时生效–不会改变当前链接的程序中使用的绑定。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 将通用顶点属性索引绑定到属性变量</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param program#&gt; 程序对象 description#&gt;</span></span><br><span class="line"><span class="comment"> @param index#&gt; 通用顶点属性索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param name#&gt; 属性变量名称 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glBindAttribLocation(GLuint program, GLuint index, <span class="keyword">const</span> GLchar *name);</span><br></pre></td></tr></table></figure>
+<p>如果之前绑定了<code>name</code>，则它所指定的绑定被索引代替。<code>glBindAttribLocation</code>甚至可以在顶点着色器连接到程序对象之前调用，因此，这个调用可以用于绑定任何属性名称。不存在的属性名称或者在连接到程序对象的顶点着色器中不活动的属性将被忽略。</p>
+<p>另一个选项是让OpenGL ES 3.0将属性变量名称绑定到一个通用顶点属性索引。这种绑定在程序链接时进行，在链接阶段，OpenGL ES 3.0实现为每个属性变量执行如下操作：对于每个属性变量，检查是否已经通过<code>glBindAttribLocation</code>。如果指定了一个绑定，则使用指定的对应属性索引。否则，OpenGL ES实现将分配一个通用顶点属性索引。<br>
+这种分配特定于实现；也就是说，在一个OpenGL ES 3.0实现中和在另一个实现中可能不同。应用程序可以使用<code>glGetAttribLocation</code>命令查询分配的绑定。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 查询属性索引</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param program#&gt; 程序对象 description#&gt;</span></span><br><span class="line"><span class="comment"> @param name#&gt; 属性变量名称 description#&gt;</span></span><br><span class="line"><span class="comment"> @return 属性索引</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glGetAttribLocation(GLuint program, <span class="keyword">const</span> GLchar *name);</span><br></pre></td></tr></table></figure>
+<p><code>glGetAttribLocation</code>返回<code>program</code>定义的程序对象最后一次链接时绑定到属性变量<code>name</code>的通用属性索引。如果<code>name</code>不是一个活动属性变量，或者<code>program</code>不是一个有效的程序对象，或者没有链接成功，则返回-1，表示无效的属性索引。</p>
+<h1 id="顶点缓冲区对象">顶点缓冲区对象</h1>
+<p>使用顶点数组指定的顶点数据保存在客户内存中。在进行<code>glDrawArrays</code>或者<code>glDrawElements</code>等绘图调用时，这些数据必须从客户内存复制到图形内存。但是，如果我们没有必要在每次绘图调用时都复制顶点数据，而是在图形内存中缓存这些数据，那就好得多了。这种方法可以显著地改进渲染性能，也会降低内存带宽和电力消耗序曲，对于手持设备相当重要。这是顶点缓冲区对象发挥的地方。顶点缓冲区对象使OpenGL ES 3.0应用程序可以在高性能的图形内存中分配和缓存顶点数据，并从这个内存进行渲染，从而避免在每次绘制图元的时候重新发送数据。不仅是顶点数据，描述图元顶点索引、作为<code>glDrawElements</code>参数传递的元素索引也可以缓存。</p>
+<p>OpenGL ES 3.0支持两类缓冲区对象，用于指定顶点和图元数据：数组缓冲区对象和元素数组缓冲区对象。<code>GL_ARRAY_BUFFER</code>标志指定的数组缓冲区对象用于创建保存顶点数据的缓冲区对象。<code>GL_ELEMENT_ARRAY_BUFFER</code>标志指定的元素数组缓冲区对象用于创建保存图元索引的缓冲区对象。</p>
+<blockquote>
+<p>为了得到最佳性能，推荐OpenGL ES 3.0应用程序对顶点属性数据和元素索引使用顶点缓冲区对象。</p>
+</blockquote>
+<p>在使用缓冲对象渲染之前，需要分配缓冲区对象并将顶点数据和元素索引上传到相应的缓冲区对象。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// vertex_t是自定义顶点数据类型</span></span><br><span class="line"><span class="keyword">void</span> initVertexBufferObjects(vertex_t *vertexBuffer,</span><br><span class="line">                             GLushort *indices,</span><br><span class="line">                             GLuint numVertices,</span><br><span class="line">                             GLuint numIndices,</span><br><span class="line">                             GLuint *vboIds) &#123;</span><br><span class="line">    glGenBuffers(<span class="number">2</span>, vboIds);</span><br><span class="line">    </span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, vboIds[<span class="number">0</span>]);</span><br><span class="line">    glBufferData(GL_ARRAY_BUFFER, numVertices * <span class="keyword">sizeof</span>(vertex_t), vertexBuffer, GL_STATIC_DRAW);</span><br><span class="line">    </span><br><span class="line">    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIds[<span class="number">1</span>]);</span><br><span class="line">    glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * <span class="keyword">sizeof</span>(GLushort), indices, GL_STATIC_DRAW);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码创建两个缓冲区对象：一个用于保存实际的顶点属性数据，另一个用于保存组成图元的元素索引。数组缓冲区对象用于保存一个或者多个图元的顶点属性数据，元素数组缓冲区对象保存一个或者多个图元的索引。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 创建缓冲区对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param n#&gt; 返回缓冲区对象名称数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param buffers#&gt; 指向n个条目的数组指针，该数组是分配的缓冲区对象返回的位置 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glGenBuffers(GLsizei n, GLuint *buffers);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 指定当前缓冲区对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, GL_PIXEL_PACK_BUFFER, GL_PIXEL_UNPACK_BUFFER, GL_TRANSFROM_FEEDBACK_BUFFER, GL_UNIFORM_BUFFER description#&gt;</span></span><br><span class="line"><span class="comment"> @param buffer#&gt; 分配给目标当做当前对象的缓冲区对象 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glBindBuffer(GLenum target, GLuint buffer);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 顶点数组数据或者元素数组数据存储创建和初始化</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, GL_PIXEL_PACK_BUFFER, GL_PIXEL_UNPACK_BUFFER, GL_TRANSFROM_FEEDBACK_BUFFER, GL_UNIFORM_BUFFER description#&gt;</span></span><br><span class="line"><span class="comment"> @param size#&gt; 缓冲区数据存储大小，以字节数表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param data#&gt; 应用程序提供的缓冲区数据的指针，可为NULL值，表示保留的数据存储不进行初始化。如果是一个有效的指针，则其内容被复制到分配的数据存储 description#&gt;</span></span><br><span class="line"><span class="comment"> @param usage#&gt; 详见下表 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glBufferData(GLenum target, GLsizeiptr size, <span class="keyword">const</span> GLvoid *data, GLenum usage);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 顶点数组数据或者元素数组数据存储初始化或者更新</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, GL_PIXEL_PACK_BUFFER, GL_PIXEL_UNPACK_BUFFER, GL_TRANSFROM_FEEDBACK_BUFFER, GL_UNIFORM_BUFFER description#&gt;</span></span><br><span class="line"><span class="comment"> @param offset#&gt; 缓冲区数据存储中的偏移 description#&gt;</span></span><br><span class="line"><span class="comment"> @param size#&gt; 被修改的数据存储字节数 description#&gt;</span></span><br><span class="line"><span class="comment"> @param data#&gt; 需要被复制到缓冲区对象数据存储的客户数据指针 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, <span class="keyword">const</span> GLvoid *data)</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>缓冲区使用枚举值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_STATIC_DRAW</td>
+<td>缓冲区对象数据将被修改一次，使用多次，以绘制图元或者指定图像</td>
+</tr>
+<tr>
+<td>GL_STATIC_READ</td>
+<td>缓冲区对象数据将被修改一次，使用多次，以从OpenGL ES读回数据。从OpenGL ES读回的数据将从应用程序中查询</td>
+</tr>
+<tr>
+<td>GL_STATIC_COPY</td>
+<td>缓冲区对象数据将被修改一次，使用多次，以从OpenGL ES读回数据。从OpenGL ES读回的数据将直接用作绘制图元或者修改图像的信息来源</td>
+</tr>
+<tr>
+<td>GL_DYNAMIC_DRAW</td>
+<td>缓冲区对象数据将被重复修改，使用多次，以绘制图元或者指定图像</td>
+</tr>
+<tr>
+<td>GL_DYNAMIC_READ</td>
+<td>缓冲区对象数据将被重复修改，使用多次，以从OpenGL ES读回数据。从OpenGL ES读回的数据中将从应用程序中查询</td>
+</tr>
+<tr>
+<td>GL_DYNAMIC_COPY</td>
+<td>缓冲区对象数据将被重复修改，使用多次，以从OpenGL ES读回数据。从OpenGL ES读回的数据将直接用作绘制图元或者修改图像的信息来源</td>
+</tr>
+<tr>
+<td>GL_STREAM_DRAW</td>
+<td>缓冲区对象数据将被修改一次，只使用少数几次，以绘制图元或者指定图像</td>
+</tr>
+<tr>
+<td>GL_STREAM_READ</td>
+<td>缓冲区对象数据将被修改一次，只使用少数几次，以从OpenGL ES读回数据。从OpenGL ES读回的数据将从应用程序中查询</td>
+</tr>
+<tr>
+<td>GL_STREAM_COPY</td>
+<td>缓冲区对象数据将被修改一次，只使用少数几次，以从OpenGL ES读回数据。从OpenGL ES读回的数据将直接用作绘制图元或者修改图像的信息来源</td>
+</tr>
+</tbody>
+</table>
+<p>在用<code>glBufferData</code>或者<code>glBufferSubData</code>初始化或者更新缓冲区对象数据存储之后，客户数据存储不再需要，可以释放。对于静态的几何形状，应用程序可以释放客户数据存储，减少应用程序消耗的系统内存。对于动态几何形状，这可能无法做到。</p>
+<p>下面是个使用和不使用缓冲区对象进行的图元绘制：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// glsl.vsh</span></span><br><span class="line"><span class="meta">#version 300 es</span></span><br><span class="line">layout(location = <span class="number">0</span>) <span class="keyword">in</span> vec4 vPosition;</span><br><span class="line">layout(location = <span class="number">1</span>) <span class="keyword">in</span> vec4 vColor;</span><br><span class="line">uniform <span class="keyword">float</span> offsetLoc;</span><br><span class="line"><span class="keyword">out</span> vec4 v_color;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">    v_color = vColor;</span><br><span class="line">    gl_Position = vec4(vPosition.x + offsetLoc, vPosition.yzw);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// glsl.fsh</span></span><br><span class="line"><span class="meta">#version 300 es</span></span><br><span class="line">precision mediump <span class="keyword">float</span>;</span><br><span class="line"><span class="keyword">in</span> vec4 v_color;</span><br><span class="line"><span class="keyword">out</span> vec4 fragColor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">    fragColor = v_color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> DrawPrimitiveWithoutVBOs() &#123;</span><br><span class="line">    GLint vertex_position_size = <span class="number">3</span>;</span><br><span class="line">    GLint vertex_color_size = <span class="number">4</span>;</span><br><span class="line">    GLushort indices[<span class="number">3</span>] = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>&#125;;</span><br><span class="line">    GLfloat vertices[] = &#123;</span><br><span class="line">        <span class="number">-0.5</span>f, <span class="number">0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">        <span class="number">-1.0</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">1.0</span>f</span><br><span class="line">    &#125;;</span><br><span class="line">    GLfloat *vtxBuf = vertices;</span><br><span class="line">    GLsizei vtxStride = <span class="keyword">sizeof</span>(GLfloat) * (vertex_color_size + vertex_position_size);</span><br><span class="line">    </span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, <span class="number">0</span>);</span><br><span class="line">    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    glEnableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">    glEnableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    glVertexAttribPointer(<span class="number">0</span>, vertex_position_size, GL_FLOAT, GL_FALSE, vtxStride, vtxBuf);</span><br><span class="line">    vtxBuf += vertex_position_size;</span><br><span class="line">    glVertexAttribPointer(<span class="number">1</span>, vertex_color_size, GL_FLOAT, GL_FALSE, vtxStride, vtxBuf);</span><br><span class="line">    </span><br><span class="line">    glDrawElements(GL_TRIANGLES, <span class="number">3</span>, GL_UNSIGNED_SHORT, indices);</span><br><span class="line">    </span><br><span class="line">    glDisableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">    glDisableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> DrawPrimitiveWithVBOs() &#123;</span><br><span class="line">    GLvoid *offset = <span class="number">0</span>;</span><br><span class="line">    GLuint vboIds[<span class="number">2</span>];</span><br><span class="line">    GLint vertex_position_size = <span class="number">3</span>;</span><br><span class="line">    GLint vertex_color_size = <span class="number">4</span>;</span><br><span class="line">    GLushort indices[<span class="number">3</span>] = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>&#125;;</span><br><span class="line">    GLint vtxStride = <span class="keyword">sizeof</span>(GLfloat) * (vertex_position_size + vertex_color_size);</span><br><span class="line">    GLfloat vertices[] = &#123;</span><br><span class="line">        <span class="number">-0.5</span>f, <span class="number">0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">        <span class="number">-1.0</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">1.0</span>f</span><br><span class="line">    &#125;;</span><br><span class="line">    GLfloat *vtxBuf = vertices;</span><br><span class="line"></span><br><span class="line">    glGenBuffers(<span class="number">2</span>, vboIds);</span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, vboIds[<span class="number">0</span>]);</span><br><span class="line">    glBufferData(GL_ARRAY_BUFFER, vtxStride * <span class="number">3</span>, vtxBuf, GL_STATIC_DRAW);</span><br><span class="line">    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIds[<span class="number">1</span>]);</span><br><span class="line">    glBufferData(GL_ELEMENT_ARRAY_BUFFER, <span class="keyword">sizeof</span>(GLushort) * <span class="number">3</span>, indices, GL_STATIC_DRAW);</span><br><span class="line">    </span><br><span class="line">    glEnableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">    glEnableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    glVertexAttribPointer(<span class="number">0</span>, vertex_position_size, GL_FLOAT, GL_FALSE, vtxStride, offset);</span><br><span class="line">    offset += vertex_position_size * <span class="keyword">sizeof</span>(GLfloat);</span><br><span class="line">    glVertexAttribPointer(<span class="number">1</span>, vertex_color_size, GL_FLOAT, GL_FALSE, vtxStride, offset);</span><br><span class="line">    </span><br><span class="line">    glDrawElements(GL_TRIANGLES, <span class="number">3</span>, GL_UNSIGNED_SHORT, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    glDisableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">    glDisableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, <span class="number">0</span>);</span><br><span class="line">    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用</span></span><br><span class="line">DrawPrimitiveWithoutVBOs();</span><br><span class="line">glUniform1f(<span class="number">0</span>, <span class="number">1.0</span>f);</span><br><span class="line">DrawPrimitiveWithVBOs();</span><br></pre></td></tr></table></figure>
+<p>上述代码中，我们对一个顶点的所有属性使用相同的缓冲区对象。使用<code>GL_ARRAY_BUFFER</code>缓冲区对象时，<code>glVertexAttribPointer</code>的<code>pointer</code>参数从指向实际数据的一个指针变成用<code>glBufferData</code>分配的顶点缓冲区存储中以字节表示的偏移量。类似地，如果使用有效的<code>GL_ELEMENT_ARRAY_BUFFER</code>对象，则<code>glDrawElements</code>中的<code>indices</code>参数从指向实际元素索引的指针变成用<code>glBufferData</code>分配的元素索引缓冲区存储中以字节表示的偏移量。</p>
+<p>上述代码描述的存储顶点属性的是结构数组方法，也可以对每个顶点属性使用一个缓冲区对象–数组结构方法：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> DrawPrimitiveWithVBOs() &#123;</span><br><span class="line">    GLuint vboIds[<span class="number">3</span>];</span><br><span class="line">    GLint vertex_position_size = <span class="number">3</span>;</span><br><span class="line">    GLint vertex_color_size = <span class="number">4</span>;</span><br><span class="line">    GLfloat position[] = &#123;</span><br><span class="line">        <span class="number">-0.5</span>f, <span class="number">0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">-1.0</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f</span><br><span class="line">    &#125;;</span><br><span class="line">    GLfloat color[] = &#123;</span><br><span class="line">        <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">1.0</span>f</span><br><span class="line">    &#125;;</span><br><span class="line">    GLushort indices[<span class="number">3</span>] = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>&#125;;</span><br><span class="line"></span><br><span class="line">    glGenBuffers(<span class="number">3</span>, vboIds);</span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, vboIds[<span class="number">0</span>]);</span><br><span class="line">    glBufferData(GL_ARRAY_BUFFER, <span class="keyword">sizeof</span>(GLfloat) * vertex_position_size * <span class="number">3</span>, position, GL_STATIC_DRAW);</span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, vboIds[<span class="number">1</span>]);</span><br><span class="line">    glBufferData(GL_ARRAY_BUFFER, <span class="keyword">sizeof</span>(GLfloat) * vertex_color_size * <span class="number">4</span>, color, GL_STATIC_DRAW);</span><br><span class="line">    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIds[<span class="number">2</span>]);</span><br><span class="line">    glBufferData(GL_ELEMENT_ARRAY_BUFFER, <span class="keyword">sizeof</span>(GLushort) * <span class="number">3</span>, indices, GL_STATIC_DRAW);</span><br><span class="line">    </span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, vboIds[<span class="number">0</span>]);</span><br><span class="line">    glEnableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">    glVertexAttribPointer(<span class="number">0</span>, vertex_position_size, GL_FLOAT, GL_FALSE, <span class="keyword">sizeof</span>(GLfloat) * vertex_position_size, <span class="number">0</span>);</span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, vboIds[<span class="number">1</span>]);</span><br><span class="line">    glEnableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">    glVertexAttribPointer(<span class="number">1</span>, vertex_color_size, GL_FLOAT, GL_FALSE, <span class="keyword">sizeof</span>(GLfloat) * vertex_color_size, <span class="number">0</span>);</span><br><span class="line">    glDrawElements(GL_TRIANGLES, <span class="number">3</span>, GL_UNSIGNED_SHORT, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    glDisableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">    glDisableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, <span class="number">0</span>);</span><br><span class="line">    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在应用程序结束缓冲对象的使用之后，删除它们：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 删除缓冲区对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param n#&gt; 删除的缓冲区对象数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param buffers#&gt; 包含要删除的缓冲区对象的有n个元素的数组 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDeleteBuffers(GLsizei n, <span class="keyword">const</span> GLuint *buffers);</span><br></pre></td></tr></table></figure>
+<p>一旦缓冲区对象被删除，它就可以作为新的缓冲区对象重用，存储顶点属性或者不同图元的元素索引。</p>
+<p>使用顶点缓冲区对象非常容易，比起顶点数组，所需要的额外工作非常少。考虑到这种功能提供的性能提升，支持顶点缓冲区对象的少量额外工作是值得的。</p>
+<h1 id="顶点数组对象">顶点数组对象</h1>
+<p>上面我们已经介绍了顶点属性加载的两种不同方式：使用客户顶点数组和使用顶点缓冲区对象。顶点缓冲区对象优于客户顶点数组，因为它们能够减少GPU和CPU之间复制的数据量，从而获得更好的性能。在OpenGL ES 3.0中引入了一个新特性，使顶点数组的使用更加高效：顶点数组对象（VAO）。正如上面代码所示，使用顶点缓冲区对象设置绘图操作可能需要多次调用<code>glBindBuffer</code>、<code>glVertexAttribPointer</code>和<code>glEnableVertexAttribArray</code>。为了更快地在顶点数组配置直接切换，OpenGL ES 3.0推出了顶点数组对象。VAO提供包含在顶点数组/顶点缓冲区对象配置之间切换所需要的所有状态的单一对象。</p>
+<p>实际上，OpenGL ES 3.0中总是有一个活动的顶点数组对象。目前上述所有例子都在默认的顶点数组对象上操作（默认VAO的ID为0）。要创建新的顶点数组对象，可以使用<code>glGenVertexArrays</code>函数：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 创建顶点数组对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param n#&gt; 要返回的顶点数组对象名称的数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param arrays#&gt; 指向一个n个元素的数组的指针，该数组是分配的顶点数组对象返回的位置 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glGenVertexArrays(GLsizei n, GLuint *arrays);</span><br></pre></td></tr></table></figure>
+<p>一旦创建，就可以用<code>glBindVertexArray</code>绑定顶点数组对象供以后使用：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绑定顶点数组对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param array#&gt; 被指定为当前顶点数组对象的对象 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glBindVertexArray(GLuint array);</span><br></pre></td></tr></table></figure>
+<p>每个VAO都包含一个完整的状态向量，描述所有顶点缓冲区绑定和启用的顶点客户状态。绑定VAO时，它的状态向量提供顶点缓冲区状态的当前设置。用<code>glBindVertexArray</code>绑定顶点数组对象后，更改顶点数组状态的后续调用（<code>glBindBuffer</code>、<code>glVertexAttribPointer</code>、<code>glEnableVertexAttribArray</code>、<code>glDisableVertexAttribArray</code>）将影响新的VAO。</p>
+<p>这样，应用程序可以通过绑定一个已经设置状态的顶点数组对象快速地在顶点数组配置之间切换。所有变化可以在一个函数调用中完成，没有必要多次调用以更改顶点数组状态。例子：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> DrawPrimitiveWithVAOs() &#123;</span><br><span class="line">    GLuint vboIds[<span class="number">2</span>];</span><br><span class="line">    GLint vertex_position_size = <span class="number">3</span>;</span><br><span class="line">    GLint vertex_color_size = <span class="number">4</span>;</span><br><span class="line">    GLfloat vertices[] = &#123;</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">        <span class="number">-0.5</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">        <span class="number">0.5</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">        <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">1.0</span>f</span><br><span class="line">    &#125;;</span><br><span class="line">    GLuint vaoId;</span><br><span class="line">    GLushort indices[<span class="number">3</span>] = &#123; <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span> &#125;;</span><br><span class="line">    glGenBuffers(<span class="number">2</span>, vboIds);</span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, vboIds[<span class="number">0</span>]);</span><br><span class="line">    glBufferData(GL_ARRAY_BUFFER, <span class="keyword">sizeof</span>(vertices), vertices, GL_STATIC_DRAW);</span><br><span class="line">    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIds[<span class="number">1</span>]);</span><br><span class="line">    glBufferData(GL_ELEMENT_ARRAY_BUFFER, <span class="keyword">sizeof</span>(indices), indices, GL_STATIC_DRAW);</span><br><span class="line">    </span><br><span class="line">    glGenVertexArrays(<span class="number">1</span>, &amp;vaoId);</span><br><span class="line">    glBindVertexArray(vaoId);</span><br><span class="line">    </span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, vboIds[<span class="number">0</span>]);</span><br><span class="line">    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIds[<span class="number">1</span>]);</span><br><span class="line">    </span><br><span class="line">    glEnableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">    glEnableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    glVertexAttribPointer(<span class="number">0</span>, vertex_position _size, GL_FLOAT, GL_FALSE, <span class="keyword">sizeof</span>(GLfloat) * (vertex_position_size + vertex_color_size), <span class="number">0</span>);</span><br><span class="line">    glVertexAttribPointer(<span class="number">1</span>, vertex_color_size, GL_FLOAT, GL_FALSE, <span class="keyword">sizeof</span>(GLfloat) * (vertex_position_size + vertex_color_size), (<span class="keyword">const</span> <span class="keyword">void</span> *)(<span class="keyword">sizeof</span>(GLfloat) * vertex_position_size));</span><br><span class="line">        </span><br><span class="line">    glBindVertexArray(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绘制</span></span><br><span class="line">    glBindVertexArray(vaoId);</span><br><span class="line">    glDrawElements(GL_TRIANGLES, <span class="number">3</span>, GL_UNSIGNED_SHORT, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当应用程序结束一个或者多个顶点数组对象的使用时，可以用<code>glDeleteVertexArrays</code>删除它们：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 删除顶点数组对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param n#&gt; 要删除的顶点数组对象的数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param arrays#&gt; 包含需要删除的顶点数组对象的有n个元素的数组 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDeleteVertexArrays(GLsizei n, <span class="keyword">const</span> GLuint *arrays);</span><br></pre></td></tr></table></figure>
+<h1 id="映射缓冲区对象">映射缓冲区对象</h1>
+<p>到目前为止，我们已经使用了<code>glBufferData</code>或<code>glBufferSubData</code>将数据加载到缓冲区对象。应用程序也可以将缓冲区对象数据存储映射到应用程序的地址空间（也可以解除映射）。应用程序映射缓冲区而不使用<code>glBufferData</code>或者<code>glBufferSubData</code>加载数据有几个理由：</p>
+<ul>
+<li>映射缓冲区可以减少应用程序的内存占用，因为可能只需要存储数据的一个副本；</li>
+<li>在使用共享内存的架构上，映射缓冲区返回GPU存储缓冲区的地址空间的直接指针。通过映射缓冲区，应用程序可以避免复制步骤，从而实现更好的更新性能。</li>
+</ul>
+<p><code>glMapBufferRange</code>命令返回指向所有或者一部分（范围）缓冲区对象数据存储的指针。这个指针可以供应应用程序使用，以读取或者更新缓冲区对象的内容。<code>glUnmapBuffer</code>命令用于指示更新已经完成和释放映射的指针：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 返回指向所有或者部分缓冲区对象数据存储的指针</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, GL_PIXEL_PACK_BUFFER, GL_PIXEL_UNPACK_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER, GL_UNIFORM_BUFFER description#&gt;</span></span><br><span class="line"><span class="comment"> @param offset#&gt; 缓冲区数据存储中的偏移量，以字节数计算 description#&gt;</span></span><br><span class="line"><span class="comment"> @param length#&gt; 需要映射的缓冲区数据的字节数 description#&gt;</span></span><br><span class="line"><span class="comment"> @param access#&gt; 详见下表 description#&gt;</span></span><br><span class="line"><span class="comment"> @return GLvoid *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>访问标志</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_MAP_READ_BIT</td>
+<td>应用程序将从返回的指针读取</td>
+</tr>
+<tr>
+<td>GL_MAP_WRITE_BIT</td>
+<td>应用程序将写入返回的指针</td>
+</tr>
+</tbody>
+</table>
+<p>此外，应用程序可以包含如下可选访问标志：</p>
+<table>
+<thead>
+<tr>
+<th>访问标志</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_MAP_INVALIDATAE_RANGE_BIT</td>
+<td>表示指定范围内的缓冲区内容可以在返回指针之前由驱动程序放弃。这个标志不能与GL_MAP_READ_BIT组合使用</td>
+</tr>
+<tr>
+<td>GL_MAP_INVALIDATE_BUFFER_BIT</td>
+<td>表示整个缓冲区的内容可以在返回指针之前由驱动程序放弃。这个标志不能与GL_MAP_READ_BIT组合使用</td>
+</tr>
+<tr>
+<td>GL_MAP_FLUSH_EXPLICIT_BIT</td>
+<td>表示应用程序将明确地用glFlushMappedBufferRange刷新对映射范围子范围的操作。这个标志不能与GL_MAP_WRITE_BIT组合使用</td>
+</tr>
+<tr>
+<td>GL_MAP_UNSYNCHRONIZED_BIT</td>
+<td>表示驱动程序在返回缓冲区范围的指针之前不需要等待缓冲对象上的未决操作。如果有未决的操作，则未决操作的结果和缓冲区对象上的任何未来操作都变为未定义</td>
+</tr>
+</tbody>
+</table>
+<p><code>glMapBufferRange</code>返回请求的缓冲区数据存储范围的指针。如果出现错误或者发出无效的请求，该函数将返回NULL。<code>glUnmapBuffer</code>命令取消之前的缓冲区映射：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 取消缓冲区映射</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 必须设置为GL_ARRAY_BUFFER description#&gt;</span></span><br><span class="line"><span class="comment"> @return GLboolean</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glUnmapBuffer(GLenum target);</span><br></pre></td></tr></table></figure>
+<p>如果取消映射操作成功，则<code>glUnmapBuffer</code>返回<code>GL_TRUE</code>。<code>glMapBufferRange</code>返回的指针在成功执行取消映射之后不再可以使用。如果顶点缓冲区对象数据存储中的数据在缓冲区映射之后已经破坏，<code>glUnmapBuffer</code>将返回<code>GL_FALSE</code>，这可能是因为屏幕分辨率的变化、OpenGL ES上下文使用多个屏幕或者导致映射内存被抛弃的内存不足事件所导致。</p>
+<p>写入映射缓冲区对象例子：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">GLfloat *vtxMappedBuf;</span><br><span class="line">GLushort *idxMappedBuf;</span><br><span class="line">GLfloat vertices[] = &#123;</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">    <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">-0.5</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.5</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">1.0</span>f</span><br><span class="line">&#125;;</span><br><span class="line">GLushort indices[<span class="number">3</span>] = &#123; <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span> &#125;;</span><br><span class="line"></span><br><span class="line">glGenBuffers(<span class="number">2</span>, vboIds);</span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vboIds[<span class="number">0</span>]);</span><br><span class="line">glBufferData(GL_ARRAY_BUFFER, <span class="keyword">sizeof</span>(vertices), <span class="literal">NULL</span>, GL_STATIC_DRAW);</span><br><span class="line">vtxMappedBuf = (GLfloat *)glMapBufferRange(GL_ARRAY_BUFFER, <span class="number">0</span>, <span class="keyword">sizeof</span>(vertices), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);</span><br><span class="line"><span class="keyword">if</span> (vtxMappedBuf == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"Error mapping vertex buffer object"</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line">memcpy(vtxMappedBuf, vertices, <span class="keyword">sizeof</span>(vertices));</span><br><span class="line"><span class="keyword">if</span> (glUnmapBuffer(GL_ARRAY_BUFFER) == GL_FALSE) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"Error unmapping array buffer object"</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIds[<span class="number">1</span>]);</span><br><span class="line">glBufferData(GL_ELEMENT_ARRAY_BUFFER, <span class="keyword">sizeof</span>(indices), <span class="literal">NULL</span>, GL_STATIC_DRAW);</span><br><span class="line">idxMappedBuf = (GLushort *)glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, <span class="number">0</span>, <span class="keyword">sizeof</span>(indices), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);</span><br><span class="line"><span class="keyword">if</span> (idxMappedBuf == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"Error mapping element buffer object"</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line">memcpy(idxMappedBuf, indices, <span class="keyword">sizeof</span>(indices));</span><br><span class="line"><span class="keyword">if</span> (glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER) == GL_FALSE) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"Error unmapping element buffer object"</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="刷新映射的缓冲区">刷新映射的缓冲区</h2>
+<p>应用程序可能希望用<code>glMapBufferRange</code>来映射缓冲区对象的一个范围或者全部，但是只更新映射范围的不同子区域。为了避免调用<code>glUnmapBuffer</code>时刷新整个映射范围的潜在性能损失，应用程序可以用<code>GL_MAP_FLUSH_EXPLICIT_BIT</code>访问标志（和<code>GL_MAP_WRITE_BIT</code>组合）映射。当应用程序完成映射范围一部分的更新时，可以用<code>glFlushMappedBufferRange</code>指出这个事实：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 指出应用程序完成映射范围的部分更新</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, GL_PIXEL_PACK_BUFFER, GL_PIXEL_UNPACK_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER, GL_UNIFORM_BUFFER description#&gt;</span></span><br><span class="line"><span class="comment"> @param offset#&gt; 从映射缓冲区起始点的偏移量，以字节数表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param length#&gt; 从便宜点开始刷新的缓冲区字节数 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glFlushMappedBufferRange(GLenum target, GLintptr offset, GLsizeiptr length);</span><br></pre></td></tr></table></figure>
+<p>如果应用程序用<code>GL_MAP_FLUSH_EXPLICIT_BIT</code>映射，但是没有明确用<code>glFlushMappedBufferRange</code>刷新修改后的区域，它的内容将是未定义的。</p>
+<h1 id="复制缓冲区对象">复制缓冲区对象</h1>
+<p>上面我们已经说明如何用<code>glBufferData</code>、<code>glBufferSubData</code>和<code>glMapBufferRange</code>加载缓冲区对象。所有这些技术都涉及从应用程序到设备的数据传输。OpenGL ES 3.0还可以从一个缓冲区对象将数据完全复制到设备：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 从一个缓冲区对象将数据完全复制到设备</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param readTarget#&gt; 读取的缓冲区对象目标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param writeTarget#&gt; 写入的缓冲区对象目标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param readOffset#&gt; 需要复制的读缓冲数据中的偏移量，以字节表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param writeOffset#&gt; 需要复制的写缓冲数据中的偏移量，以字节表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param size#&gt; 从读缓冲区数据复制到写缓冲区数据的字节数 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glCopyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);</span><br></pre></td></tr></table></figure>
+<p>调用<code>glCopyBufferSubData</code>将从绑定到<code>readtarget</code>的缓冲区复制指定的字节到<code>writetarget</code>。缓冲区绑定根据每个目标的最后一次<code>glBindBuffer</code>确定调用。任何类型的缓冲区对象（数组、元素数组、变换反馈等）都可以绑定到<code>GL_COPY_READ_BUFFER</code>或<code>GL_COPY_WRITE_BUFFER</code>目标。这两个目标是一种方便的措施，使得应用程序在执行缓冲区间的复制时不必改变任何真正的缓冲区绑定。</p>
+<h1 id="总结">总结</h1>
+<p>这篇文章主要介绍了指定顶点属性和数据的方法。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2019/opengl-es-primitive-0801/" data-toggle="tooltip" data-placement="top" title="OpenGL ES学习--图元装配和光栅化">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/opengl-es-glsl-0715/" data-toggle="tooltip" data-placement="top" title="OpenGL ES学习--着色语言">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#指定顶点属性数据"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x6307;&#x5B9A;&#x9876;&#x70B9;&#x5C5E;&#x6027;&#x6570;&#x636E;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#常量顶点属性"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x5E38;&#x91CF;&#x9876;&#x70B9;&#x5C5E;&#x6027;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#顶点数组"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x9876;&#x70B9;&#x6570;&#x7EC4;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#哪种存储顶点属性的方法高效"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">&#x54EA;&#x79CD;&#x5B58;&#x50A8;&#x9876;&#x70B9;&#x5C5E;&#x6027;&#x7684;&#x65B9;&#x6CD5;&#x9AD8;&#x6548;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#顶点属性使用哪种数据格式"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">&#x9876;&#x70B9;&#x5C5E;&#x6027;&#x4F7F;&#x7528;&#x54EA;&#x79CD;&#x6570;&#x636E;&#x683C;&#x5F0F;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#glvertexattribpointer中的规范化标识如何工作"><span class="toc-nav-number">1.2.3.</span> <span class="toc-nav-text"><code>glVertexAttribPointer</code>&#x4E2D;&#x7684;&#x89C4;&#x8303;&#x5316;&#x6807;&#x8BC6;&#x5982;&#x4F55;&#x5DE5;&#x4F5C;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#在常量顶点属性和顶点数组之间选择"><span class="toc-nav-number">1.2.4.</span> <span class="toc-nav-text">&#x5728;&#x5E38;&#x91CF;&#x9876;&#x70B9;&#x5C5E;&#x6027;&#x548C;&#x9876;&#x70B9;&#x6570;&#x7EC4;&#x4E4B;&#x95F4;&#x9009;&#x62E9;</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#在顶点着色器中声明顶点属性变量"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x5728;&#x9876;&#x70B9;&#x7740;&#x8272;&#x5668;&#x4E2D;&#x58F0;&#x660E;&#x9876;&#x70B9;&#x5C5E;&#x6027;&#x53D8;&#x91CF;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#将顶点属性绑定到顶点着色器中的属性变量"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">&#x5C06;&#x9876;&#x70B9;&#x5C5E;&#x6027;&#x7ED1;&#x5B9A;&#x5230;&#x9876;&#x70B9;&#x7740;&#x8272;&#x5668;&#x4E2D;&#x7684;&#x5C5E;&#x6027;&#x53D8;&#x91CF;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#顶点缓冲区对象"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x9876;&#x70B9;&#x7F13;&#x51B2;&#x533A;&#x5BF9;&#x8C61;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#顶点数组对象"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x9876;&#x70B9;&#x6570;&#x7EC4;&#x5BF9;&#x8C61;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#映射缓冲区对象"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x6620;&#x5C04;&#x7F13;&#x51B2;&#x533A;&#x5BF9;&#x8C61;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#刷新映射的缓冲区"><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">&#x5237;&#x65B0;&#x6620;&#x5C04;&#x7684;&#x7F13;&#x51B2;&#x533A;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#复制缓冲区对象"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">&#x590D;&#x5236;&#x7F13;&#x51B2;&#x533A;&#x5BF9;&#x8C61;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">&#x603B;&#x7ED3;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/opengl-es-vertex-0720/";
+    <!-- var disqus_url = "/article/2019/opengl-es-vertex-0720/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          OpenGL ES坐标系统 - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/opengl-es-coordinated-system-0825/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                            
+                        </div>
+                        <h1>OpenGL ES坐标系统</h1>
+                        <h2 class="subheading">About OpenGL ES</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-08-25
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>OpenGL ES希望在每次顶点着色器运行后，我们可见的所有顶点都为标准化设备坐标。也就是说，每个顶点的x，y，z坐标都应该在-1.0到1.0之间，超出这个坐标范围的顶点都将不可见。我们通常会自己设定一个坐标的范围，之后再在顶点着色器中将这些坐标变换为标准化设备坐标。然后将这些标准坐标传入光栅器，将它们变换为屏幕上的二维坐标或像素。<br>
+将坐标变换为标准化设备坐标，接着再转化为屏幕坐标的过程通常是分步进行的，也就是类似于流水线那样子。在流水线中，物体的顶点在最终转化为屏幕坐标之前还会被变换到多个坐标系统。将物体的坐标变换到几个过渡坐标系的优点在于，在这些特定的坐标系统中，一些操作或运算更加方便和容易，这一点很快就会变得很明显。对我们来说比较重要的总共有5个不同的坐标系统：</p>
+<ul>
+<li>局部空间（Local Space，或者称为物体空间（Object Space））</li>
+<li>世界空间（World Space）</li>
+<li>观察空间（View Space，或者称为视觉空间（Eye Space））</li>
+<li>裁剪空间（Clip Space）</li>
+<li>屏幕空间（Screen Space）</li>
+</ul>
+<p>这就是一个顶点在最终被转化为片段之前需要经历的所有不同状态。</p>
+</blockquote>
+<h1 id="概述">概述</h1>
+<p>为了将坐标从一个坐标系变换到另一个坐标系，我们需要用到几个变换矩阵，最重要的几个分别是模型（Model）、观察（View）、投影（Projection）三个矩阵。我们的顶点坐标起始于局部空间（Local Space），在这里它称为局部坐标（Local Coordinate），它在之后会变为世界坐标（World Coordinate），观察坐标（View Coordinate），裁剪坐标（Clip Coordinate），并最后以屏幕坐标（Screen Coordinate）的形式结束。如下图：</p>
+<p><img src="/img/article/20190825/1.png" alt="坐标系统"></p>
+<ol>
+<li>局部坐标是对象相对于局部原点的坐标，也是物体起始的坐标。</li>
+<li>下一步是将局部坐标转换为世界空间坐标，世界空间坐标是处于一个更大的空间范围的。这些坐标相对于世界的全局原点，它们会和其他物体一起相对于世界的原点进行摆放。</li>
+<li>接下来我们将世界坐标转换为观察空间坐标，使得每个坐标都是从摄像机或者说观察者的角度进行观察的。</li>
+<li>坐标到达观察空间之后，我们需要将其投影到裁剪坐标。裁剪坐标会被处理至-1.0到1.0的范围内，并判断哪些顶点将会出现在屏幕上。</li>
+<li>最后，我们将裁剪坐标变换为屏幕坐标，我们将使用一个叫做视口变换（Viewport Transform）的过程。视口变换将位于-1.0到1.0范围的坐标变换到由<code>glViewport</code>函数所定义的坐标范围内。最后变换出来的坐标会送到光栅器，并将其转换为片段。</li>
+</ol>
+<p>我们之所以将顶点变换到各个不同的空间的原因是有些操作在特定的坐标系统中才有意义且更方便。例如，当需要物体进行修改的时候，在局部空间中来操作会更说得通；如果要对一个物体做出一个相对于其它物体位置的操作时，在世界坐标系中来做这个才更说得通，等等。</p>
+<h1 id="局部空间">局部空间</h1>
+<p>局部空间是指物体所在的坐标空间，即对象最开始所在的地方。想象你在一个建模软件中创建一个立方体。创建的立方体的原点有可能位于(0, 0, 0)，即便它有可能最后在程序中处于完全不同的位置。甚至有可能你创建的所有模型都以(0, 0, 0)为初始位置（然后它们最终出现在世界的不同位置）。所以，模型的所有顶点都是在局部空间中：它们相对于物体来说都是局部的。</p>
+<h1 id="世界空间">世界空间</h1>
+<p>如果我们将我们所有的物体导入到当前程序中，它们有可能会全挤在世界的原点(0, 0, 0)上，这并不是我们想要的结果。我们想为每一个物体定义一个位置，从而能在更大的世界当中放置它们。世界空间中的坐标正如其名：是指顶点相对于世界的坐标。如果我们希望将物体分散在世界上摆放，这就是我们希望物体变换到的空间。物体的坐标将会从局部变换到世界空间；该变换是由模型矩阵（Model Matrix）实现的。<br>
+模型矩阵是一种变换矩阵，它能通过对物体进行位移、缩放、旋转来将它置于它本应该在的位置或朝向。我们可以将它想象为变换一个房子，需要先将它缩小（它在局部空间中太大了），并将其移至郊区的一个小镇，然后在y轴上往左旋转一点以搭配附近的房子。</p>
+<h1 id="观察空间">观察空间</h1>
+<p>观察空间经常被人们称之为OpenGL的摄像机（Camera）(所以有时也称为摄像机空间（Camera Space）或视觉空间（Eye Space）)。观察空间是将世界空间坐标转化为用户视野前方的坐标而产生的结果。因此观察空间就是从摄像机的视角所观察到的空间。而这通常是由一系列的位移和旋转的组合来完成，平移/旋转场景从而使得特定的对象被变换到摄像机的前方。这些组合在一起的变换通常存储在一个观察矩阵（View Matrix）里，它被用来将世界坐标变换到观察空间。</p>
+<h2 id="摄像机">摄像机</h2>
+<blockquote>
+<p>OpenGL本身没有摄像机（Camera）的概念，但我们可以通过把场景中的所有物体往相反方向移动的方式来模拟出摄像机，产生一种我们在移动的感觉，而不是场景在移动。</p>
+</blockquote>
+<h3 id="摄像机观察空间">摄像机/观察空间</h3>
+<p>当我们讨论摄像机/观察空间（Camera/View Space）的时候，是在讨论以摄像机的视角作为场景原点时场景中所有的顶点坐标：观察矩阵把所有的世界坐标转换为相对于摄像机位置与方向的观察坐标。要定义一个摄像机，我们需要它在世界空间中的位置、观察的方向、一个指向它右侧的向量以及一个指向它上方的向量（我们实际上创建了一个三个三位轴相互垂直的、以摄像机的位置为原点的坐标系）。</p>
+<p><img src="/img/article/20190825/6.png" alt="摄像机/观察空间"></p>
+<ol>
+<li>摄像机位置</li>
+</ol>
+<p>获取摄像机位置很简单。摄像机位置简单来说就是世界空间中一个指向摄像机位置的向量：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vec3 cameraPos = vec3(<span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">3.0</span>f);</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>摄像机方向</li>
+</ol>
+<p>下一个需要的向量是摄像机的方向，这里指的是摄像机指向哪个方向。现在我们让摄像机指向场景原点：(0, 0, 0)。如果将两个向量相减，我们就能得到这两个向量的差。用场景原点向量减去摄像机位置向量的结果就是摄像机的指向向量。由于我们知道摄像机指向z轴负方向，但我们希望方向向量指向摄像机的z轴正方向。所以我们交换相减的顺序，就可以获得一个指向摄像机正z轴方向的向量：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vec3 cameraTarget = vec3(<span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f);</span><br><span class="line">vec3 cameraDirection = normalize(cameraPos - cameraTarget);     <span class="comment">// normalize 标准化向量，返回一个方向相同但单位向量为1的向量</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>方向向量并不是最好的名字，因为它实际上指向从它到目标向量的相反方向。</p>
+</blockquote>
+<ol start="3">
+<li>右轴</li>
+</ol>
+<p>我们需要的另一个向量是一个右向量，它代表摄像机空间的x轴的正方向。为获取右向量我们需要一个小技巧：先定义一个上向量。接下来把上向量和第二步得到的方向向量进行叉乘。两个向量叉乘的结果会同时垂直于两向量，因此我们会得到指向x轴正方向的那个向量（如果我们交换两个向量叉乘的顺序就会得到相反的指向x轴负方向的向量）：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vec3 up = vec3(<span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f);</span><br><span class="line">vec3 cameraRight = normalize(cross(up, cameraDirection));       <span class="comment">// cross 两个向量的向量积</span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>上轴</li>
+</ol>
+<p>现在我们已经有了x轴向量和z轴向量，获取一个指向摄像机的正y轴向量就相对简单了：我们把方向向量和右向量进行叉乘：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vec3 cameraUp = cross(cameraDirection, cameraRight);</span><br></pre></td></tr></table></figure>
+<p>在叉乘和一些小技巧的帮助下，我们创建了所有构成观察/摄像机空间的向量。使用这些摄像机向量我们就可以创建一个<code>LookAt</code>矩阵了，它在创建摄像机的时候非常有用。</p>
+<h3 id="look-at">Look At</h3>
+<p>使用矩阵的好处之一是如果使用3个互相垂直的轴定义了一个坐标空间，我们可以用这3个轴加一个平移向量来创建一个矩阵，并且可以用这个矩阵乘以任何向量来将其变换到那个坐标空间。这正是<code>LookAt</code>矩阵所做的，现在我们有了3个互相垂直的轴和一个定义摄像机空间的位置坐标，我们可以创建自己的<code>LookAt</code>矩阵了：</p>
+<p><img src="/img/article/20190825/7.png" alt="LookAt矩阵"></p>
+<p>其中<code>R</code>是右向量，<code>U</code>是上向量，<code>D</code>是方向向量，<code>P</code>是摄像机位置向量。注意，位置向量是相反的，因为我们最终希望把世界平移到我们自身一定的相反方向。把这个<code>LookAt</code>矩阵作为观察矩阵可以很高效地把所有世界坐标变换到刚刚定义的观察空间。<code>LookAt</code>矩阵就像它的名字表达的那样：它会创建一个看着（Look at）给定目标的观察矩阵。</p>
+<p>幸运的是，GLM已经提供了这些支持。我们要做的只是定义一个摄像机位置，一个目标位置和一个表示世界空间中的上向量的向量（我们计算右向量使用的那个上向量）。接着GLM就会创建一个<code>LookAt</code>矩阵，我们可以把它当作我们的观察矩阵：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// OpenGL ES 1.1</span></span><br><span class="line">GLKMatrix4 view = gluLookAt(<span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">3.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f);</span><br><span class="line"></span><br><span class="line"><span class="comment">// GLKit</span></span><br><span class="line">GLKMatrix4 view = GLKMatrix4MakeLookAt(<span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">3.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f);</span><br><span class="line">``</span><br><span class="line"></span><br><span class="line"><span class="meta"># 裁剪空间</span></span><br><span class="line"></span><br><span class="line">在一个顶点着色器运行的最后，OpenGL期望所有的坐标都能落在一个特定的范围内，且任何在这个范围之外的点都应该被裁剪掉（Clipped）。被裁剪掉的坐标就会被忽略，所以剩下的坐标就将变为屏幕上可见的片段。这也就是裁剪空间（Clip Space）名字的由来。</span><br><span class="line">因为将所有可见的坐标都指定在<span class="number">-1.0</span>到<span class="number">1.0</span>的范围内不是很直观，所以我们会指定自己的坐标集（Coordinate Set）并将它变换回标准化设备坐标系，就像OpenGL期望的那样。</span><br><span class="line">为了将顶点坐标从观察变换到裁剪空间，我们需要定义一个投影矩阵（Projection Matrix），它指定了一个范围的坐标，比如每个维度上的<span class="number">-1000</span>到<span class="number">1000.</span>投影矩阵接着会将在这个指定的范围内的坐标变换为标准化设备坐标的范围(<span class="number">-1.0</span>, <span class="number">1.0</span>)。所有在范围外的坐标不会被映射到在<span class="number">-1.0</span>到<span class="number">1.0</span>的范围之间，所以会被裁剪掉。在上面这个投影矩阵所指定的范围内，坐标(<span class="number">1250</span>, <span class="number">500</span>, <span class="number">750</span>)将是不可见的，这是由于它的x坐标超出了范围，它被转化为一个大于<span class="number">1.0</span>的标准化设备坐标，所以被裁剪掉了。</span><br><span class="line"></span><br><span class="line">&gt; 如果只是图元，例如三角形的一部分超出了裁剪体积，则OpenGL会重新构建这个三角形为一个或多个三角形让其能够适合这个裁剪范围。</span><br><span class="line"></span><br><span class="line">由投影矩阵创建的观察箱（Viewing Box）被称为**平截头体**（Frustum），每个出现在平截头体范围内的坐标都会最终出现在用户的屏幕上。将特定范围内的坐标转化到标准化设备坐标系的过程（而且它很容易被映射到<span class="number">2</span>D观察空间坐标）被称之为投影，因为使用投影矩阵能将<span class="number">3</span>D坐标投影到很容易映射到<span class="number">2</span>D的标准化设备坐标系中。</span><br><span class="line">一旦所有顶点被变换到裁剪空间，最终的操作--透视除法（Perspective Division）将会执行，在这个过程中我们将位置向量的x，y，z分量分别除以向量的齐次w分量；透视除法是将<span class="number">4</span>D裁剪空间坐标转换为<span class="number">3</span>D标准化设备坐标的过程。这一步会在每一个顶点着色器运行的最后被自动执行。</span><br><span class="line">在这一阶段之后，最终的坐标将会被映射到屏幕空间中（使用`glViewport`中的设定），并被变换成片段。</span><br><span class="line">将观察坐标变换为裁剪坐标的投影矩阵可以为两种不同的形式，每种形式都定义了不同的平截头体。我们可以选择创建一个正射投影矩阵（Orthographic Projection Matrix）或一个透视投影矩阵（Perspective Projection Matrix）。</span><br><span class="line"></span><br><span class="line"><span class="meta">## 正射投影</span></span><br><span class="line"></span><br><span class="line">正射投影矩阵定义了一个类似立方体的平接头箱，它定义了一个裁剪空间，在这空间之外的顶点都会被裁剪掉。创建一个正射投影矩阵需要指定可见平截头体的宽、高和长度。在使用正射投影矩阵变换至裁剪空间之后处于这个平截头体的所有坐标将不会被裁剪掉。它的平截头体看起来像一个容器：</span><br><span class="line"></span><br><span class="line">![正射投影](/img/article/<span class="number">20190825</span>/<span class="number">2.</span>png)</span><br><span class="line"></span><br><span class="line">上面的平截头体定义了可见的坐标，它由宽、高、近（Near）平面和远（Far）平面所指定。任何出现在近平面之前或远平面之后的坐标都会被裁剪掉。正射平截头体直接将平截头体内部的所有坐标映射为标准化设备坐标，因为每个向量的w分量都没有进行改变；如果w分量等于<span class="number">1.0</span>，透视除法则不会改变这个坐标。</span><br><span class="line">要创建一个正射投影矩阵，我们可以使用`GLKit`中的方法：</span><br><span class="line"></span><br><span class="line">``` objc</span><br><span class="line">GLKMatrix4MakeOrtho(<span class="number">0.0</span>, <span class="number">800.0</span>, <span class="number">0.0</span>, <span class="number">600</span>, <span class="number">0.1</span>, <span class="number">100.0</span>);</span><br></pre></td></tr></table></figure>
+<p>或OpenGL ES 1.1中的函数：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">glOrthof(<span class="number">0.0</span>, <span class="number">800.0</span>, <span class="number">0.0</span>, <span class="number">600.0</span>, <span class="number">0.1</span>, <span class="number">100.0</span>);</span><br></pre></td></tr></table></figure>
+<p>前两个参数指定了平截头体的左右坐标，第三和第四参数指定了平截头体的底部和顶部。通过这四个参数我们定义了近平面和远平面的大小，然后第五和第六个参数则定义了近平面和远平面的距离。这个投影矩阵会将处于这些x，y，z值范围内的坐标变换为标准化设备坐标。<br>
+正射投影矩阵直接将坐标映射到2D平面中，即屏幕中，但实际上一个直接的投影矩阵会产生不真实的结果，因为这个投影没有将透视（Perspective）考虑进去。</p>
+<h2 id="透视投影">透视投影</h2>
+<p>我们都曾体验过实际生活中的一个场景，离我们越远的东西看起来更小。这个奇怪的效果称之为透视。透视的效果在我们看一条无限长的高速公路或铁路时尤其明显，正如下面图片显示的那样：</p>
+<p><img src="/img/article/20190825/3.png" alt="透视投影"></p>
+<p>正如所看到的那样，由于透视，这两条线在很远的地方看起来会相交。这正是透视投影想要模仿的效果，它是使用透视投影矩阵来完成的。这个投影矩阵将给定的平截头体范围映射到裁剪空间，除此之外还修改了每个顶点的w值，从而使得离观察者越远的顶点坐标w分量越大。被变换到裁剪空间的坐标都会在-w到w的范围之间（任何大于这个范围的坐标都会被裁剪掉）。OpenGL要求所有可见的坐标都落在-1.0到1.0范围内，作为顶点着色器最后的输出，一次，一旦坐标在裁剪空间内之后，透视除法就被会应用到裁剪空间坐标上：</p>
+<p><img src="/img/article/20190825/4.png" alt="透视除法"></p>
+<p>顶点坐标的每个分量都会除以它的w分量，距离观察者越远顶点坐标就会越小。这也是w分量非常重要的另一个原因，它能够帮助我们进行透视投影。最后的结果坐标就是处于标准化设备空间中的。</p>
+<p>要创建一个透视投影矩阵，我们可以使用<code>GLKit</code>中的方法：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GLKMatrix4MakePerspective(GLKMathRadiansToDegrees(<span class="number">45</span>), width/height, <span class="number">0.1</span>, <span class="number">100.0</span>);</span><br></pre></td></tr></table></figure>
+<p>同样，<code>GLKMatrix4MakePerspective</code>所做的其实就是创建了一个定义了可视空间的大平截头体，任何在这个平截头体以外的东西最后都不会出现在裁剪空间体积内，并且将会收到裁剪。一个透视平截头体可以被看作一个不均匀的箱子，在这个箱子内部的每个坐标都会被映射到裁剪空间上的一个点。下面是一张透视平截头体的图片：</p>
+<p><img src="/img/article/20190825/5.png" alt="透视平截头体"></p>
+<p>它的第一个参数定义了<code>fov</code>的值，它表示的是视野（Field of View），并且设置了观察空间的大小。如果想要一个真实的观察效果，它的值通常设置为45.0f，但想要一个末日风格的结果可以将其设置一个更大的值。第二个参数设置了宽高比，由视口的宽除以高所得。第三和第四个参数设置了平截头体的近和远平面。我们通常设置近距离为0.1f，而远距离设置为100.0f。所有在近平面和远平面且处于平截头体内的顶点都会被渲染。</p>
+<blockquote>
+<p>当我们把透视矩阵的<code>near</code>值设置太大时（如10.0f），OpenGL会将靠近摄像机的坐标（在0。0f和10.0f之间）都裁剪掉，这会导致一个在游戏中很熟悉的视觉效果：在太过靠近一个物体的时候视线会直接传过去。</p>
+</blockquote>
+<h1 id="把它们都组合到一起">把它们都组合到一起</h1>
+<p>我们为上述的每一个步骤都创建了一个变换矩阵：模型矩阵、观察矩阵和投影矩阵。一个顶点坐标将会根据以下过程被变换到裁剪坐标：V<sub>clip</sub> = M<sub>projection</sub>p * M<sub>view</sub> * M<sub>model</sub> * M<sub>local</sub>。<br>
+注意矩阵运算的顺序是相反的。最后的顶点应该被赋值到顶点着色器中的<code>gl_Position</code>，OpenGL将会自动进行透视除法和裁剪。</p>
+<blockquote>
+<p>然后呢？<br>
+顶点着色器的输出要求所有的顶点都在裁剪空间内，这正是我们刚才使用变换矩阵所做的。OpenGL然后对裁剪坐标执行透视除法从而将它们变换到标准化设备坐标。OpenGL会使用<code>glViewport</code>内部的参数来标准化设备坐标映射到屏幕坐标，每个坐标都关联了一个屏幕上的点。这个过程称为视口变换。</p>
+</blockquote>
+<h1 id="举个例子">举个例子</h1>
+<p>我们创建一个立方体，利用摄像机视角对其进行旋转拍摄，主要的矩阵变换代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)update &#123;</span><br><span class="line">    <span class="built_in">NSTimeInterval</span> detalTime = <span class="keyword">self</span>.timeSinceLastUpdate;</span><br><span class="line">    <span class="keyword">self</span>.elapsedTime += detalTime;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">float</span> varyingFactor = (sin(<span class="keyword">self</span>.elapsedTime) + <span class="number">1</span>) / <span class="number">2.0</span>;</span><br><span class="line">    <span class="keyword">float</span> aspect = <span class="keyword">self</span>.view.frame.size.width / <span class="keyword">self</span>.view.frame.size.height;</span><br><span class="line"></span><br><span class="line">    GLKMatrix4 perspectiveMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(<span class="number">45</span>), aspect, <span class="number">0.1</span>, <span class="number">100.0</span>);  <span class="comment">// 投影矩阵</span></span><br><span class="line">    GLKMatrix4 cameraMatrix = GLKMatrix4MakeLookAt(<span class="number">0</span>, <span class="number">0</span>, <span class="number">5</span> * (varyingFactor + <span class="number">1</span>), <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>);    <span class="comment">// 观察矩阵</span></span><br><span class="line">    GLKMatrix4 rotateMatrix = GLKMatrix4MakeRotation(varyingFactor * M_PI * <span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>);    <span class="comment">// 模型矩阵</span></span><br><span class="line">    <span class="keyword">self</span>.projectionMatrix = GLKMatrix4Multiply(cameraMatrix, rotateMatrix);</span><br><span class="line">    <span class="keyword">self</span>.projectionMatrix = GLKMatrix4Multiply(perspectiveMatrix, <span class="keyword">self</span>.projectionMatrix);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)glkView:(GLKView *)view drawInRect:(<span class="built_in">CGRect</span>)rect &#123;</span><br><span class="line">    </span><br><span class="line">    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</span><br><span class="line">    glClearColor(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br><span class="line"></span><br><span class="line">    glUniformMatrix4fv(mvpMatrixlocation, <span class="number">1</span>, <span class="number">0</span>, <span class="keyword">self</span>.projectionMatrix.m);</span><br><span class="line">    </span><br><span class="line">    glBindVertexArray(vao);</span><br><span class="line">    glDrawElements(GL_TRIANGLES, <span class="number">36</span>, GL_UNSIGNED_SHORT, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="总结">总结</h1>
+<p>这篇文章主要针对物体根据一系列的坐标系转换，最终转化为屏幕上最终的渲染产物过程中的坐标系转换的学习。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2019/opengl-es-illuminate-0902/" data-toggle="tooltip" data-placement="top" title="OpenGL ES--光照">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/opengl-es-sync-and-fence-0821/" data-toggle="tooltip" data-placement="top" title="OpenGL ES学习--同步对象和栅栏">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#概述"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x6982;&#x8FF0;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#局部空间"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x5C40;&#x90E8;&#x7A7A;&#x95F4;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#世界空间"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x4E16;&#x754C;&#x7A7A;&#x95F4;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#观察空间"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x89C2;&#x5BDF;&#x7A7A;&#x95F4;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#摄像机"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">&#x6444;&#x50CF;&#x673A;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#摄像机观察空间"><span class="toc-nav-number">4.1.1.</span> <span class="toc-nav-text">&#x6444;&#x50CF;&#x673A;/&#x89C2;&#x5BDF;&#x7A7A;&#x95F4;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#look-at"><span class="toc-nav-number">4.1.2.</span> <span class="toc-nav-text">Look At</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#透视投影"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">&#x900F;&#x89C6;&#x6295;&#x5F71;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#把它们都组合到一起"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x628A;&#x5B83;&#x4EEC;&#x90FD;&#x7EC4;&#x5408;&#x5230;&#x4E00;&#x8D77;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#举个例子"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">&#x4E3E;&#x4E2A;&#x4F8B;&#x5B50;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">&#x603B;&#x7ED3;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/opengl-es-coordinated-system-0825/";
+    <!-- var disqus_url = "/article/2019/opengl-es-coordinated-system-0825/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

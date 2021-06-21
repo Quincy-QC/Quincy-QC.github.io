@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          使用Swift Package Manager管理依赖项 - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/swift-package-manager-1122/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                            
+                        </div>
+                        <h1>使用Swift Package Manager管理依赖项</h1>
+                        <h2 class="subheading">Swift Package Manager</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-11-22
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="前言">前言</h1>
+<p>上一篇文章讲解了使用Cocoapods进行包管理的一些基本操作，讲到这里就不得不说刚刚集成于Xcode 11中支持iOS平台等多平台的包管理工具–Swift Package Manager。</p>
+<h1 id="在项目中使用加载">在项目中使用加载</h1>
+<p>进入添加包依赖界面有两种方式，如下图：</p>
+<p><img src="/img/article/20191122/1.png" alt="添加包依赖1"><br>
+<img src="/img/article/20191122/2.png" alt="添加包依赖2"></p>
+<p>然后可以进行包搜索，需要登录Git账号，可以在<code>Accounts</code>中进行设置。</p>
+<p>搜索完成后可以进行版本选择（版本号、分支、Commit）：</p>
+<p><img src="/img/article/20191122/3.png" alt="添加包依赖3"></p>
+<p>安装完成后就可以在项目中使用，非常方便。</p>
+<h1 id="上传自己的spm库">上传自己的SPM库</h1>
+<p>先进行包初始化，创建并进入文件夹<code>mkdir ProjName &amp;&amp; cd ProjName</code>，使用<code>swift package init</code>命令进行包初始化。</p>
+<p>初始化后会生成一系列文件：</p>
+<ul>
+<li><a href="http://README.md" target="_blank" rel="noopener">README.md</a>：不用解释，用于展示并介绍包的文件；</li>
+<li>Package.swift：包配置文件，后面会详细讲解；</li>
+<li>Sources文件夹：存放具体代码的文件夹；</li>
+<li>Tests文件夹：存放各测试用例的文件夹。</li>
+</ul>
+<p>包配置文件：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// swift-tools-version:5.1</span></span><br><span class="line"><span class="comment">// The swift-tools-version declares the minimum version of Swift required to build this package.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> PackageDescription</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> package = <span class="type">Package</span>(</span><br><span class="line">    name: <span class="string">"MyCategory"</span>,</span><br><span class="line">    platforms: [</span><br><span class="line">        .macOS(.v10_13), .iOS(.v11), .tvOS(.v11),</span><br><span class="line">    ],</span><br><span class="line">    products: [</span><br><span class="line">        <span class="comment">// Products define the executables and libraries produced by a package, and make them visible to other packages.</span></span><br><span class="line">        .library(</span><br><span class="line">            name: <span class="string">"MyCategory"</span>,</span><br><span class="line">            targets: [<span class="string">"MyCategory"</span>]),</span><br><span class="line">    ],</span><br><span class="line">    dependencies: [</span><br><span class="line">        <span class="comment">// Dependencies declare other packages that this package depends on.</span></span><br><span class="line">        <span class="comment">// .package(url: /* package url */, from: "1.0.0"),</span></span><br><span class="line">        .package(url: <span class="string">"https://github.com/onevcat/Kingfisher.git"</span>, from: <span class="string">"5.8.3"</span>)</span><br><span class="line">    ],</span><br><span class="line">    targets: [</span><br><span class="line">        <span class="comment">// Targets are the basic building blocks of a package. A target can define a module or a test suite.</span></span><br><span class="line">        <span class="comment">// Targets can depend on other targets in this package, and on products in packages which this package depends on.</span></span><br><span class="line">        .target(</span><br><span class="line">            name: <span class="string">"MyCategory"</span>,</span><br><span class="line">            dependencies: [<span class="string">"Kingfisher"</span>]),</span><br><span class="line">        .testTarget(</span><br><span class="line">            name: <span class="string">"MyCategoryTests"</span>,</span><br><span class="line">            dependencies: [<span class="string">"MyCategory"</span>]),</span><br><span class="line">    ]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>中间的很多内容与Cocoapods配置文件相同，也有对应的参数，非常容易理解。<br>
+添加外部依赖在<code>dependencies</code>添加对应的Git路径，并在<code>targets</code>中声明。</p>
+<p>对于<code>Sources</code>文件夹下的代码文件，有一点要说一下。因为SPM是跨平台包管理器，所以在引入系统库时需要进行平台判断，否则会在编译时无法通过：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#<span class="keyword">if</span> os(<span class="type">Linux</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Code specific to Linux</span></span><br><span class="line"></span><br><span class="line">#elseif os(macOS)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Code specific to macOS</span></span><br><span class="line"></span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#<span class="keyword">if</span> canImport(<span class="type">UIKit</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Code specific to platforms where UIKit is available</span></span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>上述文件配置结束后，和Cocoapods一样上传到Git并打Tag生成最终的Release包，然后就可以在SPM中搜索到我们的包啦。</p>
+<h1 id="对于已有项目">对于已有项目</h1>
+<p>对于已有项目，或者说是Cocoapods生成的包管理文件，我们可以同样创建SPM，在目录中添加<code>Package.swift</code>和<code>Sources</code>文件即可。</p>
+<h1 id="总结">总结</h1>
+<p>总的来说，Swift Package Manager还是非常方便的，就这样。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2019/leetcode-kth-problems-1216/" data-toggle="tooltip" data-placement="top" title="Kth Smallest/Largest Element in ...">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/cocoapods-create-pods-1121/" data-toggle="tooltip" data-placement="top" title="基于Cocoapods创建私有公有库">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#前言"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#在项目中使用加载"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x5728;&#x9879;&#x76EE;&#x4E2D;&#x4F7F;&#x7528;&#x52A0;&#x8F7D;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#上传自己的spm库"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x4E0A;&#x4F20;&#x81EA;&#x5DF1;&#x7684;SPM&#x5E93;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#对于已有项目"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x5BF9;&#x4E8E;&#x5DF2;&#x6709;&#x9879;&#x76EE;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x603B;&#x7ED3;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/swift-package-manager-1122/";
+    <!-- var disqus_url = "/article/2019/swift-package-manager-1122/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

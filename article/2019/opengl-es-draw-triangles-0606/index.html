@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          使用OpenGL ES绘制三角形 - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/opengl-es-draw-triangles-0606/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                            
+                        </div>
+                        <h1>使用OpenGL ES绘制三角形</h1>
+                        <h2 class="subheading">About OpenGL ES</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-06-06
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="前言">前言</h1>
+<p>OpenGL ES的学习，本来是在苹果官方文档上学习，但是该文档是针对基于有一定OpenGL ES基础的人员在iOS和Mac OS平台上的开发时的配置介绍和性能提升，并没有OpenGL ES基础的教学，可以用来后期在有一定知识情况下开发时使用手册。所以，这里从OpenGL ES的最基础开始说起，使用OpenGL ES绘制三角形。</p>
+<h1 id="自定义着色器绘制三角形">自定义着色器绘制三角形</h1>
+<p>首先我们通过最原始的代码使用OpenGL ES创建一个三角形，这里需要我们自己编写着色器，着色器包含顶点着色器和片段着色器，编写着色器需要用它特有的语言–GLSL，关于GLSL的语法，参见<a href="https://github.com/wshxbqq/GLSL-Card" target="_blank" rel="noopener">着色器语言</a>。</p>
+<h2 id="着色器的编写">着色器的编写</h2>
+<p>现在我们开始着色器代码的编写，首先我们要创建两个文件，一般顶点着色器使用后缀<code>.vsh</code>，片段着色器使用后缀<code>.fsh</code>（这边命名可以随意，但是这样命名比较规范）。当然，其实我们也可以不用使用文件声明着色器代码，也可以直接声明一个常量字符串，将代码写入字符串，因为使用文件最终也是读取成字符串形式然后创建着色器，但是使用文件调理更加清晰。</p>
+<p>顶点着色器代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#version 300 es</span><br><span class="line">layout(location = 0) in vec4 vPosition;</span><br><span class="line">void main() &#123;</span><br><span class="line">    gl_Position = vPosition;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解释：</p>
+<ol>
+<li>第一行代码声明了着色器的版本，V3.00；</li>
+<li>第二行代码<code>layout(location = 0)</code>限定符表示这个变量的位置在顶点属性0的位置；<code>in vec4 vPosition</code>表示输出的四维向量；</li>
+<li>最后三行就是着色器的main函数，着色器执行的起点；内部就是将输入的四维向量传递给名为<code>gl_Position</code>的特殊输出变量，每个顶点着色器必须在<code>gl_Position</code>变量中输出一个位置，这个变量定义传递到管线下一个阶段的位置；</li>
+</ol>
+<p>片段着色器代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#version 300 es</span><br><span class="line">precision mediump float;</span><br><span class="line">out vec4 fragColor;</span><br><span class="line">void main() &#123;</span><br><span class="line">    fragColor = vec4(1.0, 0.0, 0.0, 1.0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解释：</p>
+<ol>
+<li>第一行代码声明了着色器的版本，V3.00；</li>
+<li>第二行代码声明着色器中浮点变量的默认精度；</li>
+<li>第三行代码声明一个输出变量<code>fragColor</code>，同样是四维向量，这个值将被传输到颜色缓冲区；</li>
+<li>最后三行代码就是着色器的man函数，着色器执行的起点；内部就是给定一个默认的思维向量颜色；</li>
+</ol>
+<h2 id="编译和加载着色器">编译和加载着色器</h2>
+<p>上面定义了着色器的源代码，这里就可以将着色器加载到OpenGL ES中。这里定义一个<code>loadShaderWithName:type:</code>函数编译和加载着色器：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">- (GLuint)loadShaderWithName:(<span class="built_in">NSString</span> *)name type:(GLenum)shaderType &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 从文件中读取着色器代码</span></span><br><span class="line">    <span class="built_in">NSString</span> *shaderPath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:name ofType:shaderType == GL_VERTEX_SHADER ? <span class="string">@"vsh"</span> : <span class="string">@"fsh"</span>];</span><br><span class="line">    <span class="built_in">NSError</span> *error;</span><br><span class="line">    <span class="built_in">NSString</span> *shaderString = [<span class="built_in">NSString</span> stringWithContentsOfFile:shaderPath encoding:<span class="built_in">NSUTF8StringEncoding</span> error:&amp;error];</span><br><span class="line">    <span class="keyword">if</span> (!shaderString) &#123;</span><br><span class="line">        <span class="built_in">NSAssert</span>(<span class="literal">NO</span>, <span class="string">@"读取Shader失败，%@"</span>, error.localizedDescription);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 创建shader对象</span></span><br><span class="line">    GLuint shader = glCreateShader(shaderType);</span><br><span class="line">    <span class="keyword">if</span> (!shader) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取shader内容</span></span><br><span class="line">    <span class="keyword">const</span> GLchar *shaderStringUTF8 = [shaderString UTF8String];</span><br><span class="line">    glShaderSource(shader, <span class="number">1</span>, &amp;shaderStringUTF8, <span class="literal">NULL</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 编译shader</span></span><br><span class="line">    glCompileShader(shader);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 查询shader编译状态</span></span><br><span class="line">    GLint compiled;</span><br><span class="line">    glGetShaderiv(shader, GL_COMPILE_STATUS, &amp;compiled);</span><br><span class="line">    <span class="keyword">if</span> (!compiled) &#123;</span><br><span class="line">        GLint infoLen;</span><br><span class="line">        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &amp;infoLen);</span><br><span class="line">        <span class="keyword">if</span> (infoLen &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            GLchar *infoLog = malloc(<span class="keyword">sizeof</span>(GLchar) * infoLen);</span><br><span class="line">            glGetShaderInfoLog(shader, infoLen, <span class="literal">NULL</span>, infoLog);</span><br><span class="line">            <span class="built_in">NSAssert</span>(<span class="literal">NO</span>, <span class="string">@"编译shader失败，%s"</span>, infoLog);</span><br><span class="line">            free(infoLog);</span><br><span class="line">        &#125;</span><br><span class="line">        glDeleteShader(shader);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> shader;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="创建一个程序对象并链接着色器">创建一个程序对象并链接着色器</h2>
+<p>不同的着色器编译为一个着色器对象之后，必须连接到一个程序对象并一起链接，才能绘制图形。程序对象可以视为最终链接的程序。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">- (GLuint)createProgram:(<span class="built_in">NSString</span> *)programName &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取着色器对象</span></span><br><span class="line">    GLuint vertexShader = [<span class="keyword">self</span> loadShaderWithName:programName type:GL_VERTEX_SHADER];</span><br><span class="line">    GLuint fragmentShader = [<span class="keyword">self</span> loadShaderWithName:programName type:GL_FRAGMENT_SHADER];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 创建program对象</span></span><br><span class="line">    GLuint program = glCreateProgram();</span><br><span class="line">    <span class="keyword">if</span> (!program) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// program关联shader</span></span><br><span class="line">    glAttachShader(program, vertexShader);</span><br><span class="line">    glAttachShader(program, fragmentShader);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 链接program</span></span><br><span class="line">    glLinkProgram(program);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 查询program状态</span></span><br><span class="line">    GLint linked;</span><br><span class="line">    glGetProgramiv(program, GL_LINK_STATUS, &amp;linked);</span><br><span class="line">    <span class="keyword">if</span> (!linked) &#123;</span><br><span class="line">        GLint infoLen;</span><br><span class="line">        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &amp;infoLen);</span><br><span class="line">        <span class="keyword">if</span> (infoLen &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            GLchar *infoLog = malloc(<span class="keyword">sizeof</span>(GLchar) * infoLen);</span><br><span class="line">            glGetProgramInfoLog(program, infoLen, <span class="literal">NULL</span>, infoLog);</span><br><span class="line">            <span class="built_in">NSAssert</span>(<span class="literal">NO</span>, <span class="string">@"program链接失败，%s"</span>, infoLog);</span><br><span class="line">            free(infoLog);</span><br><span class="line">        &#125;</span><br><span class="line">        glDeleteProgram(program);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> program;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="创建渲染上下文">创建渲染上下文</h2>
+<p>现在我们已经有了链接着着色器对象的程序对象，下面就是开始渲染绘制操作。首先创建渲染上下文并设置为当前上下文，这里就直接使用OpenGL ES 3.0：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];</span><br><span class="line">[EAGLContext setCurrentContext:context];</span><br></pre></td></tr></table></figure>
+<h2 id="使用caeagllayer作为渲染目标">使用CAEAGLLayer作为渲染目标</h2>
+<p>在iOS中，我们先用<code>CAEAGLLayer</code>作为渲染目标，当然后面也有其他方式，我们先讨论这个方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- (void)initialize &#123;</span><br><span class="line">    // layer的创建，并添加到父layer上</span><br><span class="line">    CAEAGLLayer *layer = [[CAEAGLLayer alloc] init];</span><br><span class="line">    layer.frame = self.view.bounds;</span><br><span class="line">    [self.view.layer addSublayer:layer];</span><br><span class="line">    </span><br><span class="line">    // 创建颜色渲染缓冲区，绑定到帧缓冲区，并将layer对象的存储绑定到OpenGL ES的渲染缓冲区对象</span><br><span class="line">    [self bindRenderLayer:layer context:context];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)bindRenderLayer:(CALayer &lt;EAGLDrawable&gt; *)layer context:(EAGLContext *)context &#123;</span><br><span class="line">    GLuint renderbuffer;</span><br><span class="line">    GLuint framebuffer;</span><br><span class="line">    glGenRenderbuffers(1, &amp;renderbuffer);</span><br><span class="line">    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);</span><br><span class="line">    [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:layer];</span><br><span class="line">    </span><br><span class="line">    glGenFramebuffers(1, &amp;framebuffer);</span><br><span class="line">    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);</span><br><span class="line">    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解释：<code>bindRenderLayer</code>方法主要是将渲染缓冲区与layer绑定，将layer作为渲染缓冲区的输出层。</p>
+<h2 id="加载几何形状和绘制图元">加载几何形状和绘制图元</h2>
+<p>指定绘图窗口大小：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">glViewport(<span class="number">0</span>, <span class="number">0</span>, <span class="keyword">self</span>.drawableWidth, <span class="keyword">self</span>.drawableHeight);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取渲染缓存宽度</span></span><br><span class="line">- (GLint)drawableWidth &#123;</span><br><span class="line">    GLint backingWidth;</span><br><span class="line">    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &amp;backingWidth);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> backingWidth;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取渲染缓存高度</span></span><br><span class="line">- (GLint)drawableHeight &#123;</span><br><span class="line">    GLint backingHeight;</span><br><span class="line">    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &amp;backingHeight);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> backingHeight;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创建程序对象并使用：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GLuint program = [<span class="keyword">self</span> createProgram:<span class="string">@"glsl"</span>];</span><br><span class="line"><span class="keyword">if</span> (!program) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line">glUseProgram(program);</span><br></pre></td></tr></table></figure>
+<p>清除颜色缓冲区，避免将以前的内容加载到内存中造成高消耗，为确保最佳性能，应该在每次绘图之前调用：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">glClearColor(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br><span class="line">glClear(GL_COLOR_BUFFER_BIT);</span><br></pre></td></tr></table></figure>
+<p>指定三角形的几何形状，由(x, y, z)3个坐标点指定：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GLfloat vVertices[] = &#123;</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">    <span class="number">-0.5</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f,</span><br><span class="line">    <span class="number">0.5</span>f, <span class="number">-0.5</span>f, <span class="number">0.0</span>f</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>绘制图元：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 启用顶点并设置顶点数据</span></span><br><span class="line">glEnableVertexAttribArray(GLKVertexAttribPosition);</span><br><span class="line">glVertexAttribPointer(GLKVertexAttribPosition, <span class="number">3</span>, GL_FLOAT, GL_FALSE, <span class="number">0</span>, vVertices);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 开始绘制</span></span><br><span class="line">glDrawArrays(GL_TRIANGLES, <span class="number">0</span>, <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<p>将渲染结果呈现到屏幕</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[context presentRenderbuffer:GL_RENDERBUFFER];</span><br></pre></td></tr></table></figure>
+<p>最终，就会在页面上绘画出一个三角形：</p>
+<p><img src="/img/article/20190606/1.png" alt="Triangle Picture"></p>
+<h1 id="使用glkit绘制三角形">使用GLKit绘制三角形</h1>
+<p>除了上述使用自定义着色器进行绘制，苹果本身也封装了简易着色器的GLKit供我们实现简单的绘制功能，下面就来介绍使用GLKit绘制三角形。</p>
+<p>使用GLKit绘制有两种方式：一种是使用继承<code>GLKView</code>并复写<code>drawRect:</code>方法进行渲染操作，另一种就是使用<code>GLKView</code>的代理方法进行渲染。这两种方法都需要用到<code>GLKBaseEffect</code>类，这个类内部就实现了着色器的编译链接过程，简化了整个操作。</p>
+<h2 id="继承glkview进行绘制">继承GLKView进行绘制</h2>
+<p>基础<code>GLKView</code>，并复写<code>drawRect:</code>方法，创建<code>GLKBaseEffect</code>实例并为OpenGL ES渲染准备一个效果，即将编译后的着色器程序绑定到上下文并返回，最后进行顶点设置并绘制：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TriangleGLKView</span> ()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) GLKBaseEffect *baseEffect;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">TriangleGLKView</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithFrame:(<span class="built_in">CGRect</span>)frame context:(<span class="keyword">nonnull</span> EAGLContext *)context &#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame context:context];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.baseEffect = [[GLKBaseEffect alloc] init];</span><br><span class="line">        <span class="keyword">self</span>.baseEffect.constantColor = GLKVector4Make(<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)drawRect:(<span class="built_in">CGRect</span>)rect &#123;</span><br><span class="line">    </span><br><span class="line">    glClearColor(<span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br><span class="line">    glClear(GL_COLOR_BUFFER_BIT);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 准备渲染，将编译后的着色器程序绑定到上下文并返回</span></span><br><span class="line">    [<span class="keyword">self</span>.baseEffect prepareToDraw];</span><br><span class="line">    </span><br><span class="line">    GLfloat vVertice[] = &#123;</span><br><span class="line">        <span class="number">0.0</span>, <span class="number">0.5</span>, <span class="number">0.0</span>,</span><br><span class="line">        <span class="number">-0.5</span>, <span class="number">-0.5</span>, <span class="number">0.0</span>,</span><br><span class="line">        <span class="number">0.5</span>, <span class="number">-0.5</span>, <span class="number">0.0</span></span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 启用顶点并设置顶点数据</span></span><br><span class="line">    glEnableVertexAttribArray(GLKVertexAttribPosition);</span><br><span class="line">    glVertexAttribPointer(GLKVertexAttribPosition, <span class="number">3</span>, GL_FLOAT, GL_FALSE, <span class="number">0</span>, vVertice);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 开始绘制</span></span><br><span class="line">    glDrawArrays(GL_TRIANGLES, <span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<h2 id="使用代理绘制">使用代理绘制</h2>
+<p>设置上下文，创建<code>GLKView</code>实例并设置代理，实现代理方法，同样使用<code>GLKBaseEffect</code>类，与继承方法对比，就是将渲染操作在代理中调用：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)initialize &#123;</span><br><span class="line">    EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];</span><br><span class="line">    [EAGLContext setCurrentContext:context];</span><br><span class="line"></span><br><span class="line">    GLKView *glkView = [[GLKView alloc] initWithFrame:<span class="keyword">self</span>.view.bounds context:context];</span><br><span class="line">    glkView.backgroundColor = [<span class="built_in">UIColor</span> clearColor];</span><br><span class="line">    glkView.delegate = <span class="keyword">self</span>;</span><br><span class="line">    [<span class="keyword">self</span>.view addSubview:glkView];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.baseEffect = [[GLKBaseEffect alloc] init];</span><br><span class="line">    <span class="keyword">self</span>.baseEffect.constantColor = GLKVector4Make(<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br><span class="line">    </span><br><span class="line">    [glkView display];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)glkView:(GLKView *)view drawInRect:(<span class="built_in">CGRect</span>)rect &#123;</span><br><span class="line">    glClearColor(<span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br><span class="line">    glClear(GL_COLOR_BUFFER_BIT);</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span>.baseEffect prepareToDraw];</span><br><span class="line">    </span><br><span class="line">    GLfloat vVertice[] = &#123;</span><br><span class="line">        <span class="number">0.0</span>, <span class="number">0.5</span>, <span class="number">0.0</span>,</span><br><span class="line">        <span class="number">-0.5</span>, <span class="number">-0.5</span>, <span class="number">0.0</span>,</span><br><span class="line">        <span class="number">0.5</span>, <span class="number">-0.5</span>, <span class="number">0.0</span></span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    glEnableVertexAttribArray(GLKVertexAttribPosition);</span><br><span class="line">    glVertexAttribPointer(GLKVertexAttribPosition, <span class="number">3</span>, GL_FLOAT, GL_FALSE, <span class="number">0</span>, vVertice);</span><br><span class="line">    glDrawArrays(GL_TRIANGLES, <span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="结语">结语</h1>
+<p>简单的三角形绘制就结束了，在理解了整个渲染过程，不管是自定义着色器还是使用封装的GLKit方式渲染，包括后续的Metal渲染，都能够找到丝丝关联，在学习中更加有关联性。<a href="https://github.com/Quincy-QC/OpenGL-ES-Study" target="_blank" rel="noopener">Demo</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2019/opengl-es-shader-and-program-0706/" data-toggle="tooltip" data-placement="top" title="OpenGL ES学习--着色器与程序">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/opengl-es-study-0519/" data-toggle="tooltip" data-placement="top" title="OpenGL ES基础学习">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#前言"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#自定义着色器绘制三角形"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x81EA;&#x5B9A;&#x4E49;&#x7740;&#x8272;&#x5668;&#x7ED8;&#x5236;&#x4E09;&#x89D2;&#x5F62;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#着色器的编写"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">&#x7740;&#x8272;&#x5668;&#x7684;&#x7F16;&#x5199;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#编译和加载着色器"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">&#x7F16;&#x8BD1;&#x548C;&#x52A0;&#x8F7D;&#x7740;&#x8272;&#x5668;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#创建一个程序对象并链接着色器"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x7A0B;&#x5E8F;&#x5BF9;&#x8C61;&#x5E76;&#x94FE;&#x63A5;&#x7740;&#x8272;&#x5668;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#创建渲染上下文"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">&#x521B;&#x5EFA;&#x6E32;&#x67D3;&#x4E0A;&#x4E0B;&#x6587;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用caeagllayer作为渲染目标"><span class="toc-nav-number">2.5.</span> <span class="toc-nav-text">&#x4F7F;&#x7528;CAEAGLLayer&#x4F5C;&#x4E3A;&#x6E32;&#x67D3;&#x76EE;&#x6807;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#加载几何形状和绘制图元"><span class="toc-nav-number">2.6.</span> <span class="toc-nav-text">&#x52A0;&#x8F7D;&#x51E0;&#x4F55;&#x5F62;&#x72B6;&#x548C;&#x7ED8;&#x5236;&#x56FE;&#x5143;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#使用glkit绘制三角形"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x4F7F;&#x7528;GLKit&#x7ED8;&#x5236;&#x4E09;&#x89D2;&#x5F62;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#继承glkview进行绘制"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">&#x7EE7;&#x627F;GLKView&#x8FDB;&#x884C;&#x7ED8;&#x5236;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用代理绘制"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">&#x4F7F;&#x7528;&#x4EE3;&#x7406;&#x7ED8;&#x5236;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#结语"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x7ED3;&#x8BED;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/opengl-es-draw-triangles-0606/";
+    <!-- var disqus_url = "/article/2019/opengl-es-draw-triangles-0606/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

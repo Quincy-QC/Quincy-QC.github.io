@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/archives/3/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/header_img/home.jpg') 
+            /*config*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="site-heading">
+                        <h1>Quincy-QC</h1>
+                        <!--<hr class="small">-->
+                        <span class="subheading">个人博客</span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/article/2019/opengl-es-shader-and-program-0706/">
+        <h2 class="post-title">
+            OpenGL ES学习--着色器与程序
+        </h2>
+        <h3 class="post-subtitle">
+            About OpenGL ES
+        </h3>
+        <div class="post-content-preview">
+            
+上一篇文章介绍了绘制一个三角形的简单程序，在例子中，我们创建了两个着色器对象（顶点着色器和片段着色器）和一个程序对象，以渲染三角形。
+
+着色器和程序
+着色器对象是包含单个着色器对象，源代码提供给着色器对象，然后着色器被编译为一个目标形式。编译后，着色器对象可以连接到一个程序对象。程序对象可以连接多个着色器对象。在OpenGL ES中，每个程序对象都必须连接一个顶点着色器和一个片段着色器。程......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Quincy-QC on
+            2019-07-06
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#iOS" title="iOS">iOS</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/2019/opengl-es-draw-triangles-0606/">
+        <h2 class="post-title">
+            使用OpenGL ES绘制三角形
+        </h2>
+        <h3 class="post-subtitle">
+            About OpenGL ES
+        </h3>
+        <div class="post-content-preview">
+            前言
+OpenGL ES的学习，本来是在苹果官方文档上学习，但是该文档是针对基于有一定OpenGL ES基础的人员在iOS和Mac OS平台上的开发时的配置介绍和性能提升，并没有OpenGL ES基础的教学，可以用来后期在有一定知识情况下开发时使用手册。所以，这里从OpenGL ES的最基础开始说起，使用OpenGL ES绘制三角形。
+自定义着色器绘制三角形
+首先我们通过最原始的代码使用Op......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Quincy-QC on
+            2019-06-06
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#iOS" title="iOS">iOS</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/2019/opengl-es-study-0519/">
+        <h2 class="post-title">
+            OpenGL ES基础学习
+        </h2>
+        <h3 class="post-subtitle">
+            Open Graphics Library for Embedded Systems
+        </h3>
+        <div class="post-content-preview">
+            Introduction
+Open Graphics Library(OpenGL)用于可视化2D与3D数据，是多用途的开放标准图形库，支持2D和3D数字内容创建、机械和建筑设计、虚拟原型、飞行仿真、视频游戏等等。我们可以使用OpenGL配置3D图形管线并向其提交数据。顶点被转换点亮，组装成基本类型，并进行栅格化来创建2D图片。OpenGL的设计目的是将函数调用转换为可以发送到底层图形硬件的......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Quincy-QC on
+            2019-05-19
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#iOS" title="iOS">iOS</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/2019/core-animation-study-0503/">
+        <h2 class="post-title">
+            图形渲染与动画基础 -- Core Animation
+        </h2>
+        <h3 class="post-subtitle">
+            About Core Animation
+        </h3>
+        <div class="post-content-preview">
+            Introduction
+Core Animation是iOS与OS X平台上的图形渲染和动画基础设施，可以在应用中使视图和其他可见元素产生动画。使用Core Animation，绘制动画的每一帧所需的大部分工作都已经实现。我们所需要做的是配置少量动画参数同时启动动画，Core Animation会完成其余部分，将大部分实际绘图工作交给图形硬件实现加速渲染，这种自动图形加速产生高帧率平滑的动......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Quincy-QC on
+            2019-05-03
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#iOS" title="iOS">iOS</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/2019/core-image-study-0425/">
+        <h2 class="post-title">
+            图像处理与分析 -- Core Image
+        </h2>
+        <h3 class="post-subtitle">
+            About Core Image
+        </h3>
+        <div class="post-content-preview">
+            Introduction
+Core Image 是一种图像处理和分析技术，旨在为静态或者视频图片提供近乎实时的处理。它对来自Core Graphics，Core Video，Image I/O框架中的图片数据类型进行操作，使用GPU或CPU渲染路径。Core Image通过提供一个易于使用的API隐藏底层图片处理的细节，我们不需要知道OpenGL，OpenGL ES，Metal的细节来可以利......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Quincy-QC on
+            2019-04-25
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#iOS" title="iOS">iOS</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/2019/core-graphics-study-0418/">
+        <h2 class="post-title">
+            绘图引擎 -- Quartz 2D
+        </h2>
+        <h3 class="post-subtitle">
+            Quartz 2D Programming Guide
+        </h3>
+        <div class="post-content-preview">
+            
+最近在网上看文章的时候，看到了一篇在 iOS 中使用 GLSL 实现抖音特效的文章，忽然兴趣就来了，然后就看到了一系列图片处理专用名词，这反而更加勾起了我的兴趣，主要是之前也看到一些关于 OpenGL 的字眼的文章，但是都没有花很多精力去研究，刚好眼下又看到了这篇文章，刚好这个博主也有对 OpenGL 的基础介绍，所以本是打算边看边学，把这个 OpenGL 搞懂。
+这个博主对于 OpenG......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Quincy-QC on
+            2019-04-18
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#iOS" title="iOS">iOS</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/2019/talk-about-design-pattern-0326/">
+        <h2 class="post-title">
+            设计模式那点事
+        </h2>
+        <h3 class="post-subtitle">
+            Talk About Design Pattern
+        </h3>
+        <div class="post-content-preview">
+            
+设计模式 Design Pattern 是一套被反复使用、多数人知晓的、经过分类编目的、代码设计经验的总结，使用设计模式是为了代码可重用性、让代码更容易被理解、保证代码可靠性。
+
+为什么要学习设计模式
+
+
+设计模式来源于众多专家的经验和智慧，是从许多优秀的软件系统中总结出的成功的、能够实现可维护性复用的设计方案，使用这些方案将可以避免让我们做一些重复性的工作
+
+
+设计模式提供了一条通用的设......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Quincy-QC on
+            2019-03-26
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#iOS - Objective-C" title="iOS - Objective-C">iOS - Objective-C</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/2019/refactoring-massive-app-delegate-0215/">
+        <h2 class="post-title">
+            重构 AppDelegate
+        </h2>
+        <h3 class="post-subtitle">
+            Refactoring Massive App Delegate
+        </h3>
+        <div class="post-content-preview">
+            
+之前曾经阅读过一篇基于 Swift 重构 AppDelegate 的文章， 现在把他整理搬到自己的博客，翻译自 @V8tr，Demo
+
+Introduction
+AppDelegate 连接着我们的应用与系统，通常被认为是每个 iOS 工程的核心。正常趋势是随着开发逐渐变大，逐渐添加新的功能与职责，然后到处被调用，最终变成一团乱码。
+把所有东西都放在 AppDelegate 的代价是巨大的......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Quincy-QC on
+            2019-02-15
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#iOS - Swift" title="iOS - Swift">iOS - Swift</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/2019/create-github-pages-0212/">
+        <h2 class="post-title">
+            创建自己的 GitHub 博客
+        </h2>
+        <h3 class="post-subtitle">
+            基于 Hexo 搭建 GitHub Pages
+        </h3>
+        <div class="post-content-preview">
+            Introduction
+本人是个懒人，一直想动手写博客，却一拖再拖，总觉得自己的辞藻不够华丽，写出来不够工整漂亮。但是，这次，让我动手这件事情的原因，却是公司把技术分享或者博客作为绩效的考评，相比较技术分享，博客这个不用动嘴的方式却是不二之选。
+既然要写博客，当然是选择高大上的基于 GitHub 平台创建的博客啦。GitHub，开源代码库以及版本控制系统，大家都知道的网站。之前我也只是用来......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Quincy-QC on
+            2019-02-12
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#GitHub" title="GitHub">GitHub</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+        <li class="previous">
+            <a href="/archives/2/">&larr; Newer Posts</a>
+        </li>
+    
+    
+</ul>
+
+
+
+                <br>
+
+                <!-- require APlayer -->
+                
+
+                <!-- 如果开启评论功能 -->
+                
+            </div>
+
+          <!-- Sidebar Container -->
+<div class="
+    col-lg-3 col-lg-offset-0
+    col-md-3 col-md-offset-0
+    col-sm-12
+    col-xs-12
+    sidebar-container
+">
+    
+        <!-- Featured Tags -->
+
+        <hr>
+    
+        <!-- Short About -->
+<section class="visible-md visible-lg">
+    <h5><a href="/about/">ABOUT ME</a></h5>
+    <div class="short-about">
+
+        
+            <img id = "avatar_pic" src="/img/avatar/icon.png" />
+        
+
+        
+            <p>Better late than never</p>
+        
+
+        <!-- SNS Link -->
+        <ul class="list-inline">
+            
+            
+            
+
+            
+                <li>
+                    <a target="_blank" href="http://weibo.com/quincyqc666">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                </li>
+            
+
+            
+
+            
+                <li>
+                    <a target="_blank"  href="https://github.com/Quincy-QC">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                </li>
+            
+            
+            
+            
+        </ul>
+    </div>
+</section>
+
+        <hr>
+    
+        
+  <h5>RECENT POSTS</h3>
+  <div class="widget">
+    <ul>
+      
+        <li>
+          <a href="/article/2021/realitykit-0621/">RealityKit基础概念</a>
+        </li>
+      
+        <li>
+          <a href="/article/2020/nstimer-circular-reference-issue-0330/">NSTimer循环引用解决方案</a>
+        </li>
+      
+        <li>
+          <a href="/article/2020/load-pdf-with-signature-0226/">加载带有签章的PDF文件</a>
+        </li>
+      
+        <li>
+          <a href="/article/2020/talk-about-map-flatmap-compactmap-0119/">细谈map，flatMap和compactMap</a>
+        </li>
+      
+        <li>
+          <a href="/article/2019/leetcode-kth-problems-1216/">Kth Smallest/Largest Element in ...</a>
+        </li>
+      
+    </ul>
+  </div>
+
+        <hr>
+    
+        
+    <h5>ARCHIVES</h5>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+
+        <hr>
+    
+</div>
+
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

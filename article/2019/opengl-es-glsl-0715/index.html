@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          OpenGL ES学习--着色语言 - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/opengl-es-glsl-0715/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                            
+                        </div>
+                        <h1>OpenGL ES学习--着色语言</h1>
+                        <h2 class="subheading">About OpenGL ES</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-07-15
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>着色器是OpenGL ES 3.0 API的一个基础核心概念，每个OpenGL ES 3.0程序都需要一个顶点着色器和一个片段着色器，以渲染有意义的图片。所以下面介绍开发着色器的着色语言-GLSL。</p>
+</blockquote>
+<h1 id="着色器版本规范">着色器版本规范</h1>
+<p>OpenGL ES 3.0顶点着色器和片段着色器的第一行总是声明着色器的版本。在之前的代码中，我是采用如下语法说明着色器使用OpenGL ES着色语言的版本3.0：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 300 es</span></span><br></pre></td></tr></table></figure>
+<p>没有声明版本号的着色器被认定使用OpenGL ES着色语言1.00版本。着色语言1.00版本用于OpenGL ES 2.0。对于OpenGL ES 3.0，规范的作者决定匹配API和着色语言的版本号，所以版本号直接从1.00跳到3.00的原因。</p>
+<h1 id="变量和变量类型">变量和变量类型</h1>
+<p>在计算机图形中，两个基本数据组成了变换的基础：向量和矩阵。这两种数据类型也是OpenGL ES着色语言中的核心。</p>
+<table>
+<thead>
+<tr>
+<th>变量分类</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>标量</td>
+<td>float, int, uint, bool</td>
+<td>用于浮点、整数、无符号整数和布尔值的基于标量的数据类型</td>
+</tr>
+<tr>
+<td>浮点向量</td>
+<td>float, vec2, vec3, vec4</td>
+<td>有1、2、3、4个分量的基于浮点的向量类型</td>
+</tr>
+<tr>
+<td>整数向量</td>
+<td>int, ivec2, ivec3, ivec4</td>
+<td>有1、2、3、4个分量的基于整数的向量类型</td>
+</tr>
+<tr>
+<td>无符号整数向量</td>
+<td>uint, uvec2, uvec3, uvec4</td>
+<td>有1、2、3、4个分量的基于无符号整数的向量类型</td>
+</tr>
+<tr>
+<td>布尔向量</td>
+<td>bool, bvec2, bvec3, bvec4</td>
+<td>有1、2、3、4个分量的基于布尔的向量类型</td>
+</tr>
+<tr>
+<td>矩阵</td>
+<td>mat2, mat3, mat4, max2x3, max3x2</td>
+<td>2x2, 3x3, 4x4, 2x3, 3x2的基于浮点的矩阵</td>
+</tr>
+</tbody>
+</table>
+<p>着色语言中的变量必须以某个类型声明。变量可以在声明时或者声明以后初始化。初始化通过使用构造器进行，构造器也用于类型转换。</p>
+<h1 id="变量构造器">变量构造器</h1>
+<p>OpenGL ES 着色语言在类型转换方面有非常严格的规定。变量只能赋值为相同类型的其他变量或者与相同类型的变量进行运算。<br>
+标量：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> myFloat = <span class="number">1.0</span>;</span><br><span class="line"><span class="keyword">bool</span> myBool = <span class="literal">true</span>; </span><br><span class="line"></span><br><span class="line">myFloat = Float(myBool);    <span class="comment">// bool -&gt; float</span></span><br><span class="line">myBool = <span class="keyword">bool</span>(myFloat);     <span class="comment">// float -&gt; bool</span></span><br></pre></td></tr></table></figure>
+<p>向量：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vec4 myVec4 = vec4(<span class="number">1.0</span>);        <span class="comment">// myVec4 = &#123;1.0, 1.0, 1.0, 1.0&#125;</span></span><br><span class="line">vec3 myVec3 = vec3(<span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">0.5</span>);</span><br><span class="line"></span><br><span class="line">vec3 temp = vec3(myVec3);</span><br><span class="line">vec2 myVec2 = vec2(myVec3);     <span class="comment">// myVec2 = &#123;myVec3.x, myVec3.y&#125;</span></span><br><span class="line"></span><br><span class="line">myVec4 = vec4(myVec2, temp);   myVec4 = &#123;myVec2.v, myVec2.y, temp.x, temp.y&#125;</span><br></pre></td></tr></table></figure>
+<p>矩阵：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 矩阵以列优先顺序存储</span></span><br><span class="line">mat3 myMat3 = mat3(<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>,</span><br><span class="line">                   <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>,</span><br><span class="line">                   <span class="number">7.0</span>, <span class="number">8.0</span>, <span class="number">9.0</span>)</span><br><span class="line"><span class="comment">// 生成的矩阵是：</span></span><br><span class="line">[<span class="number">1.0</span> <span class="number">4.0</span> <span class="number">7.0</span></span><br><span class="line"> <span class="number">2.0</span> <span class="number">5.0</span> <span class="number">8.0</span></span><br><span class="line"> <span class="number">3.0</span> <span class="number">6.0</span> <span class="number">9.0</span>]</span><br></pre></td></tr></table></figure>
+<h1 id="向量和矩阵分量">向量和矩阵分量</h1>
+<p>向量的单独分量可以用两种方式访问：使用“.”运算符或者通过数组下标。根据组成向量的分量数量，每个分量可以通过使用{x, y, z, w}、{r, g, b, a}或者{s, t, p, q}组合访问。三种不同命名方案的原因是向量可以互换地表示数学上的向量、颜色、和纹理坐标。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vec3 myVec3 = vec3(<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">2.0</span>)</span><br><span class="line">vec3 temp;</span><br><span class="line"></span><br><span class="line">temp = myVec3.xyz;      <span class="comment">// temp = &#123;0.0, 1.0, 2.0&#125;</span></span><br><span class="line">temp = myVec3.xxx;      <span class="comment">// temp = &#123;0.0, 0.0, 0.0&#125;</span></span><br><span class="line">temp = myVec3.zyx;      <span class="comment">// temp = &#123;2.0, 1.0, 0.0   &#125;</span></span><br></pre></td></tr></table></figure>
+<p>除了使用 “.” 操作符之外，还可以使用数组下标操作。在使用数组下标操作时，元素 [0] 对应的是 x，元素 [1] 对应 y，以此类推。值得注意的是，在 OpenGL ES 2.0 中的某些情况下，数组下标不支持使用非常数的整型表达式（如使用整型变量索引），这是因为对于向量的动态索引操作，某些硬件设备处理起来很困难。在 OpenGL ES 2.0 中仅对 uniform 类型的变量支持这种动态索引。</p>
+<p>矩阵可以看成是由一些向量组成。例如，mat2可以看做是两个vec2，mat3可以看做是3个vec3，等等。对于矩阵，单独的列可以用数组下标运算符“[]”选择，然后每个向量可以通过向量访问行为来访问。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mat4 myMat4 = mat4(<span class="number">1.0</span>);</span><br><span class="line">vec4 col0 = myMat4[<span class="number">0</span>];      <span class="comment">// 矩阵中的向量</span></span><br><span class="line"><span class="keyword">float</span> m1_1 = myMat4[<span class="number">1</span>][<span class="number">1</span>];  <span class="comment">// 从矩阵[1][1]位置获取元素</span></span><br></pre></td></tr></table></figure>
+<h1 id="常量">常量</h1>
+<p>可以将任何基本类型声明为常数变量。常数变量是着色器中不变的值。声明常量时，在声明中加入const限定符。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">float</span> zero = <span class="number">0.0</span>;</span><br><span class="line"><span class="keyword">const</span> vec4 red = vec4(<span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br></pre></td></tr></table></figure>
+<p>声明为const的变量是只读的，不能在源代码中修改。</p>
+<h1 id="结构">结构</h1>
+<p>着色语言也提供了声明结构的语法：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> fogStruct &#123;</span><br><span class="line">    vec4 color;</span><br><span class="line">    <span class="keyword">float</span> start;</span><br><span class="line">    <span class="keyword">float</span> end;</span><br><span class="line">&#125; fogVar;</span><br><span class="line"></span><br><span class="line">fogVar = fogStruct(vec4(<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>),    <span class="comment">// color</span></span><br><span class="line">                   <span class="number">0.5</span>,                         <span class="comment">// start</span></span><br><span class="line">                   <span class="number">2.0</span>);                        <span class="comment">// end</span></span><br><span class="line"></span><br><span class="line">vec4 color = fogVar.color;</span><br><span class="line"><span class="keyword">float</span> start = fogVar.start;</span><br><span class="line"><span class="keyword">float</span> end = fogVar.end;</span><br></pre></td></tr></table></figure>
+<h1 id="数组">数组</h1>
+<p>着色语言同样支持数组：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> floatArray[<span class="number">4</span>];</span><br><span class="line">vec4 vecArray[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">float</span> a[<span class="number">4</span>] = <span class="keyword">float</span>[](<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>);</span><br><span class="line"><span class="keyword">float</span> b[<span class="number">4</span>] = <span class="keyword">float</span>[<span class="number">4</span>](<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>);</span><br><span class="line">vec2 c[<span class="number">2</span>] = vec[<span class="number">2</span>](vec2(<span class="number">1.0</span>), vec2(<span class="number">1.0</span>));</span><br></pre></td></tr></table></figure>
+<h1 id="运算符">运算符</h1>
+<p>绝大多数运算符与C语言中一致。运算符只能出现在有相同基本类型的变量之间。像乘这样的运算符可以在浮点、向量和矩阵之间进行运算。</p>
+<h1 id="函数">函数</h1>
+<p>函数的声明方法和C语言相同，最明显的不同之处在于函数参数的传递方法。着色语言提供特殊的限定符，定义函数是否可以修改可变参数：</p>
+<table>
+<thead>
+<tr>
+<th>限定符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>in</td>
+<td>默认限定符，指定参数按值传送，函数不能被修改</td>
+</tr>
+<tr>
+<td>inout</td>
+<td>规定变量按照引用传入函数，如果该值被修改，它将在函数退出后变化</td>
+</tr>
+<tr>
+<td>out</td>
+<td>表示该变量的值不被传入函数，但是在函数返回时被修改</td>
+</tr>
+</tbody>
+</table>
+<p>对于着色语言中的函数还需注意一点：函数不能递归。这一限制的原因是，某些实现通过把函数代码真正地内嵌到位GPU生成的最终程序来实施函数调用，着色语言有意地构造为允许这种内嵌式实现，以支持没有堆栈的GPU。</p>
+<h1 id="插值限定符">插值限定符</h1>
+<p>顶点着色器的输出和片段着色器的输入，在没有任何限定符时，默认的插值行为是执行平滑着色。也就是说，来自顶点着色器的输出变量在图元中线性插值，片段着色器接收线性插值之后的数值作为输入。我们可以明确请求平滑着色：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vertex shader output</span></span><br><span class="line">smooth <span class="keyword">out</span> vec3 v_color;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Fragment shader input</span></span><br><span class="line">smooth <span class="keyword">in</span> vec3 v_color</span><br></pre></td></tr></table></figure>
+<p>还有另一种插值方法–平面着色。在平面着色中，图元中的值没有进行插值，而是将其中一个顶点视为驱动顶点，该顶点的值被用于图元中的所有片段：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vertex shader output</span></span><br><span class="line">flat <span class="keyword">out</span> vec3 v_color;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Fragment shader input</span></span><br><span class="line">flat <span class="keyword">in</span> vec3 v_color;</span><br></pre></td></tr></table></figure>
+<p>最后，可以用<code>centroid</code>关键字在插值器中添加另一个限定符，质心采样（centroid sampling）。本质上，使用多重采样渲染时，<code>centroid</code>关键字可用于强制插值发生在被渲染图元内部（否则，在图元的边缘可能出现伪像）：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vertex shader output</span></span><br><span class="line">smooth centroid <span class="keyword">out</span> vec3 v_color;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Fragment shader input</span></span><br><span class="line">smooth centroid <span class="keyword">in</span> vec3 v_color;</span><br></pre></td></tr></table></figure>
+<h1 id="精度限定值">精度限定值</h1>
+<p>精度限定值使着色器作者可以指定着色器变量的计算精度。变量可以为低、中或者高精度。这些限定符用于提示编译器允许在较低的范围和精度上执行变量计算。在较低的精度上，有些OpenGL ES实现在运行着色器时可能更快，或者电源效率更高。当然，这种效率是以精度为代价的，在没有正确使用精度限定符时可能造成伪像。</p>
+<blockquote>
+<p>OpenGL ES规范中没有规定底层硬件必须支持多种精度，所以某个OpenGL ES实现在最高精度上进行所有运算并简单忽略限定符时完全正常的。不过，在某些实现上，使用较低精度可能带来好处。<br>
+精度限定符可以用于指定任何基于浮点或者整数的变量精度。指定精度的关键字是lowp、mediump、highp。</p>
+</blockquote>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">highp vec4 position;</span><br><span class="line">varying lowp vec4 color;</span><br><span class="line">mediump <span class="keyword">float</span> specularExp;</span><br></pre></td></tr></table></figure>
+<p>除了精度限定符之外，还有默认精度的概念。也就是说，如果变量声明时没有使用精度限定符，它将拥有该类型的默认精度：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">precision highp <span class="keyword">float</span>;</span><br><span class="line">precision mediump <span class="keyword">int</span>;</span><br></pre></td></tr></table></figure>
+<p>在顶点着色器中，如果没有指定默认精度，则int和float的默认精度都为highp。也就是说，顶点着色器中所有没用精度限定符声明的变量都是使用最高精度。片段着色器的规则与此不同。在片段着色器中，浮点值没有默认的精度值：每个着色器必须声明一个默认的float精度，或者为每个float变量指定精度。</p>
+<h1 id="不变性">不变性</h1>
+<p>OpenGL ES着色语言中引入的<code>invariant</code>关键字可以用于任何可变的顶点着色器输出。它的必要性在于：着色器需要编译，而编译器可能进行导致指令重新排序的优化，这种指令重排意味着两个着色器之间的等价计算不能保证产生完全相同的结果。这种不一致性在多遍着色器特效时可能成为问题，在这种情况下，相同的对象用Alpha混合绘制在自身上房。如果用于计算输出位置的数值的精度不完全一样，精度差异就会导致伪像。这个问题通常表现为“深度冲突”（Z fighting），每个像素的Z（深度）精度差异导致不同遍着色相互之间有微小的偏移。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#version 300 es</span><br><span class="line">uniform mat4 u_viewProjMatrix;</span><br><span class="line">layout(location = 0) in vec4 a_vertex;</span><br><span class="line">invariant gl_Position;</span><br><span class="line">void main() &#123;</span><br><span class="line">    // will be the same value in all shaders with the same viewProjMatrix and vertex</span><br><span class="line">    gl_Position = u_viewProMatrix * a_vertex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也可以用<code>#pragma STDGL invariant(all)</code>执行让所有变量全部不变。</p>
+<blockquote>
+<p>警告：因为编译器需要保证不变性，所以可能限制它所做的优化。因此，<code>invariant</code>限定符应该只在必要时使用；否则可能导致性能下降。由于这个原因，全局启用不变性的<code>#pragma</code>指令会应该在不变性对于所有变量都必需的时候使用。还要注意，虽然不变性表示在指定GPU上的计算会得到相同的结果，但是并不意味着计算在任何OpenGL ES实现之间不变。</p>
+</blockquote>
+<h1 id="总结">总结</h1>
+<p>这篇文章主要介绍了OpenGL ES着色语言的一些特性。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2019/opengl-es-vertex-0720/" data-toggle="tooltip" data-placement="top" title="OpenGL ES学习--顶点属性、顶点数组和缓冲区对象">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/opengl-es-shader-and-program-0706/" data-toggle="tooltip" data-placement="top" title="OpenGL ES学习--着色器与程序">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#着色器版本规范"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x7740;&#x8272;&#x5668;&#x7248;&#x672C;&#x89C4;&#x8303;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#变量和变量类型"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x53D8;&#x91CF;&#x548C;&#x53D8;&#x91CF;&#x7C7B;&#x578B;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#变量构造器"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x53D8;&#x91CF;&#x6784;&#x9020;&#x5668;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#向量和矩阵分量"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x5411;&#x91CF;&#x548C;&#x77E9;&#x9635;&#x5206;&#x91CF;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#常量"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x5E38;&#x91CF;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#结构"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">&#x7ED3;&#x6784;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#数组"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">&#x6570;&#x7EC4;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#运算符"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">&#x8FD0;&#x7B97;&#x7B26;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#函数"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">&#x51FD;&#x6570;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#插值限定符"><span class="toc-nav-number">10.</span> <span class="toc-nav-text">&#x63D2;&#x503C;&#x9650;&#x5B9A;&#x7B26;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#精度限定值"><span class="toc-nav-number">11.</span> <span class="toc-nav-text">&#x7CBE;&#x5EA6;&#x9650;&#x5B9A;&#x503C;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#不变性"><span class="toc-nav-number">12.</span> <span class="toc-nav-text">&#x4E0D;&#x53D8;&#x6027;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">13.</span> <span class="toc-nav-text">&#x603B;&#x7ED3;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/opengl-es-glsl-0715/";
+    <!-- var disqus_url = "/article/2019/opengl-es-glsl-0715/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          图像处理与分析 -- Core Image - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/core-image-study-0425/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                            
+                        </div>
+                        <h1>图像处理与分析 -- Core Image</h1>
+                        <h2 class="subheading">About Core Image</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-04-25
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="introduction">Introduction</h1>
+<p>Core Image 是一种图像处理和分析技术，旨在为静态或者视频图片提供近乎实时的处理。它对来自Core Graphics，Core Video，Image I/O框架中的图片数据类型进行操作，使用GPU或CPU渲染路径。Core Image通过提供一个易于使用的API隐藏底层图片处理的细节，我们不需要知道OpenGL，OpenGL ES，Metal的细节来可以利用GPU的能力，也不需要知道任何关于GCD的知识就可以进行多核处理，所有的细节Core Image都会帮我们处理。</p>
+<p><img src="/img/article/20190425/1.png" alt="Core Image"></p>
+<p>Core Image 提供以下功能：</p>
+<ul>
+<li>访问内置的图像处理过滤器</li>
+<li>特征检测能力</li>
+<li>支持自动图像增强</li>
+<li>将多个滤镜链接一起形成自定义效果的能力</li>
+<li>支持创建运行在GPU上的自定义滤镜</li>
+<li>基于反馈的图像处理能力<br>
+MacOS还提供一种打包自定义滤镜以供其他应用使用的方法。</li>
+</ul>
+<h1 id="processing-images">Processing Images</h1>
+<p>处理图片意味着应用滤镜 – 图片滤镜是一种逐像素检测输入图片并通过算法应用一些效果来生成输出图片的软件。图片处理主要依靠描述滤镜及其输入输出的CIFilter和CIImage类，我们可以使用Core Image与其他系统框架或者创建通过CIContext创建自己的渲染工作流来应用滤镜、显示或导出结果。</p>
+<p>在图片上应用滤镜的基本代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> context = <span class="type">CIContext</span>()</span><br><span class="line"><span class="keyword">let</span> <span class="built_in">filter</span> = <span class="type">CIFilter</span>(name: <span class="string">"CISepiaTone"</span>)</span><br><span class="line"><span class="built_in">filter</span>?.setValue(<span class="number">0.8</span>, forKey: kCIInputIntensityKey)</span><br><span class="line"><span class="keyword">let</span> image = <span class="type">CIImage</span>(contentsOf: <span class="type">Bundle</span>.main.url(forResource: <span class="string">""</span>, withExtension: <span class="string">""</span>)!)</span><br><span class="line"><span class="built_in">filter</span>?.setValue(image, forKey: kCIInputImageKey)</span><br><span class="line"><span class="keyword">let</span> result = <span class="built_in">filter</span>?.outputImage</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> result = result &#123;</span><br><span class="line">    <span class="keyword">let</span> cgImage = context.createCGImage(result, from: result.extent)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>滤镜处理并制作图片，CIImage实例是表示一张图片的不可变对象，这些对象不直接表示图片位图数据，相反，CIImage对象是制作图片的一种方式。一种方式可能要求直接从文件中加载图片，另一种可能是从滤镜或过滤器链的输出，Core Image 仅当我们要求将一张图片渲染作为显示或者输出时执行这些方法。</p>
+<p>应用滤镜的方式，创建一个或多个CIImage对象表示被滤镜处理的图片同时配置滤镜的输入参数，我们可以从以下几种图片数据中创建CIImage对象：</p>
+<ul>
+<li>被加载图片文件的URL引用或者被加载包含图片文件数据的NSData对象</li>
+<li>Quartz2D，UIKit，或者AppKit的图片代表（CGImageRef，UIImage，NSBitmapImageRep）</li>
+<li>Metal，OpenGL，OpenGl ES纹理</li>
+<li>CoreVideo图片或者像素缓存（CVImageBufferRef，CVPixelBufferRef）</li>
+<li>进程间分享的图片数据 – IOSurfaceRef</li>
+<li>内存中的位图数据（对象指针，按需提供数据的CIImageProvider）</li>
+</ul>
+<p>因为CIImage对象描述了如何制作图片（而不是包含图片数据），他同样可以表示滤镜输出。当访问CIFilter对象的outputImage属性时，Core Image只标识和存储执行滤镜需要的步骤，这些步骤只有在请求显示或输出而渲染图片时运行。</p>
+<h2 id="描述图片处理效果-滤镜">描述图片处理效果 – 滤镜</h2>
+<p>CIFilter对象是代表图片处理效果和控制效果行为系列参数的可变对象，使用滤镜的方式：创建CIFilter对象，设置输入参数，然后访问它的输出图像。<a href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/uid/TP40004346" target="_blank" rel="noopener">各类滤镜</a></p>
+<h3 id="复杂效果-链式滤镜">复杂效果 – 链式滤镜</h3>
+<p>每个Core Image提供一个CIImage输出对象，可以把这个输出对象作为另一个滤镜的输入。</p>
+<p><img src="/img/article/20190425/2.png" alt="Construct a filter chain by connecting filter inputs and outputs"></p>
+<p>Core Image 优化了滤镜链的应用，以快速高效的方式渲染结果，链中的每个CIImage对象不是完全渲染过的图片，而是渲染的方式，Core Image不需要单独执行每个滤镜操作，这样会非常浪费时间和内存，相反，Core Image将滤镜组合成一个单独的操作，甚至以不同的顺序重新组织滤镜，从而更有效的生成相同的结果。</p>
+<p><img src="/img/20190425/2.png" alt="Core Image optimizes a filter chain to a single operation"></p>
+<p>我们可以看出，Crop滤镜操作从最后移动到优先执行，这个滤镜用于输出裁剪后的图片，因此不需要对裁剪外的像素使用颜色和锐化过滤器，所以Core Image首先执行裁剪，确保消耗巨大的图形处理操作只适用于最终输出可见的像素内。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">applyFilterChain</span><span class="params">(to image: CIImage)</span></span> -&gt; <span class="type">CIImage</span>? &#123;</span><br><span class="line">    <span class="keyword">let</span> colorFilter = <span class="type">CIFilter</span>(name: <span class="string">"CIPhotoEffectProcess"</span>, parameters: [kCIInputImageKey: image])</span><br><span class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> image = colorFilter?.outputImage <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> bloomImage = image.applyingFilter(<span class="string">"CIBloom"</span>, parameters: [kCIInputRadiusKey: <span class="number">10.0</span>, kCIInputIntensityKey: <span class="number">1.0</span>])</span><br><span class="line">    <span class="keyword">let</span> cropRect = <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">150</span>, height: <span class="number">150</span>)  <span class="comment">// 左下角为坐标原点</span></span><br><span class="line">    <span class="keyword">let</span> croppedImage = bloomImage.cropped(to: cropRect) <span class="comment">// 用于常用的筛选操作，比如croped, clamped</span></span><br><span class="line">    <span class="keyword">return</span> croppedImage</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="特殊类型的滤镜">特殊类型的滤镜</h3>
+<p><a href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/filter/ci/CIQRCodeGenerator" target="_blank" rel="noopener">生成二维码</a><br>
+<a href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/filter/ci/CICode128BarcodeGenerator" target="_blank" rel="noopener">生成条形码</a><br>
+<a href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_tasks/ci_tasks.html#//apple_ref/doc/uid/TP30001185-CH3-DontLinkElementID_6" target="_blank" rel="noopener">其他</a></p>
+<h2 id="用core-image上下文构建自己的工作流">用Core Image上下文构建自己的工作流</h2>
+<p>主要涉及Metal，OpenGL，OpenGL ES等实时渲染，后面学到Metal的时候再来看。</p>
+<h1 id="detecting-faces-in-an-image">Detecting Faces in an Image</h1>
+<p>Core Image可以在图片中解析找到人脸。它执行的是人脸检测而不是人脸识别，人脸检测是包含人脸特征的矩形的识别，而人脸识别是对特定人脸的识别。Core Image检测人脸后，可以提供人脸特征信息，例如眼睛或鼻子的位置。它也可以跟踪视频中人脸的位置。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">DispatchQueue</span>.global().async &#123;</span><br><span class="line">    <span class="keyword">let</span> image = <span class="type">CIImage</span>(contentsOf: <span class="type">Bundle</span>.main.url(forResource: <span class="string">"7"</span>, withExtension: <span class="string">"jpg"</span>)!)</span><br><span class="line">    <span class="keyword">let</span> context = <span class="type">CIContext</span>()</span><br><span class="line">    <span class="keyword">let</span> opts = [<span class="type">CIDetectorAccuracy</span>: <span class="type">CIDetectorAccuracyHigh</span>]</span><br><span class="line">    <span class="keyword">let</span> detector = <span class="type">CIDetector</span>(ofType: <span class="type">CIDetectorTypeFace</span>, context: context, options: opts)</span><br><span class="line">    <span class="keyword">let</span> features = detector?.features(<span class="keyword">in</span>: image!) <span class="keyword">as</span>? [<span class="type">CIFaceFeature</span>]</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> features = features &#123;</span><br><span class="line">        <span class="keyword">for</span> feature <span class="keyword">in</span> features &#123;</span><br><span class="line">            <span class="built_in">print</span>(feature.bounds)</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> feature.hasLeftEyePosition &#123;</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">"Left eye \(feature.leftEyePosition.x) \(feature.leftEyePosition.y)"</span>)</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> feature.hasRightEyePosition &#123;</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">"Right eye \(feature.rightEyePosition.x) \(feature.rightEyePosition.y)"</span>)</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> feature.hasMouthPosition &#123;</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">"Mouth \(feature.mouthPosition)"</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="auto-enhancing-images">Auto Enhancing Images</h1>
+<p>Core Image的自动优化特征用于分析图片的直方图，人脸区域内容，元数据属性，然后它返回一个CIFilter对象数组，这些对象已经被设置为改进后图片的输入参数。</p>
+<p>下面展示了Core Image用于自动优化图片的滤镜：</p>
+<ul>
+<li>CIRedEyeCorrection：修复由于相机闪光灯造成的红眼、琥珀眼、白眼</li>
+<li>CIFaceBalance：调整脸部颜色，使皮肤更适应</li>
+<li>CIVibrance：增强图片饱和度而不扭曲肤色</li>
+<li>CIToneCurve：调整图像对比度</li>
+<li>CIHighlightShadowAdjust：调整阴影细节</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> adjustments = image.autoAdjustmentFilters()</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">filter</span> <span class="keyword">in</span> adjustments &#123;</span><br><span class="line">    <span class="built_in">filter</span>.setValue(image, forKey: kCIInputImageKey)</span><br><span class="line">    image = <span class="built_in">filter</span>.outputImage!</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="subclassing-cifilter-reciptes-for-custom-effects">Subclassing CIFilter: Reciptes for Custom Effects</h1>
+<p>我们可以通过图片的输出作为另一个的输入合并多个喜欢的滤镜来创建自定义的效果，当多次通过这个方式创建效果时，可以考虑继承CIFilter来封装一个滤镜。</p>
+<h2 id="subclassing-cifilter-to-create-the-cicolorinvert-filter">Subclassing CIFilter to Create the CIColorInvert Filter</h2>
+<p>当我们继承CIFilter后，我们可以通过重新编写默认值或合并滤镜来修改已有的滤镜。Core Image用这项技术实现一些内置滤镜。<br>
+继承一个滤镜我们需要实现以下内容：</p>
+<ul>
+<li>定义滤镜的输入参数属性，必须以<code>input</code>作为参数名开头，比如<em>inputImage</em></li>
+<li>如有必要复写<code>setDefaults</code>方法</li>
+<li>如些<code>outputImage</code>方法</li>
+</ul>
+<p>Core Image提供的CIColorInvert滤镜是CIColorMatrix滤镜的改进，顾名思义，CIColorInvert为CIColorMatrix提供向量，将输入图片的颜色反转。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CIColorInvert</span>: <span class="title">CIFilter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">var</span> inputImage: <span class="type">CIImage</span>?</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">var</span> outputImage: <span class="type">CIImage</span>? &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123;</span><br><span class="line">            <span class="keyword">guard</span> <span class="keyword">let</span> inputImage = inputImage <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> <span class="built_in">filter</span> = <span class="type">CIFilter</span>(name: <span class="string">"CIColorMatrix"</span>,</span><br><span class="line">                                  parameters: [kCIInputImageKey: inputImage,</span><br><span class="line">                                               <span class="string">"inputRVector"</span>: <span class="type">CIVector</span>(x: -<span class="number">1</span>, y: <span class="number">0</span>, z: <span class="number">0</span>),</span><br><span class="line">                                               <span class="string">"inputGVector"</span>: <span class="type">CIVector</span>(x: <span class="number">0</span>, y: -<span class="number">1</span>, z: <span class="number">0</span>),</span><br><span class="line">                                               <span class="string">"inputBVector"</span>: <span class="type">CIVector</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, z: -<span class="number">1</span>),</span><br><span class="line">                                               <span class="string">"inputBiasVector"</span>: <span class="type">CIVector</span>(x: <span class="number">1</span>, y: <span class="number">1</span>, z: <span class="number">1</span>)])</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">filter</span>?.outputImage</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="chrome-key-filter-recipe">Chrome Key Filter Recipe</h2>
+<p>从资源图移除背景颜然后与新背景融合。<br>
+创建色度滤镜：</p>
+<ul>
+<li>创建一个我们想要移除颜色数据的立方体映射，使他们透明</li>
+<li>使用CIColorCube滤镜从图片中移除对应色度的颜色</li>
+<li>使用CISourceOverCompositing滤镜将源图与背景图混合</li>
+</ul>
+<h3 id="创建立方体映射">创建立方体映射</h3>
+<p>一个颜色立方体是一个3D颜色查询表。CIColorCube滤镜把色值作为输入，在表中查询这些值，默认的查询表是一个标识矩阵–意味着对提供的数据不做任何操作。但是，这个方法要求我们删除一种颜色绿色。<br>
+我们需要从图片中移除所有的绿色，把绿色的可见度设为0。”绿色“包含系列颜色，最直接的方法是把颜色从RGBA转换成HSV类型值，在HSV中，H表示为围绕圆柱体中轴的一个角，在这种表示中，我们可以把颜色作为一个饼状切片，然后简单的删除对应颜色块。<br>
+移除绿色，我们需要定义包含绿色最大最小角度值，然后，所有范围内的值的可见度都设为0，纯绿色对应120°，最大最小角度应该围绕这个值。<br>
+立方体映射数据必须提前乘以alpha，所以创建数据的最后一步是将RGB值乘以计算出来的alpha值，对于绿色，alpha为0，其他为1.0.</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> size = <span class="number">64</span></span><br><span class="line"><span class="keyword">let</span> <span class="built_in">count</span> = size * size * size * <span class="number">4</span></span><br><span class="line"><span class="keyword">let</span> cubeData = <span class="type">UnsafeMutablePointer</span>&lt;<span class="type">Float</span>&gt;.allocate(capacity: <span class="built_in">count</span>)</span><br><span class="line"><span class="keyword">var</span> rgb: [<span class="type">Double</span>] = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>], hsv: [<span class="type">Double</span>] = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line"><span class="keyword">for</span> z <span class="keyword">in</span> <span class="number">0</span>..&lt;size &#123;</span><br><span class="line">    rgb[<span class="number">2</span>] = (<span class="type">Double</span>(z)) / <span class="type">Double</span>(size - <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> y <span class="keyword">in</span> <span class="number">0</span>..&lt;size &#123;</span><br><span class="line">        rgb[<span class="number">1</span>] = <span class="type">Double</span>(y) / <span class="type">Double</span>(size - <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span> x <span class="keyword">in</span> <span class="number">0</span>..&lt;size &#123;</span><br><span class="line">            rgb[<span class="number">0</span>] = <span class="type">Double</span>(x) / <span class="type">Double</span>(size - <span class="number">1</span>)</span><br><span class="line">            <span class="comment">// rgbToHSV(rgb, hsv)</span></span><br><span class="line">            <span class="keyword">let</span> alpha = (hsv[<span class="number">0</span>] &gt; minHugAngle &amp;&amp; hsv[<span class="number">0</span>] &lt; maxHueAngle) ? <span class="number">0</span>.0f : <span class="number">1</span>.0f</span><br><span class="line">            <span class="keyword">let</span> offset = x * <span class="number">4</span> + y * size * <span class="number">4</span> + z * size * size * <span class="number">4</span></span><br><span class="line">            cubeData[offset] = <span class="type">Float</span>(rgb[<span class="number">0</span>] * alpha)</span><br><span class="line">            cubeData[offset + <span class="number">1</span>] = <span class="type">Float</span>(rgb[<span class="number">1</span>] * alpha)</span><br><span class="line">            cubeData[offset + <span class="number">2</span>] = <span class="type">Float</span>(rgb[<span class="number">2</span>] * alpha)</span><br><span class="line">            cubeData[offset + <span class="number">3</span>] = <span class="type">Float</span>(alpha)</span><br><span class="line">            cubeData.moveAssign(from: cubeData + <span class="number">3</span>, <span class="built_in">count</span>: <span class="number">4</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> data = <span class="type">Data</span>(bytesNoCopy: cubeData, <span class="built_in">count</span>: <span class="built_in">count</span>, deallocator: .free)</span><br><span class="line"><span class="keyword">let</span> colorCube = <span class="type">CIFilter</span>(name: <span class="string">"CIColorCube"</span>)</span><br><span class="line">colorCube?.setValue(<span class="type">NSNumber</span>(value: size), forKey: <span class="string">"inputCubeDimension"</span>)</span><br><span class="line">colorCube?.setValue(data, forKey: <span class="string">"inputCubeData"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="从源图移除绿色">从源图移除绿色</h3>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">colorCube?.setValue(inputImage, forKey: kCIInputImageKey)</span><br><span class="line"><span class="keyword">let</span> result = colorCube?.outputImage</span><br></pre></td></tr></table></figure>
+<h3 id="融合处理后源图与背景图">融合处理后源图与背景图</h3>
+<p>运用CISourceOverCompositing滤镜融合图片：</p>
+<ul>
+<li>设置inputImage为处理后的源图</li>
+<li>设置inputBackgroundImage为新的背景图</li>
+</ul>
+<h1 id="getting-the-best-performance">Getting the Best Performance</h1>
+<p>Core Image提供多种选项创建图片，上下文，渲染上下文。看我们如何选择完成一项任务：</p>
+<ul>
+<li>应用多久执行一次任务</li>
+<li>应用使用静态还是视频图片</li>
+<li>是否需要支持实时处理和分析</li>
+<li>颜色保真度对用户的重要性</li>
+</ul>
+<h2 id="性能最佳实践">性能最佳实践</h2>
+<ul>
+<li>不要在每次渲染时创建CIContext对象；上下文存储非常多状态信息；复用更加有效</li>
+<li>评估应用是否需要颜色管理；如非必要不要使用</li>
+<li>避免在GPU渲染CIImage对象时使用Core Animation动画；如果想要同时使用，则用CPU</li>
+<li>确保图片不超过CPU与GPU的限制；CIContext对象的图片大小限制取决于使用的是CPU还是GPU</li>
+<li>尽可能使用小图；性能随输出像素改变</li>
+<li>UIImageView与静态图片更适配</li>
+<li>避免CPU与GPU之间非必要的纹理传输</li>
+<li>考虑使用简单的滤镜类似于算法滤镜产生的结果</li>
+<li>利用iOS 6.0及更高版本对YUV图片的支持；相机像素缓存是天生的YUV，但大多数图像处理算法期望RGBA数据，两者之间的转换是有成本的；Core Image支持从CVPixelBuffer对象读取YUB并应用适当的颜色转换</li>
+</ul>
+<h1 id="creating-custom-filters">Creating Custom Filters</h1>
+<p><a href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_advanced_concepts/ci.advanced_concepts.html#//apple_ref/doc/uid/TP30001185-CH9-SW1" target="_blank" rel="noopener">What You Need to Know Before Writing a Custom Filter</a></p>
+<p><a href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_custom_filters/ci_custom_filters.html#//apple_ref/doc/uid/TP30001185-CH6-TPXREF101" target="_blank" rel="noopener">Creating Custom Filters</a></p>
+<h1 id="ending">Ending</h1>
+<p>这章主要是对图片处理的学习，主要就是滤镜的使用，人脸解析功能，更加深入的就是自定义滤镜，多适用于对图片要求较高或本身就是图片处理的应用。</p>
+<h1 id="reference">Reference</h1>
+<blockquote>
+<p><a href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_intro/ci_intro.html#//apple_ref/doc/uid/TP30001185-CH1-TPXREF101" target="_blank" rel="noopener">About Core Image</a></p>
+</blockquote>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2019/core-animation-study-0503/" data-toggle="tooltip" data-placement="top" title="图形渲染与动画基础 -- Core Animation">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/core-graphics-study-0418/" data-toggle="tooltip" data-placement="top" title="绘图引擎 -- Quartz 2D">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#introduction"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Introduction</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#processing-images"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Processing Images</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#描述图片处理效果-滤镜"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">&#x63CF;&#x8FF0;&#x56FE;&#x7247;&#x5904;&#x7406;&#x6548;&#x679C; &#x2013; &#x6EE4;&#x955C;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#复杂效果-链式滤镜"><span class="toc-nav-number">2.1.1.</span> <span class="toc-nav-text">&#x590D;&#x6742;&#x6548;&#x679C; &#x2013; &#x94FE;&#x5F0F;&#x6EE4;&#x955C;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#特殊类型的滤镜"><span class="toc-nav-number">2.1.2.</span> <span class="toc-nav-text">&#x7279;&#x6B8A;&#x7C7B;&#x578B;&#x7684;&#x6EE4;&#x955C;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#用core-image上下文构建自己的工作流"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">&#x7528;Core Image&#x4E0A;&#x4E0B;&#x6587;&#x6784;&#x5EFA;&#x81EA;&#x5DF1;&#x7684;&#x5DE5;&#x4F5C;&#x6D41;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#detecting-faces-in-an-image"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Detecting Faces in an Image</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#auto-enhancing-images"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Auto Enhancing Images</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#subclassing-cifilter-reciptes-for-custom-effects"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Subclassing CIFilter: Reciptes for Custom Effects</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#subclassing-cifilter-to-create-the-cicolorinvert-filter"><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">Subclassing CIFilter to Create the CIColorInvert Filter</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#chrome-key-filter-recipe"><span class="toc-nav-number">5.2.</span> <span class="toc-nav-text">Chrome Key Filter Recipe</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#创建立方体映射"><span class="toc-nav-number">5.2.1.</span> <span class="toc-nav-text">&#x521B;&#x5EFA;&#x7ACB;&#x65B9;&#x4F53;&#x6620;&#x5C04;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#从源图移除绿色"><span class="toc-nav-number">5.2.2.</span> <span class="toc-nav-text">&#x4ECE;&#x6E90;&#x56FE;&#x79FB;&#x9664;&#x7EFF;&#x8272;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#融合处理后源图与背景图"><span class="toc-nav-number">5.2.3.</span> <span class="toc-nav-text">&#x878D;&#x5408;&#x5904;&#x7406;&#x540E;&#x6E90;&#x56FE;&#x4E0E;&#x80CC;&#x666F;&#x56FE;</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#getting-the-best-performance"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">Getting the Best Performance</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#性能最佳实践"><span class="toc-nav-number">6.1.</span> <span class="toc-nav-text">&#x6027;&#x80FD;&#x6700;&#x4F73;&#x5B9E;&#x8DF5;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#creating-custom-filters"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">Creating Custom Filters</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#ending"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">Ending</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#reference"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">Reference</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/core-image-study-0425/";
+    <!-- var disqus_url = "/article/2019/core-image-study-0425/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

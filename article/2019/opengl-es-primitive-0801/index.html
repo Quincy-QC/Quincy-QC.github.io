@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          OpenGL ES学习--图元装配和光栅化 - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/opengl-es-primitive-0801/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                            
+                        </div>
+                        <h1>OpenGL ES学习--图元装配和光栅化</h1>
+                        <h2 class="subheading">About OpenGL ES</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-08-01
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>本章描述OpenGL ES支持的图元和几何形状对象的类型，并说明绘制它们的方法。然后描述发生在顶点着色器处理图元顶点之后的图元装配阶段。在这一阶段，执行裁剪、透视分割和视口变换操作，对这些操作将作详细的讨论。本章以光栅化阶段的描述作为结束。光栅化是将图元转换为一组二维片段的过程，这些片段由片段着色器处理，代表可以在屏幕上绘制的像素。</p>
+</blockquote>
+<h1 id="图元">图元</h1>
+<p>图元是可以用OpenGL ES中的<code>glDrawArrays</code>、<code>glDrawElements</code>、<code>glDrawRangeElements</code>、<code>glDrawArraysInstanced</code>、<code>glDrawElementsInstanced</code>命令绘制的几何形状对象。图元由一组表示顶点位置的顶点描述。其他如颜色、纹理坐标和几何法线等信息也作为通用属性与每个顶点关联。</p>
+<p>OpenGL ES 3.0可以绘制如下图元：</p>
+<ul>
+<li>三角形</li>
+<li>直线</li>
+<li>点精灵</li>
+</ul>
+<h2 id="三角形">三角形</h2>
+<p>三角形代表着描述由3D应用程序渲染的几何形状对象时最常用的方法。OpenGL ES支持的三角形图元有<code>GL_TRIANGLES</code>、<code>GL_TRIANGLE_STRIP</code>和<code>GL_TRIANGLE_FAN</code>。</p>
+<p><img src="/img/article/20190801/1.png" alt="三角形图元类型"></p>
+<p><code>GL_TRIANGLES</code>绘制一系列单独的三角形。如上图所示，绘制了顶点为(v<sup>0</sup>, v<sup>1</sup>, v<sup>2</sup>)和(v<sup>3</sup>, v<sup>4</sup>, v<sup>5</sup>)的两个三角形。总共绘制了n/3个三角形，其中n为<code>glDraw*</code>函数中的<code>count</code>指定的索引。</p>
+<p><code>GL_TRIANGLE_STRIP</code>绘制一系列相互连接的三角形。如上图所示，绘制了4个顶点为(v<sup>0</sup>, v<sup>1</sup>, v<sup>2</sup>)、(v<sup>2</sup>, v<sup>1</sup>, v<sup>3</sup>)、(v<sup>2</sup>, v<sup>3</sup>, v<sup>4</sup>)和(v<sup>4</sup>, v<sup>3</sup>, v<sup>5</sup>)的三角形（注意顺序）。总共绘制了n-2个三角形，其中n为<code>glDraw*</code>函数中的<code>count</code>指定的索引。</p>
+<p><code>GL_TRIANGLE_FAN</code>也绘制一系列相连的三角形。如上图所示，绘制了3个顶点为(v<sup>0</sup>, v<sup>1</sup>, v<sup>2</sup>)、(v<sup>0</sup>, v<sup>2</sup>, v<sup>3</sup>)和(v<sup>0</sup>, v<sup>3</sup>, v<sup>4</sup>)的三角形，总共绘制了n-2个三角形，其中n为<code>glDraw*</code>函数中的<code>count</code>指定的索引。</p>
+<h2 id="直线">直线</h2>
+<p>OpenGL ES支持的直线图元有<code>GL_LINES</code>、<code>GL_LINE_STRIP</code>和<code>GL_LINE_LOOP</code>。</p>
+<p><img src="/img/article/20190801/2.png" alt="直线图元类型"></p>
+<p><code>GL_LINES</code>绘制一系列不相连的线段。如上图所示，绘制了端点为(v<sup>0</sup>, v<sup>1</sup>)、(v<sup>2</sup>, v<sup>3</sup>)和(v<sup>4</sup>, v<sup>5</sup>)的单独线段。总共绘制了n/2条线段，其中n为<code>glDraw*</code>函数中的<code>count</code>指定的索引。</p>
+<p><code>GL_LINE_STRIP</code>绘制一系列相连的线段。如上图所示，绘制了3条端点为(v<sup>0</sup>, v<sup>1</sup>)、(v<sup>1</sup>, v<sup>2</sup>)和(v<sup>2</sup>, v<sup>3</sup>)的线段。总共绘制了n-1条线段，其中n为<code>glDraw*</code>函数中的<code>count</code>指定的索引。</p>
+<p>除了最后一条线段从v<sup>n-1</sup>到v<sup>0</sup>之外，<code>GL_LINE_LOOP</code>和<code>GL_LINE_STRIP</code>的绘制方法类似。如上图所示，绘制了端点为(v<sup>0</sup>, v<sup>1</sup>)、(v<sup>1</sup>, v<sup>2</sup>)、(v<sup>2</sup>, v<sup>3</sup>)、(v<sup>3</sup>, v<sup>4</sup>)和(v<sup>4</sup>, v<sup>0</sup>)的线段。总共绘制了n条线段，其中n为<code>glDraw*</code>函数中的<code>count</code>指定的索引。</p>
+<p>线段的宽度用<code>glLineWidth</code>API调用指定：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 设置线宽</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param width#&gt; 指定线宽，以像素数表示；默认宽度为1.0 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glLineWidth(GLfloat width);</span><br></pre></td></tr></table></figure>
+<p><code>glLineWidth</code>指定的宽度将受限于OpenGL ES 3.0实现所支持的线宽范围。此外，指定的宽度将被OpenGL记住，直到应用程序更新。支持的线宽范围可以用如下的命令查询，对于大于1<br>
+的线宽，没有强制支持。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GLfloat lineWidthRange[<span class="number">2</span>];</span><br><span class="line">glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, lineWidthRange);</span><br></pre></td></tr></table></figure>
+<h2 id="点精灵">点精灵</h2>
+<p>OpenGL ES支持的点精灵图元是<code>GL_POINTS</code>。点精灵对指定的每个顶点绘制。点精灵通常用于将粒子效果当做点而非正方形绘制，从而实现高效渲染。点精灵是指定位置和半径的屏幕对齐的正方形，位置描述正方形的中心，半径用于计算描述点精灵的正方形的4个坐标。</p>
+<p><code>gl_PointSize</code>是可用于在顶点着色器中输出点半径（或者点尺寸）的内建变量。与点图元相关的顶点着色器输出<code>gl_PointSize</code>很重要，否则，点尺寸值被视为未定义，很可能会造成绘图错误。顶点着色器输出的<code>gl_PointSize</code>受到OpenGL ES 3.0实现所支持的非平滑点尺寸范围的限制。这个范围可以用如下命令查询：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GLfloat pointSizeRange[<span class="number">2</span>];</span><br><span class="line">glGetFloatv(GL_ALIASED_POINT_SIZE_RANGE, pointSizeRange);</span><br></pre></td></tr></table></figure>
+<p>默认情况下，OpenGL ES 3.0将窗口原点(0, 0)描述为(左, 下)区域，但是，对于点精灵，点坐标的原点是(左, 上)。</p>
+<p><code>gl_PointCoord</code>是只能在渲染图元为点精灵时用于片段着色器内部的内建变量，它用<code>mediump</code>精度限定符声明一个vec2变量。随着我们从左侧移到右侧，从顶部移到底部，赋予<code>gl_PointCoord</code>的值从0~1变化。</p>
+<h1 id="绘制图元">绘制图元</h1>
+<p>OpenGL ES中有5个绘制图元的API调用：<code>glDrawArrays</code>、<code>glDrawElements</code>、<code>glDrawRangeElements</code>、<code>glDrawArraysInstanced</code>和<code>glDrawElementsInstanced</code>。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绘制图元</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param mode#&gt; 指定要渲染的图元，有效值为GL_POINTS, GL_LINES, GL_LINES_STRIP, GL_LINES_LOOP, GL_TRIANGLES, GL_TRIANGLES_STRIP, GL_TRIANGLE_FAN description#&gt;</span></span><br><span class="line"><span class="comment"> @param first#&gt; 指定启用的顶点数组中的起始顶点索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param count#&gt; 指定要绘制的顶点数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDrawArrays(GLenum mode, GLint first, GLsizei count);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绘制图元</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param mode#&gt; 指定要渲染的图元，有效值为GL_POINTS, GL_LINES, GL_LINES_STRIP, GL_LINES_LOOP, GL_TRIANGLES, GL_TRIANGLES_STRIP, GL_TRIANGLE_FAN description#&gt;</span></span><br><span class="line"><span class="comment"> @param count#&gt; 指定要绘制的索引数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param type#&gt; 指定indices中保存的元素索引类型，有效值为GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT description#&gt;</span></span><br><span class="line"><span class="comment"> @param indices#&gt; 指向元素索引存储位置的指针 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDrawElements(GLenum mode, GLsizei count, GLenum type, <span class="keyword">const</span> GLvoid *indices)</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绘制图元</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param mode#&gt; 指定要渲染的图元，有效值为GL_POINTS, GL_LINES, GL_LINES_STRIP, GL_LINES_LOOP, GL_TRIANGLES, GL_TRIANGLES_STRIP, GL_TRIANGLE_FAN description#&gt;</span></span><br><span class="line"><span class="comment"> @param start#&gt; 指定indices中的最小数组索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param end#&gt; 指定indices中的最大数组索引 description#&gt; </span></span><br><span class="line"><span class="comment"> @param count#&gt; 指定要绘制的索引数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param type#&gt; 指定indices中保存的元素索引类型，有效值为GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT description#&gt;</span></span><br><span class="line"><span class="comment"> @param indices#&gt; 指向元素索引存储位置的指针 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, <span class="keyword">const</span> GLvoid *indices)</span><br></pre></td></tr></table></figure>
+<p>如果有一个一系列顺序元素索引描述的图元，且几何形状的顶点不共享，则<code>glDrawArrays</code>很好用，但是，游戏或者其他3D应用程序使用的典型对象由多个三角形网格组成，其中的元素索引可能不一定按照顺序，顶点通常在网格的三角形直接共享。</p>
+<p>比如考虑上图立方体的绘制，如果我们用<code>glDrawArrays</code>绘制，则代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GLfloat vertices[] = &#123; .. &#125;;</span><br><span class="line">glEnableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">glVertexAttribPointer(<span class="number">0</span>, <span class="number">3</span>, GL_FLOAT, GL_FALSE, <span class="number">0</span>, vertices);</span><br><span class="line">glDrawArrays(GL_TRIANGLES, <span class="number">0</span>, <span class="number">36</span>);</span><br></pre></td></tr></table></figure>
+<p>为了用<code>glDrawArrays</code>绘制这个立方体，需要为立方体的每一个面调用<code>glDrawArrays</code>。共享的顶点必须重复，这意味着需要分配24个顶点（如果将每面当做<code>GL_TRIANGLE_FAN</code>绘制）或者36个顶点（如果使用<code>GL_TRIANGLES</code>），而不是8个顶点。这不是一个高效的做法。</p>
+<p>用<code>glDrawElements</code>绘制同一个立方体的代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GLfloat vertices[] = &#123; .. &#125;;</span><br><span class="line">GLubyte indices[<span class="number">36</span>] = &#123;</span><br><span class="line">    <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>,</span><br><span class="line">    <span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">5</span>,</span><br><span class="line">    <span class="number">7</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">1</span>,</span><br><span class="line">    <span class="number">7</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">7</span>, <span class="number">6</span>, <span class="number">5</span>,</span><br><span class="line">    <span class="number">7</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">7</span>, <span class="number">4</span>, <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line">glEnableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">glVertexAttribPointer(<span class="number">0</span>, <span class="number">3</span>, GL_FLOAT, GL_FALSE, <span class="number">0</span>, vertices);</span><br><span class="line">glDrawElements(GL_TRIANGLES, <span class="number">36</span>, GL_USINGED_BYTE, indices);</span><br></pre></td></tr></table></figure>
+<p>即使我们用<code>glDrawElements</code>绘制三角形，用<code>glDrawArrays</code>和<code>glDrawElements</code>绘制一个三角扇形，我们的应用程序在GPU上运行的也比<code>glDrawArrays</code>更快，这有很多原因。比如，由于顶点重用，顶点属性数据的尺寸将小于<code>glDrawElements</code>。这也导致较小的内存占用和内存贷款需求。</p>
+<h2 id="图元重启">图元重启</h2>
+<p>使用图元重启，可以在一次绘图调用中渲染多个不相连的图元（例如三角扇形或者条带）。这对于降低绘图API的调用的开销是有利的。图元重启的另一种方法是生成退化三角形（需要一些注意事项），这种方法较不简洁。</p>
+<p>使用图元重启，可以通过在索引列表中插入一个特殊索引来重启一个用于索引绘图调用（如<code>glDrawElements</code>、<code>glDrawElementsInstances</code>或<code>glDrawRangeElements</code>）的图元。这个特殊索引是该索引类型的最大索引（例如，索引类型为<code>GL_UNSIGNED_BYTE</code>或<code>GL_UNSIGNED_SHORT</code>时，分别为255或者65535）。</p>
+<p>例如，假定两个三角形条带分别有元素索引(0, 1, 2, 3)和(8, 9, 10, 11)。如果我们想利用图元重启在一次调用<code>glDrawElements*</code>中绘制两个条带，索引类型为<code>GL_UNSIGNED_BYTE</code>，则组合的元素索引列表为(0, 1, 2, 3, 255, 8, 9, 10, 11)。</p>
+<p>可以用如下代码启用和禁用图元启用：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);</span><br><span class="line"><span class="comment">// draw primitives</span></span><br><span class="line">glDisable(GL_PRIMITIVE_RESTART_FIXED_INDEX);</span><br></pre></td></tr></table></figure>
+<p>代码示例：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 配置</span></span><br><span class="line">GLfloat vertices[] = &#123;</span><br><span class="line">    <span class="number">-0.75</span>f, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">    <span class="number">-0.75</span>f, <span class="number">0.75</span>f, <span class="number">0</span>,</span><br><span class="line">    <span class="number">-0.25</span>f, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">    <span class="number">-0.25</span>f, <span class="number">0.75</span>, <span class="number">0</span>,</span><br><span class="line">    </span><br><span class="line">    <span class="number">0.75</span>f, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">    <span class="number">0.75</span>f, <span class="number">0.75</span>f, <span class="number">0</span>,</span><br><span class="line">    <span class="number">0.25</span>f, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">    <span class="number">0.25</span>f, <span class="number">0.75</span>, <span class="number">0</span></span><br><span class="line">&#125;;</span><br><span class="line">GLfloat colors[] = &#123;</span><br><span class="line">    <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    </span><br><span class="line">    <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f</span><br><span class="line">&#125;;</span><br><span class="line">GLushort indices[] = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">65535</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>&#125;;</span><br><span class="line"></span><br><span class="line">GLuint vbos[<span class="number">3</span>];</span><br><span class="line">glGenBuffers(<span class="number">3</span>, vbos);</span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbos[<span class="number">0</span>]);</span><br><span class="line">glBufferData(GL_ARRAY_BUFFER, <span class="keyword">sizeof</span>(vertices), vertices, GL_STATIC_DRAW);</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbos[<span class="number">1</span>]);</span><br><span class="line">glBufferData(GL_ARRAY_BUFFER, <span class="keyword">sizeof</span>(colors), colors, GL_STATIC_DRAW);</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[<span class="number">2</span>]);</span><br><span class="line">glBufferData(GL_ELEMENT_ARRAY_BUFFER, <span class="keyword">sizeof</span>(indices), indices, GL_STATIC_DRAW);</span><br><span class="line"></span><br><span class="line">glGenVertexArrays(<span class="number">1</span>, &amp;vaos);</span><br><span class="line">glBindVertexArray(vaos);</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbos[<span class="number">0</span>]);</span><br><span class="line">glEnableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">glVertexAttribPointer(<span class="number">0</span>, <span class="number">3</span>, GL_FLOAT, GL_FALSE, <span class="number">3</span> * <span class="keyword">sizeof</span>(GLfloat), <span class="number">0</span>);</span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbos[<span class="number">1</span>]);</span><br><span class="line">glEnableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">glVertexAttribPointer(<span class="number">1</span>, <span class="number">4</span>, GL_FLOAT, GL_FALSE, <span class="number">4</span> * <span class="keyword">sizeof</span>(GLfloat), <span class="number">0</span>);</span><br><span class="line">glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[<span class="number">2</span>]);</span><br><span class="line"></span><br><span class="line">glBindVertexArray(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绘制</span></span><br><span class="line">glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);</span><br><span class="line"></span><br><span class="line">glBindVertexArray(vaos);</span><br><span class="line">glDrawElements(GL_TRIANGLE_STRIP, <span class="number">9</span>, GL_UNSIGNED_SHORT, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">glDisable(GL_PRIMITIVE_RESTART_FIXED_INDEX);</span><br></pre></td></tr></table></figure>
+<h2 id="驱动顶点">驱动顶点</h2>
+<p>如果没有限定符，那么顶点着色器的输出值在图元中使用线性插值。但是，使用平面着色时没有发生插值。因为没有发生插值，所以片段着色器中只有一个顶点值可用。对于给定的图元实例，这个驱动顶点确定使用顶点着色器的哪一个顶点输出，因为只能使用一个顶点。<a href="/article/2019/opengl-es-glsl-0715/#%E6%8F%92%E5%80%BC%E9%99%90%E5%AE%9A%E7%AC%A6">插值限定符</a>。</p>
+<table>
+<thead>
+<tr>
+<th>图元i的类型</th>
+<th>驱动顶点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_POINT</td>
+<td>i</td>
+</tr>
+<tr>
+<td>GL_LINES</td>
+<td>2i</td>
+</tr>
+<tr>
+<td>GL_LINE_LOOP</td>
+<td>如果i &lt; n，为i + 1；如果i = n，为1</td>
+</tr>
+<tr>
+<td>GL_LINE_STRIP</td>
+<td>i + 1</td>
+</tr>
+<tr>
+<td>GL_TRIANGLES</td>
+<td>3i</td>
+</tr>
+<tr>
+<td>GL_TRIANGLE_STRIP</td>
+<td>i + 2</td>
+</tr>
+<tr>
+<td>GL_TRIANGLE_FAN</td>
+<td>i + 2</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>第i个图元实例的驱动顶点选择，顶点的编号从1到n，n是绘制的顶点数量。</p>
+</blockquote>
+<h2 id="几何形状实例化">几何形状实例化</h2>
+<p>几何形状实例化很高效，可以用一次API调用多次渲染具有不同属性（例如不同的变换矩阵、颜色或者大小）的一个对象。这一功能在渲染大量类似对象时很有用，例如对人群的渲染。几何图形实例化降低了向OpenGL ES引擎发送许多API调用的CPU处理开销。要使用实例化绘图调用渲染，可以使用如下命令：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 实例化绘图</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param mode#&gt; 指定要渲染的图元，有效值为GL_POINTS, GL_LINES, GL_LINES_STRIP, GL_LINES_LOOP, GL_TRIANGLES, GL_TRIANGLES_STRIP, GL_TRIANGLE_FAN description#&gt;</span></span><br><span class="line"><span class="comment"> @param first#&gt; 指定要启用的顶点数组中的起始顶点索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param count#&gt; 指定绘制的索引数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param instancecount#&gt; 指定绘制的图元实例数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instancecount);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 实例化绘图</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param mode#&gt; 指定要渲染的图元，有效值为GL_POINTS, GL_LINES, GL_LINES_STRIP, GL_LINES_LOOP, GL_TRIANGLES, GL_TRIANGLES_STRIP, GL_TRIANGLE_FAN description#&gt;</span></span><br><span class="line"><span class="comment"> @param count#&gt; 指定绘制的索引数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param type#&gt; 指定保存在indices中的元素索引类型，有效值为GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT description#&gt;</span></span><br><span class="line"><span class="comment"> @param indices#&gt; 指定元素索引存储位置的一个指针 description#&gt;</span></span><br><span class="line"><span class="comment"> @param instancecount#&gt; 指定绘制的图元实例数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type, <span class="keyword">const</span> GLvoid *indices, GLsizei instancecount);</span><br></pre></td></tr></table></figure>
+<p>可以使用两种方法访问每个实例的数据。第一种方法是用如下命令指示OpenGL ES对每个实例读取一次或者多次顶点属性：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 对每个实例读取一次或多次顶点属性</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param index#&gt; 指定通用顶点属性索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param divisor#&gt; 指定index位置的通用属性更新之间传递传递的实例数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glVertexAttribDivisor(GLuint index, GLuint divisor);</span><br></pre></td></tr></table></figure>
+<p>默认情况下，如果没有指定<code>glVertexAttribDivisor</code>或者每个顶点属性的<code>divisor</code>等于零，对每个顶点将读取一次顶点属性。如果<code>divisor</code>等于1，则每个图元实例读取一次顶点属性。<a href="https://github.com/danginsburg/opengles3-book/blob/master/Chapter_7/Instancing/Instancing.c" target="_blank" rel="noopener">代码例子</a></p>
+<p>第二种方法是使用内建输入变量<code>glInstanceID</code>作为顶点着色器中的缓冲区索引，以访问每个实例的数据（仅限OpenGL ES 3.0）。使用前面提到的几何形状实例化API调用时，<code>gl_InstanceID</code>将保存当前图元实例的索引。使用非实例化绘图调用时，<code>gl_InstanceID</code>将返回0。</p>
+<h2 id="性能提示">性能提示</h2>
+<p>应用程序应该确保用尽可能大的图元尺寸调用<code>glDrawElements</code>和<code>glDrawElementsInstanced</code>。如果我们绘制<code>GL_TRIANGLES</code>，这很容易做到，但是，如果有三角形条带或者扇形的网格，则可以用图元重启将这些网格连接在一起，而不用对每个三角形条带网格单独调用<code>glDrawElements*</code>。</p>
+<p>如果无法使用图元重启机制将网格连接到一起（为了维护和旧版本OpenGL ES的兼容性），可以添加造成退化三角形的元素索引，代价是使用更多的索引。退化三角形是两个或者更多顶点相同的三角形。GPU可以非常简单的检测和拒绝退化三角形，所以这是很好的性能改进，我们可以讲一个很大的图元放入右GPU渲染的队列。</p>
+<p>代码示例：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 配置</span></span><br><span class="line">GLfloat vertices[] = &#123;</span><br><span class="line">    <span class="number">-0.75</span>f, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">    <span class="number">-0.75</span>f, <span class="number">0.75</span>f, <span class="number">0</span>,</span><br><span class="line">    <span class="number">-0.25</span>f, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">    <span class="number">-0.25</span>f, <span class="number">0.75</span>, <span class="number">0</span>,</span><br><span class="line">    </span><br><span class="line">    <span class="number">0.75</span>f, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">    <span class="number">0.75</span>f, <span class="number">0.75</span>f, <span class="number">0</span>,</span><br><span class="line">    <span class="number">0.25</span>f, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">    <span class="number">0.25</span>f, <span class="number">0.75</span>, <span class="number">0</span></span><br><span class="line">&#125;;</span><br><span class="line">GLfloat colors[] = &#123;</span><br><span class="line">    <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    </span><br><span class="line">    <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">1.0</span>f,</span><br><span class="line">    <span class="number">0.0</span>f, <span class="number">1.0</span>f, <span class="number">0.0</span>f, <span class="number">1.0</span>f</span><br><span class="line">&#125;;</span><br><span class="line">GLushort indices[] = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>&#125;;</span><br><span class="line"></span><br><span class="line">GLuint vbos[<span class="number">3</span>];</span><br><span class="line">glGenBuffers(<span class="number">3</span>, vbos);</span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbos[<span class="number">0</span>]);</span><br><span class="line">glBufferData(GL_ARRAY_BUFFER, <span class="keyword">sizeof</span>(vertices), vertices, GL_STATIC_DRAW);</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbos[<span class="number">1</span>]);</span><br><span class="line">glBufferData(GL_ARRAY_BUFFER, <span class="keyword">sizeof</span>(colors), colors, GL_STATIC_DRAW);</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[<span class="number">2</span>]);</span><br><span class="line">glBufferData(GL_ELEMENT_ARRAY_BUFFER, <span class="keyword">sizeof</span>(indices), indices, GL_STATIC_DRAW);</span><br><span class="line"></span><br><span class="line">glGenVertexArrays(<span class="number">1</span>, &amp;vaos);</span><br><span class="line">glBindVertexArray(vaos);</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbos[<span class="number">0</span>]);</span><br><span class="line">glEnableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">glVertexAttribPointer(<span class="number">0</span>, <span class="number">3</span>, GL_FLOAT, GL_FALSE, <span class="number">3</span> * <span class="keyword">sizeof</span>(GLfloat), <span class="number">0</span>);</span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbos[<span class="number">1</span>]);</span><br><span class="line">glEnableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">glVertexAttribPointer(<span class="number">1</span>, <span class="number">4</span>, GL_FLOAT, GL_FALSE, <span class="number">4</span> * <span class="keyword">sizeof</span>(GLfloat), <span class="number">0</span>);</span><br><span class="line">glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[<span class="number">2</span>]);</span><br><span class="line"></span><br><span class="line">glBindVertexArray(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绘制</span></span><br><span class="line">glBindVertexArray(vaos);</span><br><span class="line">glDrawElements(GL_TRIANGLE_STRIP, <span class="number">10</span>, GL_UNSIGNED_SHORT, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="图元装配">图元装配</h1>
+<p>下图展示了图元装配阶段。通过<code>glDraw***</code>提供的顶点由顶点着色器执行，顶点着色器变换的每个顶点包括描述顶点(x, y, z, w)值的顶点位置。图元位置和顶点索引确定将被渲染的单独图元。对于每个单独图元（三角形、直线和点）及其对应的顶点，图元装配阶段执行图中所示的操作。</p>
+<p><img src="/img/article/20190801/3.png" alt="OpenGL ES图元装配阶段"></p>
+<h2 id="坐标系统">坐标系统</h2>
+<p>下图展示了顶点通过顶点着色器和图元装配阶段时的坐标系统。顶点以物体或者本地坐标空间输入到OpenGL ES，这是最可能用来建模和存储一个对象的坐标空间。在顶点着色器执行之后，顶点位置被认为是在裁剪坐标空间内。顶点位置从本地坐标系统（也就是物体坐标）到裁剪坐标的变换通过加载执行这一转换的对应矩阵来完成，这些矩阵保存在顶点着色器中定义的统一变量中。</p>
+<p><img src="/img/article/20190801/4.png" alt="坐标系统"></p>
+<h3 id="裁剪">裁剪</h3>
+<p>为了避免在可视景体之外处理图元，图元被裁剪到裁剪空间。执行顶点着色器之后的顶点位置处于裁剪坐标空间内。裁剪坐标是由(x<sub>c</sub>, y<sub>c</sub>, z<sub>c</sub>, w<sub>c</sub>)指定的同类坐标。在裁剪空间(x<sub>c</sub>, y<sub>c</sub>, z<sub>c</sub>, w<sub>c</sub>)中定义的顶点坐标根据视景体（又称裁剪体）裁剪。</p>
+<p>裁剪体由6个裁剪平面定义，这些平面称作近、远、左、右、上、下裁剪平面。在裁剪坐标中，裁剪体如下：-w<sub>c</sub> &lt;= x<sub>c</sub> &lt;= w<sub>c</sub>，-w<sub>c</sub> &lt;= y<sub>c</sub> &lt;= w<sub>c</sub>，-w<sub>c</sub> &lt;= z<sub>c</sub> &lt;= w<sub>c</sub>。</p>
+<p><img src="/img/article/20190801/5.png" alt="视景体"></p>
+<p>裁剪阶段将把每个图元裁剪为上图所示的裁剪体。我们在这里说的“图元”，是指用<code>GL_TRIANGLES</code>绘制的单独三角形列表中的每一个三角形，或者一个三角形条带或者扇形中的一个三角形，或者用<code>GL_LINES</code>绘制的单独直线列表中的一条直线，或者一个直线条带或者闭合折线中的一条直线，或者点精灵列表中的一个特定点。对于每种图元类型，执行如下操作：</p>
+<ul>
+<li>裁剪三角形–如果三角形完全在视景体内部，则不执行任何裁剪。如果三角形完全在视景体之外，则该三角形被放弃。如果三角形部分在视景体内，则根据相应的平面裁剪三角形。裁剪操作将生成新的顶点，这些顶点被裁剪到安排为三角形扇形的平面。</li>
+<li>裁剪直线–如果直线完全在视景体内部，则不执行任何裁剪。如果直线完全在视景体之外，则该直线被放弃。如果直线部分在视景体内，则直线被裁剪并生成相应的新顶点。</li>
+<li>裁剪点精灵–如果点位置在近或者远裁剪平面之外，或者如果表示点精灵的正方形在裁剪体之外，裁剪阶段将抛弃点精灵。否则，它将不做变化地通过该阶段，点精灵将在其裁剪体内部移到外部时裁剪，反之亦然。</li>
+</ul>
+<p>在图元根据六个裁剪平面进行裁剪时，顶点坐标经历透视分割，从而成为规范化的设备坐标。规范化的设备坐标范围为-1.0到1.0。</p>
+<h2 id="透视分割">透视分割</h2>
+<p>透视分割取得裁剪坐标(X<sub>c</sub>, Y<sub>c</sub>, Z<sub>c</sub>, W<sub>c</sub>)指定的点，并将其投影到屏幕或者视口上。这个投影通过将(X<sub>c</sub>, Y<sub>c</sub>, Z<sub>c</sub>)除以W<sub>c</sub>进行。执行(X<sub>c</sub>/W<sub>c</sub>)、(Y<sub>c</sub>/W<sub>c</sub>)和(Z<sub>c</sub>/W<sub>c</sub>)之后，我们得到规范化的设备坐标(X<sub>d</sub>, Y<sub>d</sub>, Z<sub>d</sub>)。这些坐标被称为规范化设备坐标，因为他们落在[-1.0…1.0]区间。这些规范化的(X<sub>d</sub>, Y<sub>d</sub>)坐标根据视口的大小将被转换为真正的屏幕（或者窗口）坐标。规范化的(Z<sub>d</sub>)坐标将用<code>glDepthRangef</code>指定的<code>near</code>和<code>far</code>深度值转换为屏幕的Z值，这些转换在视口变换阶段进行。</p>
+<h2 id="视口变换">视口变换</h2>
+<p>视口是一个二维矩阵窗口区域，是所有OpenGL ES渲染操作最终显示的地方。视口变换可用如下API调用设置：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 视口窗口</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param x#&gt; 指定视口左下角的窗口坐标x，以像素数表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param y#&gt; 指定视口左下角的窗口坐标y，以像素数表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 指定视口的宽度（以像素数表示）；必须大于0 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 指定视口的高度（以像素数表示）；必须大于0 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glViewport(GLint x, GLint y, GLsizei width, GLsizei height);</span><br></pre></td></tr></table></figure>
+<p>从规范化设备坐标(x<sub>d</sub>, y<sub>d</sub>, z<sub>d</sub>)到窗口坐标(x<sub>w</sub>, y<sub>w</sub>, z<sub>w</sub>)的转换用如下变换给出：</p>
+<p><img src="/img/article/20190801/6.png" alt="矩阵变换"></p>
+<p>在这个变换中，o<sub>x</sub>=x+w/2，o<sub>y</sub>=y+h/2，n和f代表所需的深度范围。<br>
+深度范围值n和f可以用如下API调用设置：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 设置深度值</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param zNear#&gt; 指定所需的深度范围，默认值为0.0，限于(0.0, 1.0)区间内 description#&gt;</span></span><br><span class="line"><span class="comment"> @param zFar#&gt; 指定所需的深度范围，默认值为1.0，限于(0.0, 1.0)区间内 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDepthRangef(GLclampf zNear, GLclampf zFar);</span><br></pre></td></tr></table></figure>
+<p><code>glDepthRangef</code>和<code>glViewport</code>指定的值用于将顶点位置从规范化设备坐标转换为窗口（屏幕）坐标。</p>
+<h1 id="光栅化">光栅化</h1>
+<p>下图展示了光栅化管线。在顶点变换和图元裁剪之后，光栅化管线取得单独图元（如三角形、线段或者点精灵），并为该图元生成对应的片段。每个片段由屏幕空间中的整数位置(x, y)标识。片段代表了屏幕空间中(x, y)指定的像素位置和由片段着色器处理而生成片段颜色的附加片段数据。</p>
+<p><img src="/img/article/20190801/7.png" alt="OpenGL ES光栅化阶段"></p>
+<h2 id="剔除">剔除</h2>
+<p>在三角形被光栅化之前，我们需要确定它们是正面（也就是面向观看者）或者背面（也就是背向观看者）。剔除（culling）操作抛弃背向观看者的三角形。要确定三角形是正面还是背面，首先需要知道它的方向。</p>
+<p>三角形的方向指定从第一个顶点开始，经过第二个和第三个顶点，最后回到第一个顶点的弯曲方向或者路径顺序。下图展示了弯曲顺序为顺时针和逆时针的两个三角形实例。</p>
+<p><img src="/img/article/20190801/8.png" alt="顺时针和逆时针的三角形"></p>
+<p>三角形的方向通过以窗口坐标表示的有符号三角形的面积来计算。我们现在需要将计算出来的三角形面积符号翻译为顺时针（CW）或者逆时针（CCW）方向。这种从三角形面积的符号到顺时针或者逆时针方向的映射由应用程序用如下API调用指定：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 指定正面三角形的方向</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param mode#&gt; 指定正面三角形的方向，有效值为GL_CW或者GL_CCW，默认值为GL_CCW description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glFrontFace(GLenum mode);</span><br></pre></td></tr></table></figure>
+<p>要确定需要提出的三角形，需要知道三角形将被剔除的面。通过如下API调用：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 剔除三角形</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param mode#&gt; 指定要被剔除的三角形的面，有效值为GL_FROUNT、GL_BACK、GL_FROUNT_AND_BACK，默认值为GL_BACK description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glCullFace(GLenum mode);</span><br></pre></td></tr></table></figure>
+<p>最后一个要点是，需要知道剔除操作是否应该执行。如果<code>GL_CULL_FACE</code>状态启用，剔除操作将被执行。通过如下API调用启用或者禁用：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 启用剔除</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param cap#&gt; 设置为GL_CULL_FACE，默认情况下剔除被禁用 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glEnable(GLenum cap);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 禁用剔除</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param cap#&gt; 设置为GL_CULL_FACE，默认情况下剔除被禁用 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDisable(GLenum cap);</span><br></pre></td></tr></table></figure>
+<p>概括起来，要剔除合适的三角形，OpenGL ES应用程序首先必须用<code>glEnable(GL_CULL_FACE)</code>启用剔除，用<code>glCullFace</code>设置相应的剔除面，并用<code>glFrontFace</code>设置正面三角形的方向。</p>
+<blockquote>
+<p>剔除应该始终启用，以避免GPU浪费时间去光栅化不可见的三角形。启用剔除应该能够改善OpenGL ES应用程序的整体性能。</p>
+</blockquote>
+<h2 id="多边形偏移">多边形偏移</h2>
+<p>考虑绘制两个相互重叠的多边形的情况。很可能会有伪像，这些伪像被称为深度冲突伪像，是因为三角形光栅化的精度有限而发生的，这种精度限制可能影响逐片段生成的深度值的精度，造成伪像。三角形光栅化使用的参数和生成的逐片段深度值的有限精度将越来越好，但是这个问题永远无法完全解决。</p>
+<p>为了避免看到伪像，我们需要在执行深度测试和深度值写入深度缓冲区之前，在计算出来的深度值上添加一个偏移量。如果深度测试通过，原始的深度值–而不是原始深度值+偏移–将被保存到深度缓冲区中。</p>
+<p>多边形偏移：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 多边形偏移</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param factor#&gt; 因数 description#&gt;</span></span><br><span class="line"><span class="comment"> @param units#&gt; 单位数 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glPolygonOffset(GLfloat factor, GLfloat units);</span><br></pre></td></tr></table></figure>
+<p>深度偏移的计算如下：深度偏移 = m * 因数 + r * 单位数。m是三角形的最大深度斜率，斜率项在三角形光栅化阶段期间由OpenGL ES实现计算；r是一个OpenGL ES实现定义的常量，代表深度值中可以保证产生差异的最小值。<br>
+多边形偏移可以分别用<code>glEnable(GL_POLYGON_OFFSET_FILL)</code>和<code>glDisable(GL_POLYGON_OFFSET_FILL)</code>启用或者禁用。</p>
+<p>例子：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">float</span> polygonOffsetFactor = <span class="number">-1.0</span>f;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">float</span> polygonOffsetUnits = <span class="number">-2.0</span>f;</span><br><span class="line"></span><br><span class="line">glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</span><br><span class="line"></span><br><span class="line"><span class="comment">// load vertex shader</span></span><br><span class="line"><span class="comment">// set the appropriate transformation matrices</span></span><br><span class="line"><span class="comment">// set the vertex attribute state</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// draw the SMALLER quad</span></span><br><span class="line">glDrawArrays(GL_TRIANGLE_FAN, <span class="number">0</span>, <span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// set the depth func to &lt;= as polygons are coplanar</span></span><br><span class="line">glDrawFunc(GL_LEQUAL);</span><br><span class="line"></span><br><span class="line">glEnable(GL_POLYGON_OFFSET_FILL);</span><br><span class="line"></span><br><span class="line">glPolygonOffset(polygonOffsetFactor, polygonOffsetUnits);</span><br><span class="line"></span><br><span class="line"><span class="comment">// set the vertex attribute state</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// draw the LARGER quad</span></span><br><span class="line">glDrawArrays(GL_TRIANGLE_FAN, <span class="number">0</span>, <span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="遮挡查询">遮挡查询</h1>
+<p>遮挡查询用查询对象来跟踪通过深度测试的任何片段或者样本。这种方法可用于不同的技术，例如镜头炫光特效的可见性测试以及避免在包围体被遮挡的不可见对象上进行几何形状处理的优化。</p>
+<p>遮挡查询的开始和结束：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 遮挡查询开始</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定查询对象的目标类型；有效值是GL_ANY_SAMPLES_PASSED，GL_ANY_SAMPLES_PASSED_CONSERVATIVE，GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN description#&gt;</span></span><br><span class="line"><span class="comment"> @param id#&gt; 指定查询对象的名称 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glBeginQuery(GLenum target, GLuint <span class="keyword">id</span>);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 遮挡查询结束</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定查询对象的目标类型；有效值是GL_ANY_SAMPLES_PASSED，GL_ANY_SAMPLES_PASSED_CONSERVATIVE，GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glEndQuery(GLenum target);</span><br></pre></td></tr></table></figure>
+<p>使用<code>GL_ANY_SAMPLES_PASSED</code>目标奖返回表示是否有样本通过深度测试的精确布尔状态；<code>GL_ANY_SAMPLES_PASSED_CONSERVATIVE</code>目标将提供更好的性能，但是答案的精确度较低；使用<code>GL_ANY_SAMPLES_PASSED_CONSERVATIVE</code>，有些实现将在没有样本通过深度测试时返回<code>GL_TRUE</code>。</p>
+<p><code>id</code>用<code>glGenQueries</code>创建，用<code>glDeleteQueries</code>删除：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 创建查询id</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param n#&gt; 指定生成的查询名称对象的数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param ids#&gt; 指定一个数组，以存储查询名称对象的列表 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glGenQueries(GLsizei n, GLuint *ids);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 删除查询id</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param n#&gt; 指定要删除的查询名称对象的数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param ids#&gt; 指定一个需要删除的查询名称对象的列表数组 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span> </span><br><span class="line">glDeleteQueries(GLsizei n, <span class="keyword">const</span> GLuint *ids);</span><br></pre></td></tr></table></figure>
+<p>在用<code>glBeginQuery</code>和<code>glEndQuery</code>指定查询对象边界之后，可以使用<code>glGetQueryObjectuiv</code>检索查询对象的结果：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 检索查询对象的结果</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param id#&gt; 指定查询对象的名称 description#&gt;</span></span><br><span class="line"><span class="comment"> @param pname#&gt; 指定需要检索的查询对象参数，可以为GL_QUERY_RESULT或GL_QUERY_RESULT_AVAILABLE description#&gt;</span></span><br><span class="line"><span class="comment"> @param params#&gt; 指定存储返回参数值得对象类型的数组 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glGetQueryObjectuiv(GLuint <span class="keyword">id</span>, GLenum pname, GLuint *params);</span><br></pre></td></tr></table></figure>
+<h1 id="总结">总结</h1>
+<p>这篇文章主要学习了OpenGL ES支持的图元类型，并且了解了如何用常规的非实例化和实例化绘图调用高效地绘制它们。还讨论了在顶点上执行坐标变换的方法。还学习了关于光栅化阶段的知识，在这个阶段，图元被转换为代表屏幕上绘制的像素的偏度。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2019/opengl-es-vertex-shader-0803/" data-toggle="tooltip" data-placement="top" title="OpenGL ES学习--顶点着色器">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/opengl-es-vertex-0720/" data-toggle="tooltip" data-placement="top" title="OpenGL ES学习--顶点属性、顶点数组和缓冲区对象">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#图元"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x56FE;&#x5143;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#三角形"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E09;&#x89D2;&#x5F62;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#直线"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x76F4;&#x7EBF;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#点精灵"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">&#x70B9;&#x7CBE;&#x7075;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#绘制图元"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x7ED8;&#x5236;&#x56FE;&#x5143;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#图元重启"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">&#x56FE;&#x5143;&#x91CD;&#x542F;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#驱动顶点"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">&#x9A71;&#x52A8;&#x9876;&#x70B9;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#几何形状实例化"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">&#x51E0;&#x4F55;&#x5F62;&#x72B6;&#x5B9E;&#x4F8B;&#x5316;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#性能提示"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">&#x6027;&#x80FD;&#x63D0;&#x793A;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#图元装配"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x56FE;&#x5143;&#x88C5;&#x914D;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#坐标系统"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">&#x5750;&#x6807;&#x7CFB;&#x7EDF;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#裁剪"><span class="toc-nav-number">3.1.1.</span> <span class="toc-nav-text">&#x88C1;&#x526A;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#透视分割"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">&#x900F;&#x89C6;&#x5206;&#x5272;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#视口变换"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">&#x89C6;&#x53E3;&#x53D8;&#x6362;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#光栅化"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x5149;&#x6805;&#x5316;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#剔除"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">&#x5254;&#x9664;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#多边形偏移"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">&#x591A;&#x8FB9;&#x5F62;&#x504F;&#x79FB;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#遮挡查询"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x906E;&#x6321;&#x67E5;&#x8BE2;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">&#x603B;&#x7ED3;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/opengl-es-primitive-0801/";
+    <!-- var disqus_url = "/article/2019/opengl-es-primitive-0801/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

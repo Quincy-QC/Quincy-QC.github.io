@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          加载带有签章的PDF文件 - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2020/load-pdf-with-signature-0226/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS - Objective-C" title="iOS - Objective-C">iOS - Objective-C</a>
+                            
+                        </div>
+                        <h1>加载带有签章的PDF文件</h1>
+                        <h2 class="subheading">Load PDF File with Signature</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2020-02-26
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="前言">前言</h1>
+<p>常规的PDF文件可以直接通过<code>UIWebView</code>或<code>WKWebView</code>直接进行本地文件或远程链接加载，但是带有签章的PDF文件，需要一些处理。</p>
+<a id="more"></a>
+<h1 id="对于ios-12以上的系统">对于iOS 12以上的系统</h1>
+<p>可以直接使用<code>WKWebView</code>进行加载本地PDF文件或URL，就会直接显示电子签章。（<code>UIWebView</code>并不会直接显示电子签章）。</p>
+<h1 id="对于ios-12以下的系统">对于iOS 12以下的系统</h1>
+<p>即使是使用<code>WKWebView</code>也无法加载显示电子签章，这时候就需要<a href="https://github.com/mozilla/pdf.js" target="_blank" rel="noopener">pdf.js</a>。<code>pfd.js</code>可以实现在<code>html</code>下直接浏览PDF文档，是一款开源的PDF文档读取解析插件。</p>
+<p><code>pdf.js</code>主要包含两个库文件：</p>
+<ul>
+<li><code>pdf.js</code>负责API解析；</li>
+<li><code>pdf.worker.js</code>负责核心解析；</li>
+</ul>
+<h2 id="下载">下载</h2>
+<p><code>pdf.js</code>是火狐浏览器的开源项目，<a href="http://mozilla.github.io/pdf.js/getting_started/" target="_blank" rel="noopener">下载地址</a>。</p>
+<ol>
+<li>我们可以直接下载<code>Stable</code>包，包含需要的<code>PDF.js</code>和<code>viewer</code>文件：</li>
+</ol>
+<p><img src="/img/article/20200226/1.png" alt="pdf.js"></p>
+<ol start="2">
+<li>也可以从<a href="https://github.com/mozilla/pdf.js" target="_blank" rel="noopener">github</a>下载代码，</li>
+</ol>
+<ul>
+<li>并进行<code>gulp generic</code>编译，最终需要的代码文件<code>pdf.js</code>和<code>pdf.worker.js</code>会在<code>build/generic/</code>路径下；<br>
+<img src="/img/article/20200226/3.png" alt="编译后"></li>
+<li>或使用<code>gulp minified</code>编译，可以一定程度对文件进行压缩，最终需要的代码文件<code>pdf.js</code>和<code>pdf.worker.js</code>会在<code>build/minified/</code>路径下；<br>
+<img src="/img/article/20200226/4.png" alt="编译后"></li>
+</ul>
+<p>如果还觉得文件够大，我们还可以对之进行一些删减，最终文件如下：<br>
+<img src="/img/article/20200226/5.png" alt="文件"></p>
+<h2 id="使用">使用</h2>
+<p>直接拖入到项目中，文件夹添加方式选择<code>Create folder references</code>，选择<code>Create groups</code>会丢失样式。</p>
+<p>PDF文件只能使用本地文件，所以对于网络资源需要先进行下载再展示。</p>
+<p>代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> - (<span class="keyword">void</span>)loadPDFFile:(<span class="built_in">NSString</span>*)filePath &#123;  </span><br><span class="line">    <span class="built_in">NSString</span> *viwerPath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"viewer"</span> ofType:<span class="string">@"html"</span> inDirectory:<span class="string">@"minified/web"</span>];</span><br><span class="line">    <span class="built_in">NSString</span> *urlStr = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@?file=%@#page=1"</span>, viwerPath, filePath];</span><br><span class="line">    urlStr = [urlStr stringByAddingPercentEncodingWithAllowedCharacters:[<span class="built_in">NSCharacterSet</span> URLQueryAllowedCharacterSet]];</span><br><span class="line">    <span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:[<span class="built_in">NSURL</span> URLWithString:urlStr]];</span><br><span class="line">    [<span class="keyword">self</span> loadRequest:request];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，<code>pdf.js</code>加载的功能也只是和使用原生的方式一样加载无电子签章的文件，需要显示电子签章，需要将一下代码注释，可以全局搜索代码<code>data.fieldType === 'Sig'</code>查找：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//    if (data.fieldType === 'Sig') &#123;</span></span><br><span class="line"><span class="comment">//      data.fieldValue = null;</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//      _this3.setFlags(_util.AnnotationFlag.HIDDEN);</span></span><br><span class="line"><span class="comment">//    &#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="在线使用">在线使用</h2>
+<p>我们可以使用<code>mozilla</code>部署在<code>github pages</code>上的<code>Viewer</code>就行PDF加载，和本地<code>viewer.html</code>加载PDF文件类型，使用如下路径加载：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *urlStr = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"http://mozilla.github.io/pdf.js/web/viewer.html?file=%@#page=1"</span>, filePath];</span><br></pre></td></tr></table></figure>
+<p>但是源码的本身是默认不显示签章，所以如果想使用在线预览方式，需要我们自定义<code>HTML</code>修改部分代码并部署到网页，就可以实现在线预览。</p>
+<h2 id="最终效果">最终效果</h2>
+<p><img src="/img/article/20200226/2.png" alt="效果图"></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2020/nstimer-circular-reference-issue-0330/" data-toggle="tooltip" data-placement="top" title="NSTimer循环引用解决方案">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2020/talk-about-map-flatmap-compactmap-0119/" data-toggle="tooltip" data-placement="top" title="细谈map，flatMap和compactMap">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#前言"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#对于ios-12以上的系统"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x5BF9;&#x4E8E;iOS 12&#x4EE5;&#x4E0A;&#x7684;&#x7CFB;&#x7EDF;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#对于ios-12以下的系统"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x5BF9;&#x4E8E;iOS 12&#x4EE5;&#x4E0B;&#x7684;&#x7CFB;&#x7EDF;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#下载"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">&#x4E0B;&#x8F7D;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">&#x4F7F;&#x7528;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#在线使用"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">&#x5728;&#x7EBF;&#x4F7F;&#x7528;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#最终效果"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">&#x6700;&#x7EC8;&#x6548;&#x679C;</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2020/load-pdf-with-signature-0226/";
+    <!-- var disqus_url = "/article/2020/load-pdf-with-signature-0226/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

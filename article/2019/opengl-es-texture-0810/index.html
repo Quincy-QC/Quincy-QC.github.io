@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          OpenGL ES学习--纹理 - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/opengl-es-texture-0810/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                            
+                        </div>
+                        <h1>OpenGL ES学习--纹理</h1>
+                        <h2 class="subheading">About OpenGL ES</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-08-10
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>之前我们已经介绍了顶点着色器，管线的下一步是片段着色器，这是大部分OpenGL ES 3.0视觉魔法发生的地方。片段着色器的核心方面是对表面应用纹理。</p>
+</blockquote>
+<h1 id="纹理基础">纹理基础</h1>
+<p>3D图形渲染中最基本的操作之一是对一个表面应用纹理。纹理可以表现只从网格的几何形状中无法得到的附加细节。OpenGL ES 3.0中的纹理有多种形式：2D纹理、2D纹理数组、3D纹理和立方图纹理。<br>
+纹理通常使用纹理坐标应用到一个表面，纹理坐标可以视为纹理数组数据中的索引。</p>
+<h2 id="2d纹理">2D纹理</h2>
+<p>2D纹理是OpenGL ES中最基本和常用的纹理形式，是一个图形数据的二维数组。一个纹理的单独数据元素称作”纹素“（Texel，”texture pixels“（纹理像素）的简写）。OpenGL ES中的纹理图像数据可以用许多不同的基本格式表现。纹理数据可用的基本格式如下表：</p>
+<table>
+<thead>
+<tr>
+<th>基本格式</th>
+<th>纹素数据描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_RED</td>
+<td>(红)</td>
+</tr>
+<tr>
+<td>GL_RG</td>
+<td>(红，绿)</td>
+</tr>
+<tr>
+<td>GL_RGB</td>
+<td>(红，绿，蓝)</td>
+</tr>
+<tr>
+<td>GL_RGBA</td>
+<td>(红，绿，蓝，Alpha)</td>
+</tr>
+<tr>
+<td>GL_LUMINANCE</td>
+<td>(亮度)</td>
+</tr>
+<tr>
+<td>GL_LUMINANCE_ALPHA</td>
+<td>(亮度，Alpha)</td>
+</tr>
+<tr>
+<td>GL_ALPHA</td>
+<td>(Alpha)</td>
+</tr>
+<tr>
+<td>GL_DEPTH_COMPONENT</td>
+<td>(深度)</td>
+</tr>
+<tr>
+<td>GL_DEPTH_STENCIL</td>
+<td>(深度，模板)</td>
+</tr>
+<tr>
+<td>GL_RED_INTEGER</td>
+<td>(整数红)</td>
+</tr>
+<tr>
+<td>GL_RG_INTEGER</td>
+<td>(整数红，整数绿)</td>
+</tr>
+<tr>
+<td>GL_RGB_INTEGER</td>
+<td>(整数红，整数绿，整数蓝)</td>
+</tr>
+<tr>
+<td>GL_RGBA_INTERGER</td>
+<td>(整数红，整数绿，整数蓝，整数Alpha)</td>
+</tr>
+</tbody>
+</table>
+<p>图像中的每个纹素根据基本格式和数据类型指定。用2D纹理渲染时，纹理坐标用作纹理图形中的索引。一般来说，在3D内容创作程序中将制作一个网格，每个顶点都有一个纹理坐标。2D纹理的纹理坐标用一对2D坐标(s, t)指定，有时也称作(u, v)坐标。这些坐标代表用于查找一个纹理贴图的规范化坐标。</p>
+<p><img src="/img/article/20190810/1.png" alt="2D纹理坐标"></p>
+<p>纹理图像的左下角由<code>st</code>坐标(0.0, 0.0)指定，右上角由<code>st</code>坐标(1.0, 1.0)指定。在[0.0, 1.0]区间之外的坐标是允许的，在该区间之外的纹理读取行为由纹理包装模式定义。</p>
+<h2 id="立方图纹理">立方图纹理</h2>
+<p>除了2D纹理之外，OpenGL ES 3.0还支持立方图纹理。从最基本的特征讲，立方图就是一个由6个单独2D纹理面组成的纹理。立方图的每个面代表立方体六面中的一个。虽然立方图在3D渲染中有多重高级的使用方式，但是最常用的是所谓的环境贴图特效。对这种特效，环境在物体上的倒影通过使用一个表示环境的立方图渲染。通常，生成环境贴图所用的立方图通过在场景中央防止一个摄像机，从6个轴的方向(+X, -X, +Y, -Y, +Z, -Z)捕捉场景图形并将结果保存在立方体的每个面来生成。<br>
+立方图纹素的读取通过使用一个3D向量(s, t, r)作为纹理坐标，在立方图中查找。纹理坐标(s, t, r)代表着3D向量的(x, y, z)分量。这个3D向量首先用于选择立方图中需要读取的一个面，然后该坐标投影到2D坐标(s, t)，然后从该面上读取。我们可以通过从一个立方体内部的原点绘制一个3D向量来直观地了解这一过程。这个向量与立方体相交的点就是从立方图读取的纹素。</p>
+<p><img src="/img/article/20190810/2.png" alt="立方图的3D纹理坐标"></p>
+<p>立方图各个面的指定方法与2D纹理的相同。每个面必须为正方形（宽度和高度必须相等），每个面的宽度和高度都一样。用于纹理坐标的3D向量和2D纹理的不同，通常不直接逐顶点地保存在网格上。相反，立方图通常使用法向量作为计算立方图纹理坐标的基础来读取。一般来说，法向量和一个来自眼睛的向量一起使用，计算出一个反射向量，然后用这个向量在立方图中查找。</p>
+<h2 id="3d纹理">3D纹理</h2>
+<p>OpenGL ES 3.0中的另一类纹理是3D纹理（或者体纹理）。3D纹理可以看做2D纹理多个切片的一个数组，它用一个3元(s, t, r)坐标访问，这与立方体很相似。对于3D纹理，r坐标选择3D纹理中需要采样的切片，(s, t)坐标用于读取每个切片中的2D贴图。下图展示了一个3D纹理，其中每个切片由一个单独的2D纹理组成。3D纹理中的每个mip贴图级别包含上一个级别的纹理中的半数切片。</p>
+<p><img src="/img/article/20190810/3.png" alt="3D纹理"></p>
+<h2 id="2d纹理数组">2D纹理数组</h2>
+<p>OpenGL ES 3.0中最后一种纹理是2D纹理数组。2D纹理数组与3D纹理很相似，但是用途不同。例如，2D纹理数组尝尝用于存储2D图像的一个动画。数组的每个切片表示纹理动画的一帧。2D纹理数组和3D纹理之间的差别很细微，但是很重要。对于3D纹理，过滤发生在切片之间，而从2D纹理数组中读取只从一个单独的切片采样。mip贴图也不一样。2D纹理数组中的每个mip贴图级别包含与以上级别相同的切片数量。每个2D切片的mip贴图完全独立于其他切片（这与3D纹理的情况不同，3D纹理的每个mip贴图级别只有以上级别切片数量的一半）。</p>
+<p>为了在2D纹理数组中定位，需使用与3D纹理一样的纹理坐标(s, t, r)，r坐标选择2D纹理数组中要使用的切片，(s, t)坐标用于选择切片，选择的方法与2D纹理完全一样。</p>
+<h2 id="纹理对象和纹理的加载">纹理对象和纹理的加载</h2>
+<p>纹理应用的第一步是创建一个纹理对象。纹理对象是一个容器对象，保存渲染所需的纹理数据，例如图像数据、过滤模式和包装模式。在OpenGL ES中，纹理对象用一个无符号整数表示，该整数是纹理对象的一个句柄。用于生成纹理对象的函数是<code>glGenTextures</code>：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 生成纹理</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param n#&gt; 指定要生成的纹理对象数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param textures#&gt; 一个保存n个纹理对象ID的无符号整数数组 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glGenTextures(GLsizei n, GLuint *textures);</span><br></pre></td></tr></table></figure>
+<p>在创建的时候，<code>glGenTextures</code>生成的纹理对象是一个空的容器，用于加载纹理数据和参数。纹理对象在应用程序不在需要它们的时候也必须删除。这一步骤通常在应用程序关闭或者游戏级别改变时完成，可以使用<code>glDeleteTextures</code>实现：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 删除纹理</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param n#&gt; 指定要删除的纹理对象数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param textures#&gt; 一个保存要删除的n个纹理对象ID的无符号整数数组 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDeleteTextures(GLsizei n, <span class="keyword">const</span> GLuint *textures);</span><br></pre></td></tr></table></figure>
+<p>一旦用<code>glGenTextures</code>生成了纹理对象ID，应用程序就必须绑定纹理对象进行操作。绑定纹理对象之后，后续的操作(如<code>glTexImage2D</code>和<code>glTexParameter</code>)将影响绑定的纹理对象。用于绑定纹理对象的函数是<code>glBindTexture</code>：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绑定纹理对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 将纹理对象绑定到GL_TEXTURE_2D、GL_TEXTURE_3D、GL_TEXTURE_2D_ARRAY或者GL_TEXTURE_CUBE_MAP description#&gt;</span></span><br><span class="line"><span class="comment"> @param texture#&gt; 要绑定的纹理对象句柄 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glBindTexture(GLenum target, GLuint texture);</span><br></pre></td></tr></table></figure>
+<p>一旦纹理绑定到一个特定的纹理目标，纹理对象在删除之前就一直绑定到它的目标。生成纹理对象并绑定它之后，使用纹理的下一个步骤是真正地加载图像数据。用于加载2D和立方图纹理的基本函数是<code>glTexImage2D</code>。此外，在OpenGL ES 3.0中可以使用多种替代方法指定2D纹理，包括不可变纹理(<code>glTexStorage2D</code>)和<code>glTexSubImage2D</code>的结合。我们首先从最基本的方法开始–使用<code>glTexImage2D</code>–并在后面描述不可变纹理。为了获得最佳性能，建议使用不可变纹理。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 加载2D和立方图纹理</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定目标纹理，可以为GL_TEXTURE_2D、GL_TEXTURE_CUBE_MAP_POSITIVE_(X, Y, Z)、GL_TEXTURE_CUBE_MAP_NEGATIVE_(X, Y, Z) description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定要加载的mip级别，第一个级别为0，后续的mip贴图级别递增 description#&gt;</span></span><br><span class="line"><span class="comment"> @param internalformat#&gt; 纹理存储的内部格式；可以是未确定大小的基本内部格式，后者是确定大小的内部格式。未确定大小的内部格式可以为GL_RGBA，GL_RGB，GL_LUMINANCE_ALPHA，GL_LUMINANCE，GL_ALPHA。确定大小的内部格式有GL_RGB，GL_DEPTH_COMPONENT16等 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 图像的像素宽度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 图像的像素高度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param border#&gt; 这个参数在OpenGL ES中被忽略，保留它是为了与桌面的OpenGL接口兼容；应该为0 description#&gt;</span></span><br><span class="line"><span class="comment"> @param format#&gt; 输入的纹理数据格式，可以为GL_RED(_INTEGER)，GL_RG(_INTEGER)，GL_RGB(_INTERGER)，GL_RGBA(_INTEGER)，GL_DEPTH_COMPONENT，GL_DEPTH_STENCIL，GL_LUMINANCE_ALPHA，GL_ALPHA description#&gt;</span></span><br><span class="line"><span class="comment"> @param type#&gt; 输入像素数据的类型 description#&gt;</span></span><br><span class="line"><span class="comment"> @param pixels#&gt; 包含图像的实际像素数据。数据必须包含（width*height*高度）个像素，每个像素根据格式和类型规范有相应的字节数。像素行必须对其到用`glPixelStorei`设置的GL_UNPACK_ALIGHMENT description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, <span class="keyword">const</span> GLvoid *pixels);</span><br></pre></td></tr></table></figure>
+<p>下面举个例子，演示了生成纹理对象、绑定该对象然后加载由无符号字节表示的RGB图像数据组成的 2x2 2D纹理：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">GLuint textureId;</span><br><span class="line">GLubyte pixels[] = &#123;</span><br><span class="line">    <span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">    <span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>,</span><br><span class="line">    <span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>,</span><br><span class="line">    <span class="number">255</span>, <span class="number">255</span>, <span class="number">0</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// User tightly packed data</span></span><br><span class="line">glPixelStorei(GL_UNPACK_ALIGNMENT, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate a texture object</span></span><br><span class="line">glGenTextures(<span class="number">1</span>, &amp;textureId);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Bind the texture object</span></span><br><span class="line">glBindTexture(GL_TEXTURE_2D, textureId);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Load the texture</span></span><br><span class="line">glTexImage2D(GL_TEXTURE_2D, <span class="number">0</span>, GL_RGB, <span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>, GL_RGB, GL_UNSIGNED_BYTE, pixels);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Set the filtering mode</span></span><br><span class="line">glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);</span><br><span class="line">glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);</span><br></pre></td></tr></table></figure>
+<p>在上述代码的第一部分，<code>pixels</code>数组用简单的2x2纹理数据初始化。这些数据由无符号字节RGB三元组组成，范围为[0, 255]。当着色器中从一个8位无符号字节纹理分量读取数据时，该值从[0, 255]区间被映射到浮点区间[0.0, 1.0]。一般来说，应用程序不会以这种简单的方式创建纹理数据，而从一个图像文件中加载数据。<br>
+在调用<code>glTexImage2D</code>之前，应用程序调用<code>glPixelStorei</code>设置解包对齐。通过<code>glTexImage2D</code>上传纹理数据时，像素行被认定为对齐到<code>GL_UNPACK_ALIGNMENT</code>设置的值。默认情况下，该值为4，意味着像素行被认定为从4字节的边界开始。<br>
+这个应用程序将解包对齐设置为1，意味着每个像素行从字节边界开始（换言之，数据被紧密打包）。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 设置包装或者解包对齐</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param pname#&gt; 指定设置的像素存储类型，下面的选项影响调用glTexImage2D、glTexImage3D、glTexSubImage2D和glTexSubImage3D时数据从内存中解包的方式：GL_UNPACK_ROW_LENGTH，GL_UNPACK_IMAGE_HEIGHT，GL_UNPACK_SKIP_PIXELS，GL_UNPACK_SKIP_ROWS，GL_UNPACK_SKIP_IMAGES，GL_UNPACK_ALIGNMENT；下面的选项影响调用glReadPixels时数据打包到内存中的方式：GL_PACK_ROW_LENGTH，GL_PACK_IMAGE_HEIGHT，GL_PACK_SKIP_PIXELS，GL_PACK_SKIP_ROWS，GL_PACK_SKIP_IMAGES，GL_PACK_ALIGNMENT description#&gt;</span></span><br><span class="line"><span class="comment"> @param param#&gt; 指定包装或者解包选项的整数值 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glPixelStorei(GLenum pname, GLint param);</span><br></pre></td></tr></table></figure>
+<p><code>glPixelStorei</code>的<code>GL_PACK_xxxx</code>参数对纹理图像上传没有任何影响。打包选项由<code>glReadPixels</code>使用。<code>glPixelStorei</code>设置的打包和解包选项是全局状态，不由纹理对象存储，也不与之关联。在实践中，很少使用<code>GL_UNPACK_ALIGNMENT</code>之外的选项指定纹理。为了完整起见，下表提供了像素存储选项的完整列表。</p>
+<table>
+<thead>
+<tr>
+<th>像素存储选项</th>
+<th>初始值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_UNPACK_ALIGNMENT GL_PACK_ALIGNMENT</td>
+<td>4</td>
+<td>指定图像中各行的对齐方式。默认情况下，图像始于4字节边界。将该值设置为1意味着图像紧密打包，各行到齐到字节边界</td>
+</tr>
+<tr>
+<td>GL_UNPACK_ROW_LENGTH GL_PACK_ROW_LENGTH</td>
+<td>0</td>
+<td>如果该值非0，则表示每个图像行中的像素数量。如果该值为0，则行的长度为图像的宽度（也就是紧密打包）</td>
+</tr>
+<tr>
+<td>GL_UNPACK_IMAGE_HEIGHT GL_PACK_IMAGE_HEIGHT</td>
+<td>0</td>
+<td>如果该值非0，则表示作为3D纹理一部分的图形的每个列中像素的数量。这个选项可以用于在3D纹理的每个切片之间填充列。如果该值为0，则图像中的列数等于高度（也就是紧密打包）</td>
+</tr>
+<tr>
+<td>GL_UNPACK_SKIP_PIXELS GL_PACK_SKIP_PIXELS</td>
+<td>0</td>
+<td>如果该值非0，则表示行开始处跳过的像素数量</td>
+</tr>
+<tr>
+<td>GL_UNPACK_SKIP_ROWS GL_PACK_SKIP_ROWS</td>
+<td>0</td>
+<td>如果该值非0，则表示图像开始时跳过的行数</td>
+</tr>
+<tr>
+<td>GL_UNPACK_SKIP_IMAGES GL_PACK_SKIP_IMAGES</td>
+<td>0</td>
+<td>如果该值非0，则表示3D纹理中跳过的图像数</td>
+</tr>
+</tbody>
+</table>
+<p>代码的最后一部分使用<code>glTexParameteri</code>将缩小和放大过滤模式设置为<code>GL_NEAREST</code>。这段代码是必需的，因为我们还没有为纹理加载完整的mip贴图链；因此，必须选择非mip贴图缩小过滤器。用于缩小和放大模式的其他选项是<code>GL_LINEAR</code>，提供双线性非mip贴图过滤。</p>
+<h2 id="纹理过滤和mip贴图">纹理过滤和mip贴图</h2>
+<p>到目前为止，我们对2D纹理的介绍仅限于单个2D图像。尽管这使得我们能够解释纹理的概念，但是OpenGL ES中纹理的指定和使用还有一些其他的方法。这种复杂性与使用单个纹理贴图时发生的视觉伪像和性能问题有关。正如我们到目前为止所描述的那样，纹理坐标用于生成一个2D索引，以从纹理贴图中读取。当缩小和放大过滤器设置为<code>GL_NEAREST</code>时，就会发生这样的情况：一个纹素将在提供的纹理坐标位置上读取。这称作点采样或者最近采样。<br>
+但是，最近采样可能产生严重的视觉伪像，这是因为三角形在屏幕空间中变得较小，在不同像素间的插值中，纹理坐标有很大的跳跃。结果是，从一个大的纹理贴图中去的少量样本，造成锯齿伪像，而且可能造成巨大性能损失。OpenGL ES中解决这类伪像的方案被称作mip贴图（mipmapping）。mip贴图的思路是构建一个图像链–mip贴图链。mip贴图链始于原来指定的图像，后续的每个图像在每个维度上是前一个图像的一半，一直持续到最后达到链底部的1x1纹理。mip贴图级别可以编程生成，一个mip级别中的每个像素通常根据上一级别中相同位置的4个像素的平均值计算（盒式过滤）。<br>
+<a href="https://github.com/danginsburg/opengles3-book/blob/master/Chapter_9/MipMap2D/MipMap2D.c" target="_blank" rel="noopener">GenMipMap2D</a>函数提供了生成mip贴图链的代码。这个函数以一个RGB8图形作为输入，在前面的图像上执行盒式过滤，生成下一个mip贴图级别。mip贴图链用<code>glTexImage2D</code>加载。<br>
+加载mip贴图链之后，便可以设置过滤模式，以使用mip贴图。结果是我们实现了屏幕像素和纹理像素间的更好比率，从而减少了锯齿伪像。图像的锯齿也减少了，这是因为mip贴图链中的每个图像连续进行过滤，使得高频元素随着贴图链的下移越来越少。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">glTexImage2D(GL_TEXTURE_2D, <span class="number">0</span>, GL_RGB, width, height, <span class="number">0</span>, GL_RGB, GL_UNSIGNED_BYTE, pixels);</span><br><span class="line"><span class="keyword">int</span> level = <span class="number">1</span>;</span><br><span class="line">GLubyte *prevImage = &amp;pixels[<span class="number">0</span>];</span><br><span class="line">GLubyte *newImage;</span><br><span class="line"><span class="keyword">while</span> (width &gt; <span class="number">1</span> &amp;&amp; height &gt; <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">int</span> newWidth, newHeight;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Generate the next mipmap level</span></span><br><span class="line">    GenMipMap2D(prevImage, &amp;newImage, width, height, &amp;newWidth, &amp;newHeight);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Load the mipmap level</span></span><br><span class="line">    glTexImage2D(GL_TEXTURE_2D, level, GL_RGB, newWidth, newHeight, <span class="number">0</span>, GL_RGB, GL_UNSIGNED_BYTE, newImage);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Free the previous image</span></span><br><span class="line">    free(prevImage);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Set the previous image for the next iteration</span></span><br><span class="line">    prevImage = newImage;</span><br><span class="line">    level += <span class="number">1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Half the width and height</span></span><br><span class="line">    width = newWidth;</span><br><span class="line">    height = newHeight;</span><br><span class="line">&#125;</span><br><span class="line">free(newImage);</span><br></pre></td></tr></table></figure>
+<p>纹理渲染时发生两种过滤：缩小和放大。缩小发生在屏幕上投影的多边形小于纹理尺寸的时候。放大发生在屏幕上投影的多边形大于纹理尺寸的时候。过滤器类型的确定由硬件自动处理，但是API提供了对每种情况下使用的过滤类型的控制。对于放大，mip贴图不起作用，因为我们总是从最大的可用级别采样。对于缩小，可以使用不同的采样模式。所用模式的选择基于你需要实现的显示质量水平以及为了纹理过滤损失多少性能。<br>
+过滤模式（和许多其他纹理选项）用<code>glTexParameter[i|f][v]</code>指定。接下来描述纹理过滤模式。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">glTexParameteri(GLenum target, GLenum pname, GLint param)</span><br><span class="line">glTexParameteriv(GLenum target, GLenum pname, <span class="keyword">const</span> GLint *params);</span><br><span class="line">glTexParameterf(GLenum target, GLenum pname, GLfloat param);</span><br><span class="line">glTexParameterfv(GLenum target, GLenum pname, <span class="keyword">const</span> GLfloat *params);</span><br></pre></td></tr></table></figure>
+<p><code>pname</code>为<code>GL_TEXTURE_MAG_FILTER</code>放大过滤器时，<code>param</code>可能是<code>GL_NEAREST</code>或<code>GL_LINEAR</code>。在<code>GL_NEAREST</code>放大过滤中，将从最靠近纹理坐标的纹理中取得单点样本。在<code>GL_LINEAR</code>放大过滤中，将从纹理坐标附近的纹理中取得一个双线性样本（4个样本的平均值）。<br>
+<code>pname</code>为<code>GL_TEXTURE_MIN_FILTER</code>缩小过滤器时，<code>param</code>可以设置为如下值的任意一个：</p>
+<ul>
+<li><code>GL_NEAREST</code> – 从最靠近纹理坐标的纹理中获得一个单点样本。</li>
+<li><code>GL_LINEAR</code> – 从最靠近纹理坐标的纹理中获得一个双线性样本。</li>
+<li><code>GL_NEAREST_MIPMAP_NEAREST</code> – 从所选的最近的mip级别中去的单点样本。</li>
+<li><code>GL_NEAREST_MIPMAP_LINEAR</code> – 从两个最近的mip级别中获得样本，并在这些样本之间插值。</li>
+<li><code>GL_LINEAR_MIPMAP_NEAREST</code> – 从所选的最近mip级别中获得双线性样本。</li>
+<li><code>GL_LINEAR_MIPMAP_LINEAR</code> – 从两个最近的mip级别中获得双线性样本，然后在它们之间插值。这种模式通常被称作三线性过滤，产生所有模式中最佳的质量。</li>
+</ul>
+<blockquote>
+<p>在纹理缩小模式中，只要<code>GL_NEAREST</code>和<code>GL_LINEAR</code>不需要为纹理指定完整的mip贴图链。其他所有模式都要求纹理存在完整的mip贴图链。</p>
+</blockquote>
+<p>选择的纹理过滤模式对性能有一定的影响。如果发生缩小且担心性能，那么使用mip贴图过滤模式通常是大部分硬件上的最佳选择。如果没有mip贴图，则纹理缓存利用率可能非常低，因为读取发生在贴图的少数位置。然而，你选择的过滤模式较高，在硬件中的性能代价就越大。例如，在大部分硬件上，进行双线性过滤的代价低于三线性过滤。我们应该选择一种可以提供所要的质量但是不会对性能有过分负面影响的模式。在某些硬件上，你可能轻松地获得高质量的过滤，特别是在纹理过滤带来的开销不是我们的瓶颈时。这需要在应用程序和计划运行应用程序的硬件上进行调整。</p>
+<h3 id="无缝立方图过滤">无缝立方图过滤</h3>
+<p>关于过滤，OpenGL ES 3.0中有一个新变化，与立方图的过滤有关。在OpenGL ES 2.0中，当线性过滤核心落到立方图边缘时，过滤将只发生在立方图的一个面上。这将在立方图各面之间的边上造成伪像。在OpenGL ES 3.0中，立方图过滤现在是无缝的–如果过滤核心跨越立方图不止一个面，核心将会从其覆盖的每个面中获得样本。无缝过滤在立方图各面的边缘形成了更平滑的过滤。在OpenGL ES 3.0中，不需要做任何操作就可以启用无缝立方图过滤，所有线性过滤核心将自动使用它。</p>
+<h2 id="自动mip贴图生成">自动mip贴图生成</h2>
+<p>前一节讲述了生成mip贴图的一种途径，但是OpenGL ES 3.0还提供了用<code>glGenerateMipmap</code>自动生成mip贴图的机制。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 自动生成mip贴图</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 为之生成mip贴图的纹理目标；可以是GL_TEXTURE_2D、GL_TEXTURE_3D、GL_TEXTURE_2D_ARRAY或GL_TEXTURE_CUBE_MAP description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glGenerateMipmap(GLenum target);</span><br></pre></td></tr></table></figure>
+<p>在绑定的纹理对象上调用<code>glGenerateMipmap</code>时，这个函数将从0级图像的内容生成整个mip贴图链。对于2D纹理，0级纹理内容将持续地被过滤并用于每个后续级别。对于立方图，立方体的每一面都由各面的0级生成。当然，要将这个函数用于立方图，必须为立方体的每个面指定0级，每个面的内部格式、宽度和高度都必须匹配。对于2D纹理数组，数组的每个切片将进行与2D纹理一样的过滤。最后，对于3D纹理，将通过过滤各个切片生成全体的mip贴图。<br>
+OpenGL ES 3.0不强制用于生成mip贴图的特定过滤算法（但是规范中推荐盒式过滤，各种实现可以自由地选择他们使用的算法）。如果需要特定的过滤方法，就必须自己生成mip贴图。<br>
+在开始使用帧缓冲区对象渲染纹理时，自动化mip贴图生成变得特别重要。当渲染到一个纹理时，我们不希望将纹理的内容读回CPU来生成mip贴图，相反，可以使用<code>glGenerateMipmap</code>和图形硬件，然后在不需要将数据读回CPU的情况下生成mip贴图。</p>
+<h2 id="纹理坐标包装">纹理坐标包装</h2>
+<p>纹理包装模式用于指定纹理坐标超出[0.0, 1.0]范围时所发生的行为，用<code>glTexParameter[i|f][v]</code>设置。这些模式可以为s、t、r坐标单独设置。<code>GL_TEXTURE_WRAP_S</code>模式定义s坐标超出[0.0, 1.0]范围时发生的行为，<code>GL_TEXTURE_WRAP_T</code>设置t坐标的行为，<code>GL_TEXTURE_WRAP_R</code>设置r坐标的行为（r坐标包装仅用于3D纹理和2D纹理数组）。在OpenGL ES中有三个包装模式可供选择，如下表：</p>
+<table>
+<thead>
+<tr>
+<th>纹理包装模式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_REPEAT</td>
+<td>重复纹理</td>
+</tr>
+<tr>
+<td>GL_CLAMP_TO_EDGE</td>
+<td>限定读取纹理的边缘</td>
+</tr>
+<tr>
+<td>GL_MIRRORED_REPEAT</td>
+<td>重复纹理和镜像</td>
+</tr>
+</tbody>
+</table>
+<p>注意，纹理包装模式也影响过滤行为。例如，当纹理坐标在纹理的边缘时，线性过滤核心可能跨越纹理的边缘。在这种情况下，包装模式将决定对于核心在纹理边缘之外的部分要读取哪些纹素。在不希望出现任何形式的重复时，应该使用<code>GL_CLAMP_TO_DEGE</code>。</p>
+<h2 id="纹理调配">纹理调配</h2>
+<p>纹理调配（Swizzle）控制输入的R、RG、RGB或RGBA纹理中的颜色分量在着色器中读取时如何映射到分量。例如，应用程序可能希望一个<code>GL_RED</code>纹理映射为(0, 0, 0, R)或者(R, R, R, 1)而不是默认的(R, 0, 0, 1)。每个R、G、B、A值映射到的纹理分量都可以用<code>glTexParameter[i|f][v]</code>设置的纹理调配单独控制。需要控制的分量用<code>GL_TEXTURE_SWIZZLE_R</code>、<code>GL_TEXTURE_SWIZZLE_G</code>、<code>GL_TEXTURE_SWIZZLE_B</code>或<code>GL_TEXTURE_SWIZZLE_A</code>设置。作为该分量纹理值来源的可能是分别从R、G、B、A分量读取的<code>GL_RED</code>、<code>GL_GREEN</code>、<code>GL_BLUE</code>或<code>GL_ALPHA</code>。此外，应用程序可以分别用<code>GL_ZERO</code>或<code>GL_ONE</code>将该值设置为常数0或者1。</p>
+<h2 id="纹理细节级别">纹理细节级别</h2>
+<p>在某些应用中，在所有纹理mip贴图级别可用之前就能够开始显示场景是很实用的。例如，通过数据连接下载纹理图像的GPS应用可以从最低级别的mip贴图开始，在更高级别可用时再显示它们。在OpenGL ES 3.0中，可以通过使用<code>glTexParameter[i|f][v]</code>的多个参数实现。<code>GL_TEXTURE_BASE_LEVEL</code>设置用于纹理的最大mip贴图级别。默认情况下下，该值为0，但是如果mip贴图级别还不可用，则可以设置为更高的值。同样，<code>GL_TEXTURE_MAX_LEVEL</code>设置使用的最小mip贴图级别。默认情况下，它的值为1000（超过了任何纹理可能具备的最大级别），但是可以将其设置为较小的值，以控制用于纹理的最小mip级别。<br>
+为了选择要用于渲染的mip贴图级别，OpenGL ES自动计算一个细节级别（LOD）值。这个浮点值确定从哪一个mip贴图级别过滤（在三线性过滤中，控制每个mip贴图使用的多少）。应用程序还可以用<code>GL_TEXTURE_MIN_LOD</code>和<code>GL_TEXTURE_MAX_LOD</code>控制最小和最大的LOD值。可以从基本和最大mip贴图级别单独控制LOD限制的一个原因是在新的mip贴图级别可用时提供平滑过渡。仅仅设置纹理的基本和最大级别可能在新mip贴图级别可用时造成间歇伪像，而插入LOD可以使这一过渡看起来更平滑。</p>
+<h2 id="深度纹理对比百分比渐进过滤">深度纹理对比（百分比渐进过滤）</h2>
+<p>最后两个纹理参数是<code>GL_TEXTURE_COMPARE_FUNC</code>和<code>GL_TEXTURE_COMPARE_MODE</code>。引入这些纹理参数是为了提供百分比渐进过滤（PCF）功能。在执行被称作阴影贴图的阴影技术时，片段着色器需要比较一个片段的当前深度值和深度纹理中的深度值，以确定片段在阴影之内还是之外。为了实现平滑的阴影边缘效果，对深度纹理进行双线性过滤是很有用的。但是，在过滤深度值时，我们希望过滤在采样深度值并与当前深度（或参考值）比较之后发生。如果过滤在比较之前发生，我们将平均计算深度纹理中的值，这不能提供正确的结果。PCF提供了正确的过滤，将采样的每个深度值与参考深度比较，然后将这些比较的结果（0或者1）一起进行平均。<br>
+<code>GL_TEXTURE_COMPARE_MODE</code>默认为<code>GL_NONE</code>，但是当它被设置为<code>GL_COMPARE_REF_TO_TEXTURE</code>时，(s, t, r)纹理坐标中的r坐标将与深度纹理的值进行比较。然后，比较的结果将成为阴影纹理读取的结果（可能是9或者1，如果启用纹理过滤，则为这些值的平均）。比较函数用<code>GL_TEXTURE_COMPARE_FUNC</code>设置，可以设置为<code>GL_LEQUAL</code>、<code>GL_GEQUAL</code>、<code>GL_LESS</code>、<code>GL_GREATER</code>、<code>GL_EQUAL</code>、<code>GL_NOTEQUAL</code>、<code>GL_ALWAYS</code>或者<code>GL_NEVER</code>。</p>
+<h2 id="纹理格式">纹理格式</h2>
+<p>OpenGL ES 3.0为纹理提供了广泛的数据格式，格式的数量比OpenGL ES 2.0有了很大的增加。<br>
+2D纹理可以以确定大小或者确定大小的内部格式用<code>glTexImage2D</code>上传。如果纹理用未确定大小的格式指定，则OpenGL ES实现可以自由选择纹理数据存储的内部表现形式。如果纹理用确定大小的格式指定，则OpenGL ES实现将选择至少与指定的位数相同的格式。</p>
+<p><code>glTexImage2D</code>的有效的未确定大小内部格式组合：</p>
+<table>
+<thead>
+<tr>
+<th>内部格式</th>
+<th>格式</th>
+<th>类型</th>
+<th>输入数据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_RGB</td>
+<td>GL_RGB</td>
+<td>GL_UNSIGNED_BYTE</td>
+<td>8/8/8 RGB 24- 位</td>
+</tr>
+<tr>
+<td>GL_RGB</td>
+<td>GL_RGB</td>
+<td>GL_UNSIGNED_SHORT_5_6_5</td>
+<td>5/6/5 RGB 16- 位</td>
+</tr>
+<tr>
+<td>GL_RGBA</td>
+<td>GL_RGBA</td>
+<td>GL_UNSIGNED_BYTE</td>
+<td>8/8/8/8 RGBA 32- 位</td>
+</tr>
+<tr>
+<td>GL_RGBA</td>
+<td>GL_RGBA</td>
+<td>GL_UNSIGNED_SHORT_4_4_4_4</td>
+<td>4/4/4/4 RGBA 16- 位</td>
+</tr>
+<tr>
+<td>GL_RGBA</td>
+<td>GL_RGBA</td>
+<td>GL_UNSIGNED_SHORT_5_5_5_1</td>
+<td>5/5/5/1 RGBA 16- 位</td>
+</tr>
+<tr>
+<td>GL_LUMINANCE_ALPHA</td>
+<td>GL_LUMINANCE_ALPHA</td>
+<td>GL_UNSIGNED_BYTE</td>
+<td>8/8 LA 16- 位</td>
+</tr>
+<tr>
+<td>GL_LUMINANCE</td>
+<td>GL_LUMINANCE</td>
+<td>GL_UNSIGNED_BYTE</td>
+<td>8L 8- 位</td>
+</tr>
+<tr>
+<td>GL_ALPHA</td>
+<td>GL_ALPHA</td>
+<td>GL_UNSIGNED_BYTE</td>
+<td>8A 8- 位</td>
+</tr>
+</tbody>
+</table>
+<p>如果应用程序希望更多地控制数据的内部存储方式，那么它可以使用确定大小的内部格式。</p>
+<h3 id="规范化纹理格式">规范化纹理格式</h3>
+<p>我们所说的”规范化“指的是从片段着色器中读取纹理时，结果将处于[0.0, 1.0]范围内（或者在*_SNORM格式中的[-1.0, 1.0]范围）。例如，用<code>GL_UNSIGNED_BYTE</code>数据指定的<code>GL_R8</code>图像将取得每个8位的无符号字节值(范围为[0, 255])，并在片段着色器读取时映射到[0.0, 1.0]。用<code>GL_BYTE</code>数据指定的<code>GL_R8_SNORM</code>图像将取得每个8位的有符号字节值（范围为[-128, 127]）并在读取时映射到[-1.0, 1.0]。</p>
+<p><img src="/img/article/20190810/4.png" alt="glTexImage2D的规范化确定大小内部格式组合"></p>
+<h3 id="浮点纹理格式">浮点纹理格式</h3>
+<p>OpenGL ES 3.0也引入浮点纹理格式。大部分浮点格式由16位半浮点数据或者32位浮点数据支持。与规范化纹理格式（R、RG、RGB、RGBA）一样，浮点纹理格式可能有1~4个分量。OpenGL ES 3.0不强制浮点格式用作渲染目标，只强制16位半浮点数据可以过滤。</p>
+<p><img src="/img/article/20190810/5.png" alt="glTexImage2D的有效确定大小浮点内部格式组合"></p>
+<h3 id="整数纹理格式">整数纹理格式</h3>
+<p>整数纹理格式允许纹理范围在片段着色器中以整数形式读取。也就是说，与片段着色器中读取时数据从整数表示转换为规范化浮点值的规范化纹理格式相反，整数纹理中的值在片段着色器读取时仍然为整数。<br>
+整数纹理格式不可过滤，但是R、RG和RGBA变种可以用作帧缓冲区对象中渲染的颜色附着（color attachment）。使用整数纹理作为颜色附着的时候，忽略Alpha混合状态（整数渲染目标不可能进行混合）。用于从整数纹理读取并输出到整数渲染目标的片段着色器应该使用对应该格式的有符号或者无符号整数类型。</p>
+<p><img src="/img/article/20190810/6.png" alt="glTexImage2D的有效确定大小内部整数格式组合"><br>
+<img src="/img/article/20190810/7.png" alt="glTexImage2D的有效确定大小内部整数格式组合"></p>
+<h3 id="共享指数纹理格式">共享指数纹理格式</h3>
+<p>共享指数纹理为不需要浮点纹理使用的那么多深度位数的大范围RGB纹理提供了一种存储方式。共享指数纹理通常用于高动态范围（HDR）图像，这种图像不需要半浮点或者全浮点数据。OpenGL ES 3.0中的共享指数纹理格式是<code>GL_RGB9_E5</code>。在这种格式中，3个RGB分量共享一个5位的指数。5位的指数隐含地由数值15调整。RGB的每个9位的数值存储无符号位的尾数（因此必然为正）。</p>
+<p><img src="/img/article/20190810/8.png" alt="共享指数纹理转换"></p>
+<h3 id="srgb纹理格式">sRGB纹理格式</h3>
+<p>OpenGL ES 3.0中引入的另一个纹理格式是sRGB纹理。sRGB是一个非线性颜色空间，大约遵循一个幂函数。大部分图像实际上都存储为sRGB颜色空间，这种非线性解释了人类能够在不同的亮度级别上更好地区分颜色这一事实。<br>
+如果用于纹理的图像是以sRGB颜色空间创作的，但是没有使用sRGB纹理读取，那么所有发生在着色器中的照明计算都会在非线性颜色空间中进行。也就是说，标准创作软件包创建的纹理保存为sRGB，从着色器中读取时仍然保持为sRGB。于是照明计算发生在非线性sRGB空间中。许多应用程序都犯了这个错误，这是不正确的，会造成明显不同（不准确）的输出图像。<br>
+为了正确地处理sRGB图像，应用程序应该使用一个sRGB纹理格式，这种格式在着色器中读取时将从sRGB转换为线性颜色空间。然后，着色器中的所有计算都将在线性颜色空间中完成。最后，通过渲染到一个sRGB渲染目标，图像将会自动地转换回sRGB。可以使用着色器命令<code>pow(value, 2.0)</code>进行近似的sRGB-&gt;线性转换，然后用<code>(value, 1/2.2)</code>进行近似的线性-&gt;sRGB转换。然后，尽可能使用sRGB纹理是最好的做法，因为这样减少了着色器指令数量，并且提供更准确的sRGB转换。</p>
+<table>
+<thead>
+<tr>
+<th>内部格式</th>
+<th>格式</th>
+<th>类型</th>
+<th>输出数据</th>
+<th>R</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_SRGB8</td>
+<td>GL_RGB</td>
+<td>GL_UNSIGNED_BYTE</td>
+<td>8/8/8 SRGB</td>
+<td></td>
+<td>X</td>
+</tr>
+<tr>
+<td>GL_SRGB8_ALPHA8</td>
+<td>GL_RGBA</td>
+<td>GL_UNSIGNED_BYTE</td>
+<td>8/8/8/8 RGBA</td>
+<td>X</td>
+<td>X</td>
+</tr>
+</tbody>
+</table>
+<h3 id="深度纹理格式">深度纹理格式</h3>
+<p>OpenGL ES 3.0中的最后一种纹理格式类型是深度纹理。深度纹理允许应用程序从帧缓冲区对象的深度附着中读取深度值（和可选的模板值）。这在各种高级渲染算法中很有用，包括阴影贴图。下表展示了OpenGL ES 3.0中有效的深度纹理格式：</p>
+<table>
+<thead>
+<tr>
+<th>内部格式</th>
+<th>格式</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_DEPTH_COMPONENT16</td>
+<td>GL_DEPTH_COMPONENT</td>
+<td>GL_UNSIGNED_SHORT</td>
+</tr>
+<tr>
+<td>GL_DEPTH_COMPONENT16</td>
+<td>GL_DEPTH_COMPONENT</td>
+<td>GL_UNSIGNED_INTp</td>
+</tr>
+<tr>
+<td>GL_DEPTH_COMPONENT24</td>
+<td>GL_DEPTH_COMPONENT</td>
+<td>GL_UNSIGNED_INT</td>
+</tr>
+<tr>
+<td>GL_DEPTH_COMPONENT43F</td>
+<td>GL_DEPTH_COMPONENT</td>
+<td>GL_FLOAT</td>
+</tr>
+<tr>
+<td>GL_DEPTH24_STENCIL8</td>
+<td>GL_DEPTH_STENCIL</td>
+<td>GL_UNSIGNED_INT_24_8</td>
+</tr>
+<tr>
+<td>GL_DEPTH32F_STENCIL8</td>
+<td>GL_DEPTH_STENCIL</td>
+<td>GL_FLOAT_32_UNSIGNED_INT_24_8_REV</td>
+</tr>
+</tbody>
+</table>
+<h2 id="在着色器中使用纹理">在着色器中使用纹理</h2>
+<p>下面代码简要演示在着色器中完成2D纹理的基本过程：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vertex shader</span></span><br><span class="line"><span class="meta"># version 300 es</span></span><br><span class="line">layout(location = <span class="number">0</span>) <span class="keyword">in</span> vec4 a_position;</span><br><span class="line">layout(location = <span class="number">1</span>) <span class="keyword">in</span> vec2 a_texCoord;</span><br><span class="line"><span class="keyword">out</span> vec2 v_texCoord;</span><br><span class="line"><span class="keyword">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">    gl_Position = a_position;</span><br><span class="line">    v_texCoord = a_texCoord;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Fragment shader</span></span><br><span class="line"><span class="meta"># version 300 es</span></span><br><span class="line">precision mediump <span class="keyword">float</span>;</span><br><span class="line"><span class="keyword">in</span> vec2 v_texCoord;</span><br><span class="line">layout(location = <span class="number">0</span>) <span class="keyword">out</span> vec4 outColor;</span><br><span class="line">uniform sampler2D s_texture;</span><br><span class="line"><span class="keyword">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">    outColor = texture(s_texture, v_texCoord);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>顶点着色器以一个二分量纹理坐标作为顶点输入，并将其作为输出传递给片段着色器。片段着色器消费该纹理坐标，并将其用于纹理读取。片段着色器声明一个类型为<code>sampler2D</code>的统一变量<code>s_texture</code>。采样器是用于从纹理贴图中读取的特殊统一变量。采样器统一变量将加载一个指定纹理绑定的纹理单元的数值；例如，用数值0指定采样器表示从单元<code>GL_TEXTURE0</code>读取，指定数值1表示从<code>GL_TEXTURE1</code>读取，一次类推。在OpenGL ES 3.0 API中，纹理用<code>glActiveTexture</code>函数绑定到纹理单元。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绑定纹理单元</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param texture#&gt; 需要激活的纹理单元：GL_TEXTURE0, 1, 2 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glActiveTexture(GLenum texture);</span><br></pre></td></tr></table></figure>
+<p><code>glActiveTexture</code>函数设置当前纹理单元，以便后续的<code>glBindTexture</code>调用将纹理绑定到当前活动单元。在OpenGL ES实现上可用于片段着色器的纹理单元数量可以用<code>GL_MAX_TEXTURE_IMAGE_UNITS</code>参数的<code>glGetintegerv</code>查询。可用于顶点着色器的纹理单元数量使用带<code>GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS</code>参数的<code>glGetintegerv</code>查询。</p>
+<p>当使用<code>glBindTexture</code>绑定为并使用<code>glUniformli</code>加载纹理后，可以看到片段着色器中使用内建函数<code>texture</code>从纹理贴图出读取。<code>texture</code>内建函数形式如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绑定2D纹理单元</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param sampler#&gt; 绑定到纹理单元的采样器，指定纹理为读取来源 description#&gt;</span></span><br><span class="line"><span class="comment"> @param coord#&gt; 用于从纹理贴图中读取的2D纹理坐标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param bias#&gt; 可选参数，提供用于纹理读取的mip贴图偏置。这允许着色器明确地偏置用于mip忒土选择的LOD计算值 description#&gt;</span></span><br><span class="line"><span class="comment"> @return vec4 纹理</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">texture(sampler2D sampler, vec2 coord[, <span class="keyword">float</span> bias]);</span><br></pre></td></tr></table></figure>
+<p><code>texture</code>函数返回一个代表从纹理贴图中读取颜色的<code>vec4</code>。纹理数据映射到这个颜色通道的方式取决于纹理的基本格式。下表展示了纹理格式映射到<code>vec4</code>颜色的方式，<a href="/article/2019/opengl-es-texture-0810/#%E7%BA%B9%E7%90%86%E8%B0%83%E9%85%8D">纹理调配</a>确定这些分量中的值如何映射到着色器中的分量。</p>
+<table>
+<thead>
+<tr>
+<th>基本格式</th>
+<th>纹素数据描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_RED</td>
+<td>(R, 0.0 0.0, 1.0)</td>
+</tr>
+<tr>
+<td>GL_RG</td>
+<td>(R, G, 0.0, 1.0)</td>
+</tr>
+<tr>
+<td>GL_RGB</td>
+<td>(R, G, B, 1.0)</td>
+</tr>
+<tr>
+<td>GL_RGBA</td>
+<td>(R, G, B, A)</td>
+</tr>
+<tr>
+<td>GL_LUMINANCE</td>
+<td>(L, L, L, 1.0)</td>
+</tr>
+<tr>
+<td>GL_LUMINANCE_ALPHA</td>
+<td>(L, L, L, A)</td>
+</tr>
+<tr>
+<td>GL_ALPHA</td>
+<td>(0.0, 0.0, 0.0, A)</td>
+</tr>
+</tbody>
+</table>
+<p>下面看具体示例：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setupVertices &#123;</span><br><span class="line">    </span><br><span class="line">    GLfloat vertices[] = &#123;</span><br><span class="line">        <span class="number">-1.0</span>, <span class="number">-1.0</span>, <span class="number">0</span>,</span><br><span class="line">        <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">        <span class="number">-1.0</span>, <span class="number">1.0</span>, <span class="number">0</span>,</span><br><span class="line">        <span class="number">0</span>, <span class="number">1</span>,</span><br><span class="line">        <span class="number">1.0</span>, <span class="number">-1.0</span>, <span class="number">0</span>,</span><br><span class="line">        <span class="number">1</span>, <span class="number">0</span>,</span><br><span class="line">        <span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">0</span>,</span><br><span class="line">        <span class="number">1</span>, <span class="number">1</span></span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 生成纹理</span></span><br><span class="line">    GLuint texture = [<span class="keyword">self</span> createTextureWithImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"9"</span>]];</span><br><span class="line">    </span><br><span class="line">    GLuint program = [<span class="keyword">self</span> createProgram];</span><br><span class="line">    glUseProgram(program);</span><br><span class="line">    glViewport(<span class="number">0</span>, <span class="number">0</span>, [<span class="keyword">self</span> getViewportWidth], [<span class="keyword">self</span> getViewportHeight]);</span><br><span class="line">    </span><br><span class="line">    glClear(GL_COLOR_BUFFER_BIT);</span><br><span class="line">    glClearColor(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 加载纹理</span></span><br><span class="line">    glActiveTexture(GL_TEXTURE0);</span><br><span class="line">    <span class="keyword">int</span> textureLocation = glGetUniformLocation(program, <span class="string">"s_texture"</span>);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, texture);</span><br><span class="line">    glUniform1i(textureLocation, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    GLuint vbo;</span><br><span class="line">    glGenBuffers(<span class="number">1</span>, &amp;vbo);</span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, vbo);</span><br><span class="line">    glBufferData(GL_ARRAY_BUFFER, <span class="keyword">sizeof</span>(vertices), vertices, GL_STATIC_DRAW);</span><br><span class="line">    </span><br><span class="line">    glEnableVertexAttribArray(<span class="number">0</span>);</span><br><span class="line">    glVertexAttribPointer(<span class="number">0</span>, <span class="number">3</span>, GL_FLOAT, GL_FALSE, <span class="keyword">sizeof</span>(GLfloat)*<span class="number">5</span>, <span class="number">0</span>);</span><br><span class="line">    glEnableVertexAttribArray(<span class="number">1</span>);</span><br><span class="line">    glVertexAttribPointer(<span class="number">1</span>, <span class="number">2</span>, GL_FLOAT, GL_FALSE, <span class="keyword">sizeof</span>(GLfloat)*<span class="number">5</span>, (GLvoid *)(<span class="keyword">sizeof</span>(GLfloat)*<span class="number">3</span>));</span><br><span class="line">    </span><br><span class="line">    glDrawArrays(GL_TRIANGLE_STRIP, <span class="number">0</span>, <span class="number">4</span>);</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span>.context presentRenderbuffer:GL_RENDERBUFFER];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (GLuint)createTextureWithImage:(<span class="built_in">UIImage</span> *)image &#123;</span><br><span class="line">    <span class="comment">// 将 UIImage 转换为 CGImageRef</span></span><br><span class="line">    <span class="built_in">CGImageRef</span> cgImageRef = [image <span class="built_in">CGImage</span>];</span><br><span class="line">    GLuint width = (GLuint)<span class="built_in">CGImageGetWidth</span>(cgImageRef);</span><br><span class="line">    GLuint height = (GLuint)<span class="built_in">CGImageGetHeight</span>(cgImageRef);</span><br><span class="line">    <span class="built_in">CGRect</span> rect = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, width, height);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 绘制图片</span></span><br><span class="line">    <span class="built_in">CGColorSpaceRef</span> colorSpace = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</span><br><span class="line">    <span class="comment">// 获取图片字节数 宽x高x4（RGBA）</span></span><br><span class="line">    <span class="keyword">void</span> *imageData = malloc(width * height * <span class="number">4</span>);</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     创建上下文</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">     @param data#&gt; 指向要渲染的绘制图像的内存地址 description#&gt;</span></span><br><span class="line"><span class="comment">     @param width#&gt; 图像宽度，单位为像素 description#&gt;</span></span><br><span class="line"><span class="comment">     @param height#&gt; 图像高度，单位为像素 description#&gt;</span></span><br><span class="line"><span class="comment">     @param bitsPerComponent#&gt; 内存中像素的每个组件的位数，比如32位RGBA，就设置为8 description#&gt;</span></span><br><span class="line"><span class="comment">     @param bytesPerRow#&gt; 每一行内存所占的bit数 description#&gt;</span></span><br><span class="line"><span class="comment">     @param space#&gt; 使用的颜色空间 description#&gt;</span></span><br><span class="line"><span class="comment">     @param bitmapInfo#&gt; bitmap信息 description#&gt;</span></span><br><span class="line"><span class="comment">     @return 返回上下文</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="built_in">CGContextRef</span> context = <span class="built_in">CGBitmapContextCreate</span>(imageData, width, height, <span class="number">8</span>, width * <span class="number">4</span>, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);</span><br><span class="line">    <span class="comment">// 图片正向-否则绘制出来的图片是颠倒的</span></span><br><span class="line">    <span class="built_in">CGContextTranslateCTM</span>(context, <span class="number">0</span>, height);</span><br><span class="line">    <span class="built_in">CGContextScaleCTM</span>(context, <span class="number">1.0</span>f, <span class="number">-1.0</span>f);</span><br><span class="line">    <span class="built_in">CGColorSpaceRelease</span>(colorSpace);</span><br><span class="line">    <span class="built_in">CGContextClearRect</span>(context, rect);</span><br><span class="line">    <span class="built_in">CGContextDrawImage</span>(context, rect, cgImageRef);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 生成纹理</span></span><br><span class="line">    GLuint textureID;</span><br><span class="line">    glGenTextures(<span class="number">1</span>, &amp;textureID);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, textureID);</span><br><span class="line">    glTexImage2D(GL_TEXTURE_2D, <span class="number">0</span>, GL_RGBA, width, height, <span class="number">0</span>, GL_RGBA, GL_UNSIGNED_BYTE, imageData); <span class="comment">// 将图片数据写入纹理缓存</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 设置如何把纹素映射成像素</span></span><br><span class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);</span><br><span class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);</span><br><span class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);</span><br><span class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 解绑</span></span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 释放内存</span></span><br><span class="line">    <span class="built_in">CGContextRelease</span>(context);</span><br><span class="line">    free(imageData);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> textureID;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="使用立方图纹理的示例">使用立方图纹理的示例</h2>
+<p>立方图纹理的使用非常类似于2D纹理。通过对立方图的各面（<code>GL_TEXTURE_CUBE_MAP_POSITIVE_(X|Y|Z)</code>，<code>GL_TEXTURE_CUBE_NEGATIVE_(X|Y|Z)</code>）调用<code>glTexImage2D</code>加载每个面的像素数据。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vertex shader</span></span><br><span class="line"><span class="meta">#version 300 es</span></span><br><span class="line">layout(location = <span class="number">0</span>) <span class="keyword">in</span> vec4 a_position;</span><br><span class="line">layout(location = <span class="number">1</span>) <span class="keyword">in</span> vec3 a_normal;</span><br><span class="line"><span class="keyword">out</span> vec3 v_normal;</span><br><span class="line"><span class="keyword">void</span> mian()</span><br><span class="line">&#123;</span><br><span class="line">    gl_Position = a_position;</span><br><span class="line">    v_normal = a_normal;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Fragment shader</span></span><br><span class="line"><span class="meta">#version 300 es</span></span><br><span class="line">precision mediump <span class="keyword">float</span>;</span><br><span class="line"><span class="keyword">in</span> vec3 v_normal;</span><br><span class="line">layout(location = <span class="number">0</span>) <span class="keyword">out</span> vec4 outColor;</span><br><span class="line">uniform samplerCube s_texture;</span><br><span class="line"><span class="keyword">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">    outColor = texture(s_texture, v_normal);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>顶点着色器取得一个位置和法线作为顶点输入。发现保存在球面的每个顶点上，用作纹理坐标，并传递给片段着色器。然后，片段着色器使用内建函数<code>texture</code>，以法线作为纹理坐标从立方图中读取。立方图所用的<code>texture</code>内建函数采用如下形式：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绑定立方图纹理单元</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param sampler#&gt; 绑定到纹理单元的采样器，指定纹理为读取来源 description#&gt;</span></span><br><span class="line"><span class="comment"> @param coord#&gt; 用于从纹理贴图中读取的3D纹理坐标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param bias#&gt; 可选参数，提供用于纹理读取的mip贴图偏置。这允许着色器明确地偏置用于mip忒土选择的LOD计算值 description#&gt;</span></span><br><span class="line"><span class="comment"> @return vec4 纹理</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">texture(samplerCube sampler, vec3 coord[, <span class="keyword">float</span> bias]);</span><br></pre></td></tr></table></figure>
+<p>读取立方图的函数与2D纹理非常类似。仅有的区别是，纹理坐标有3个分量而不是2个分量，采样器类型必须为<code>sampleCube</code>。用于绑定立方图纹理和加载采样器的方法与之前2D纹理加载一样。</p>
+<h2 id="加载3d纹理和2d纹理数组">加载3D纹理和2D纹理数组</h2>
+<p>除了2D纹理和立方图，OpenGL ES 3.0还包含了3D纹理和2D纹理数组。加载3D纹理和2D纹理数组的函数是<code>glTexImage3D</code>，它与<code>glTexImage2D</code>很相似。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 加载3D纹理或者2D纹理数组</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，应该为GL_TEXTURE_3D或GL_TEXTURE_2D_ARRAY description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定加载的mip级别。0表示基本级别，更大的数值表示各个后续的mip贴图级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param internalformat#&gt; 纹理存储的内部格式 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 以像素表示的图像宽度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 以像素表示的图像高度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param depth#&gt; 3D纹理的切片深度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param border#&gt; 这个参数在OpenGL ES中被忽略，应该为0 description#&gt;</span></span><br><span class="line"><span class="comment"> @param format#&gt; 输入纹理数据的格式 description#&gt;</span></span><br><span class="line"><span class="comment"> @param type#&gt; 输入像素数据的类型 description#&gt;</span></span><br><span class="line"><span class="comment"> @param pixels#&gt; 包含图像的实际像素数据。这些数据必须包含（width*height*depth）个像素，每个像素根据格式和类型规格有相应数量的字节。图像数据应该按照2D纹理切片的顺序存储 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glTexImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, <span class="keyword">const</span> GLvoid *pixels);</span><br></pre></td></tr></table></figure>
+<p>一旦用<code>glTexImage3D</code>加载了3D纹理或者2D纹理数组，就可以用<code>texture</code>内建函数在着色器中读取该纹理：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绑定3D纹理单元</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param sampler#&gt; 绑定到纹理单元的采样器，指定纹理为读取来源 description#&gt;</span></span><br><span class="line"><span class="comment"> @param coord#&gt; 用于从纹理贴图中读取的3D纹理坐标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param bias#&gt; 可选参数，提供用于纹理读取的mip贴图偏置。这允许着色器明确地偏置用于mip忒土选择的LOD计算值 description#&gt;</span></span><br><span class="line"><span class="comment"> @return vec4 纹理</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">texture(sampler3D sampler, vec3 coord[, <span class="keyword">float</span> bias]);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绑定2D纹理数组单元</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param sampler#&gt; 绑定到纹理单元的采样器，指定纹理为读取来源 description#&gt;</span></span><br><span class="line"><span class="comment"> @param coord#&gt; 用于从纹理贴图中读取的3D纹理坐标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param bias#&gt; 可选参数，提供用于纹理读取的mip贴图偏置。这允许着色器明确地偏置用于mip忒土选择的LOD计算值 description#&gt;</span></span><br><span class="line"><span class="comment"> @return vec4 纹理</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">texture(sampler2DArray sampler, vec3 coord[, <span class="keyword">float</span> bias]);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意，r坐标是一个浮点值。对于3D纹理，根据过滤模式设置，纹理读取可能跨越体的两个切片。</p>
+</blockquote>
+<h1 id="压缩纹理">压缩纹理</h1>
+<p>上述所说的纹理加载都是未压缩的纹理图像数据，OpenGL ES 3.0还支持压缩纹理图像数据的加载。纹理压缩有几个理由，首先，压缩纹理可以减少纹理在设备上的内存占用；其次（不那么明显），压缩纹理节约了着色器中读取纹理时消耗的内存带宽；最后，压缩纹理减少必须存储的图像数据，从而减少了应用程序的下载大小。<br>
+在OpenGL ES 2.0中，核心规范不定义任何压缩的纹理图像格式。也就是说，OpenGL ES 2.0核心简单地定义一个机制，可以加载压缩的纹理图像数据，但是没有定义任何压缩格式。因此，各供应商提供了特定于硬件的纹理压缩扩展。这样，OpenGL ES 2.0应用程序开发者必须在不同平台和硬件上支持不同的纹理压缩格式。<br>
+OpenGL ES 3.0引入所有供应商必须支持的标准纹理压缩格式，从而改善了这种情况。爱立信纹理压缩（Ericsson Texture Compression，ETC2和EAC）以无版税标准的形式提供给Khronos，它被作为OpenGL ES 3.0的标准纹理压缩格式。EAC有一些压缩1通道和2通道数据的变种，ETC2也有压缩3通道和4通道数据的变种。用于加载2D纹理和立方图压缩图像数据的函数是<code>glCompressedTexImage2D</code>，用于2D纹理数组的对应函数为<code>glCompressedTexImage3D</code>。</p>
+<blockquote>
+<p>注意，ETC2/EAC不支持3D纹理（只支持2D纹理和2D纹理数组），但是<code>glCompressedTexImage3D</code>可以用于加载供应商专用的3D纹理压缩格式。</p>
+</blockquote>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 加载2D纹理和立方图压缩图像数据</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，应该为GL_TEXTURE_2D或者GL_TEXTURE_CUBE_MAP_* description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定要加载的mip级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param internalformat#&gt; 纹理存储的内部格式 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 以像素数表示的图像宽度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 以像素数表示的图像高度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param border#&gt; 这个参数在OpenGL ES中被忽略，应该为0 description#&gt;</span></span><br><span class="line"><span class="comment"> @param imageSize#&gt; 以字节数表示的图像大小 description#&gt;</span></span><br><span class="line"><span class="comment"> @param data#&gt; 包含图像的实际压缩像素数据，必须能够容纳imageSize个字节 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, <span class="keyword">const</span> GLvoid *data);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 加载2D纹理和立方图压缩图像数据</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，应该为GL_TEXTURE_2D或者GL_TEXTURE_CUBE_MAP_* description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定要加载的mip级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param internalformat#&gt; 纹理存储的内部格式。OpenGL ES 3.0中的标准压缩纹理格式在下表中描述 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 以像素数表示的图像宽度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 以像素数表示的图像高度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param border#&gt; 这个参数在OpenGL ES中被忽略，应该为0 description#&gt;</span></span><br><span class="line"><span class="comment"> @param imageSize#&gt; 以字节数表示的图像大小 description#&gt;</span></span><br><span class="line"><span class="comment"> @param data#&gt; 包含图像的实际压缩像素数据，必须能够容纳imageSize个字节 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, <span class="keyword">const</span> GLvoid *data);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 加载2D纹理数组或专用3D纹理压缩图像数据</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，应该为GL_TEXTURE_3D或者GL_TEXTURE_2D_ARRAY description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定要加载的mip级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param internalformat#&gt; 纹理存储的内部格式。OpenGL ES 3.0中的标准压缩纹理格式在下表中描述 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 以像素数表示的图像宽度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 以像素数表示的图像高度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param depth#&gt; 以像素数表示的图像深度（或者2D纹理数组的切片数量） description#&gt;</span></span><br><span class="line"><span class="comment"> @param border#&gt; 这个参数在OpenGL ES中被忽略，应该为0 description#&gt;</span></span><br><span class="line"><span class="comment"> @param imageSize#&gt; 以字节数表示的图像大小 description#&gt;</span></span><br><span class="line"><span class="comment"> @param data#&gt; 包含图像的实际压缩像素数据，必须能够容纳imageSize个字节 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, <span class="keyword">const</span> GLvoid *data);</span><br></pre></td></tr></table></figure>
+<p>OpenGL ES 3.0支持的标准ETC压缩纹理格式在下表中列出。所有ETC格式将压缩的图像数据存储在4x4的块中。表中列出了每种ETC格式中每个像素的位数。单个ETC图像的大小可以由每像素位数（bpp）比率算出：<code>sizeInBytes = max(width, 4) * max(height, 4) * bpp / 8</code>。</p>
+<table>
+<thead>
+<tr>
+<th>内部格式</th>
+<th>大小（每像素位数）</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GL_COMPRESSED_R11_EAC</td>
+<td>4</td>
+<td>单通道无符号压缩GL_RED格式</td>
+</tr>
+<tr>
+<td>GL_COMPRESSED_SIGNED_R11_EAC</td>
+<td>4</td>
+<td>单通道有符号压缩GL_RED格式</td>
+</tr>
+<tr>
+<td>GL_COMPRESSED_RG11_EAC</td>
+<td>8</td>
+<td>双通道无符号压缩GL_RG格式</td>
+</tr>
+<tr>
+<td>GL_COMPRESSED_SIGNED_RG11_EAC</td>
+<td>8</td>
+<td>双通道有符号压缩GL_RG格式</td>
+</tr>
+<tr>
+<td>GL_COMPRESSED_RGB8_ETC2</td>
+<td>4</td>
+<td>三通道无符号压缩GL_RGB格式</td>
+</tr>
+<tr>
+<td>GL_COMPRESSED_SRGB8_ETC2</td>
+<td>4</td>
+<td>sRGB颜色空间中的三通道无符号压缩GL_RGB格式</td>
+</tr>
+<tr>
+<td>GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2</td>
+<td>4</td>
+<td>四通道无符号压缩GL_RGBA格式，1位alpha</td>
+</tr>
+<tr>
+<td>GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2</td>
+<td>4</td>
+<td>sRGB颜色空间中四通道无符号压缩GL_RGBA格式，1位alpha</td>
+</tr>
+<tr>
+<td>GL_COMPRESSED_RGBA8_ETC2_EAC</td>
+<td>8</td>
+<td>四通道无符号压缩GL_RGBA格式</td>
+</tr>
+<tr>
+<td>GL_COMPRESSED_SRGBA8_ETC2_EAC</td>
+<td>8</td>
+<td>sRGB颜色空间中四通道无符号压缩GL_RGBA格式</td>
+</tr>
+</tbody>
+</table>
+<p>一旦加载压缩纹理，它就可以和无压缩纹理一样用于纹理处理。大部分开发人员不会编写自己的压缩程序，具体可使用的压缩工具，自行选择。</p>
+<p>注意，所有OpenGL ES 3.0实现都支持如上表中列出的格式。此外，有些实现可能支持表中未列出的供应商专用压缩格式。如果我们试图在不支持它们的OpenGL ES 3.0实现上使用纹理压缩格式，将会产生一个<code>GL_INVALID_ENUM</code>错误。检查OpenGL ES 3.0实现导出使用的任何供应商专用纹理压缩格式的扩展字符串很重要。如果该实现没有导出这样的扩展字符串，那就只能退而求其次使用无压缩的纹理格式。<br>
+除了检查扩展字符串之外，还可以用另外一种方法确定实现所支持的纹理压缩格式。也就是说，可以用<code>glGetIntegerv</code>查询<code>GL_NUM_COMPRESSED_TEXTURE_FORMATS</code>来确定所支持的压缩图像格式数量。然后，可以用<code>glGetIntegerv</code>查询<code>GL_COMPRESSED_TEXTURE_FORMATS</code>，该调用返回一个<code>GLenum</code>值的数组。数组中的每个<code>GLenum</code>值将是实现支持的一种压缩纹理格式。</p>
+<h1 id="纹理子图像规范">纹理子图像规范</h1>
+<p>用<code>glTexImage2D</code>上传纹理图像之后，可以更新图像的各个部分。如果你只希望更新图像的一个子区域，这种能力就很试用。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 更新2D纹理图像的子区域</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，可以是GL_TEXTURE_2D或者GL_TEXTURE_CUBE_MAP_* description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定更新的mip级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param xoffset#&gt; 开始更新的纹素x索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param yoffset#&gt; 开始更新的纹素y索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 更新的图像子区域宽度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 更新的图像子区域高度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param format#&gt; 输入纹理数据格式 description#&gt;</span></span><br><span class="line"><span class="comment"> @param type#&gt; 输入像素数据的类型 description#&gt;</span></span><br><span class="line"><span class="comment"> @param pixels#&gt; 包含图像子区域的实际像素数据 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, <span class="keyword">const</span> GLvoid *pixels);</span><br></pre></td></tr></table></figure>
+<p>这个函数将更新(xoffset, yoffset)到(xoffset+width-1, yoffset+height-1)范围内的纹素。注意，要使用这个函数，纹理必须完全指定。子图像的范围必须在之前指定的纹理图像界限之内。<code>pixels</code>数组中的数据必须按照<code>glPixelStorei</code>的<code>GL_UNPACK_ALIGNMENT</code>指定的方式对齐。</p>
+<p>还有一个用于更新压缩的2D纹理图像子区域的函数：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 更新压缩的2D纹理图像的子区域</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，可以是GL_TEXTURE_2D或者GL_TEXTURE_CUBE_MAP_* description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定更新的mip级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param xoffset#&gt; 开始更新的纹素x索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param yoffset#&gt; 开始更新的纹素y索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 更新的图像子区域宽度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 更新的图像子区域高度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param format#&gt; 所用的压缩纹理格式，必须与图像原来指定的格式相同 description#&gt;</span></span><br><span class="line"><span class="comment"> @param imageSize#&gt; 以字节数表示的图像大小 description#&gt;</span></span><br><span class="line"><span class="comment"> @param data#&gt; 包含图像子区域的实际像素数据 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, <span class="keyword">const</span> GLvoid *data);</span><br></pre></td></tr></table></figure>
+<p>此外，与2D纹理一样，可以用<code>glTexSubImage3D</code>更新现有3D纹理和2D纹理数组的子区域：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 更新3D纹理图像的子区域</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定目标纹理，可以是GL_TEXTURE_3D或GL_TEXTURE_2D_ARRAY description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定更新的mip级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param xoffset#&gt; 开始更新的纹素x索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param yoffset#&gt; 开始更新的纹素y索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param zoffset#&gt; 开始更新的纹素z索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 更新的图像子区域宽度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 更新的图像子区域高度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param depth#&gt; 更新的图像子区域深度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param format#&gt; 输入纹理数据的格式 description#&gt;</span></span><br><span class="line"><span class="comment"> @param type#&gt; 输入像素数据的类型 description#&gt;</span></span><br><span class="line"><span class="comment"> @param pixels#&gt; 包含像素数据的类型 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, <span class="keyword">const</span> GLvoid *pixels);</span><br></pre></td></tr></table></figure>
+<p><code>glTexSubImage3D</code>的表现与<code>glTexSubImage2D</code>类似，唯一的不同是子区域包含一个<code>zoffset</code>和<code>depth</code>，用于指定深度切片中要更新的子区域。对于压缩的2D纹理数组，也可以用<code>glCompressedTexSubImage3D</code>更新纹理的一个子区域。对于3D纹理，这个函数只能用于供应商专用的3D压缩纹理格式，因为ETC2/EAC只支持2D纹理和2D纹理数组。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 更新压缩的3D纹理图像的子区域</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，可能是GL_TEXTURE_3D或者GL_TEXTURE_2D_ARRAY description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定更新的mip级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param xoffset#&gt; 开始更新的纹素x索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param yoffset#&gt; 开始更新的纹素y索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param zoffset#&gt; 开始更新的纹素z索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 更新的图像子区域宽度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 更新的图像子区域高度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param depth#&gt; 更新的图像子区域深度 description#&gt;</span></span><br><span class="line"><span class="comment"> @param format#&gt; 使用的压缩纹理格式，必须与原来指定的图像格式相同 description#&gt;</span></span><br><span class="line"><span class="comment"> @param imageSize#&gt; 以字节数表示的图像大小 description#&gt;</span></span><br><span class="line"><span class="comment"> @param data#&gt; 包含图像子区域的实际像素数据 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glCompressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, <span class="keyword">const</span> GLvoid *data);</span><br></pre></td></tr></table></figure>
+<h1 id="从颜色缓冲区复制纹理数据">从颜色缓冲区复制纹理数据</h1>
+<p>OpenGL ES 3.0中支持的另一个纹理功能是从颜色缓冲区复制数据到一个纹理。如果我们希望使用渲染的结果作为纹理中的图像，这一功能就很实用。后面的帧缓冲区对象提供了渲染-纹理转换的快速方法，这种方法比复制图像数据更快。但是，如果性能不是关注点，那么从颜色缓冲区复制图像数据就是一种实用的功能。</p>
+<p>作为复制图像数据来源的颜色缓冲区可以用<code>glReadBuffer</code>函数设置。如果应用程序渲染到一个双缓冲区EGL可显示表面，则<code>glReadBuffer</code>必须设置为<code>GL_BACK</code>（后台缓冲区–默认状态）。OpenGL ES 3.0只支持双缓冲区EGL可显示表面。因此，所有在显示器上绘图的OpenGL ES 3.0应用程序都有一个既用于前台缓冲区又用于后台缓冲区的颜色缓冲区。这个缓冲区当前是前台还是后台缓冲区，由对<code>eglSwapBuffers</code>的最后一次调用决定。当从可显示EGL表面的颜色缓冲区中复制图像数据时，总是会复制后台缓冲区的内容。如果渲染到一个EGL pbuffer，则复制将发生在pbuffer表面。最后，如果渲染到一个帧缓冲区对象，则所复制的帧缓冲区对象的颜色附着通过调用带<code>GL_COLOR_ATTACHMENTi</code>参数的<code>glReadBuffer</code>函数设置：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 读取颜色缓冲区</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param mode#&gt; 指定读取的颜色缓冲区。这将为未来的glReadPixels、glCopyTexImage2D、glCopyTexSubImage2D和glCopyTexSubImage3D调用设置源颜色缓冲区。该值可能为GL_BACK、GL_COLOR_ATTACHMENTi或GL_NONE description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glReadBuffer(GLenum mode);</span><br></pre></td></tr></table></figure>
+<p>从颜色缓冲区复制数据到纹理的函数是<code>glCopyTexImage2D</code>、<code>glCopyTexSubImage2D</code>和<code>glCopyTexSubImage3D</code>。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 从颜色缓冲区复制数据到2D纹理</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，可能为GL_TEXTURE_CUBE_MAP_2D或者GL_TEXTURE_CUBE_MAP_* description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定加载的mip级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param internalformat#&gt; 图像的内部格式 description#&gt;</span></span><br><span class="line"><span class="comment"> @param x#&gt; 读取的帧缓冲区矩形左下角的x窗口坐标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param y#&gt; 读取的帧缓冲区矩形左下角的y窗口坐标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 读取区域的宽度，以像素数表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 读取区域的高度，以像素表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param border#&gt; OpenGL ES 3.0不支持边框，必须为0 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glCopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);</span><br></pre></td></tr></table></figure>
+<p>调用上述函数导致纹理图像从区域(x, y)到(x+width-1, y+height-1)的颜色缓冲区内的像素加载。纹理图像的宽度和高度等于颜色缓冲区中复制区域的大小。我们应该用这些信息填充纹理的全部内容。<br>
+此外，可以用<code>glCopyTexSubImage2D</code>更新已经指定的图像的子区域：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 从颜色缓冲区复制数据更新已经指定的2D纹理的子区域</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，可能为GL_TEXTURE_2D或者GL_TEXTURE_CUBE_MAP_* description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定更新的mip级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param xoffset#&gt; 开始更新的纹素x索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param yoffset#&gt; 开始更新的纹素y索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param x#&gt; 读取的帧缓冲区矩形左下角的x窗口坐标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param y#&gt; 读取的帧缓冲区矩形左下角的y窗口坐标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 读取区域的宽度，以像素数表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 读取区域的高度，以像素数据表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);</span><br></pre></td></tr></table></figure>
+<p>上述函数将用颜色缓冲区中从(x, y)到(x+width-1, y+height-1)区域的像素更新图像中从(xoffset, yoffset)到(xoffset+width-1, yoffset+height-1)的子区域。<br>
+最后，也可以用<code>glCopyTexSubImage3D</code>将颜色缓冲区的内容复制到之前指定的3D纹理或者2D纹理数组的一个切片中：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 从颜色缓冲区复制数据更新已经指定的3D纹理或2D纹理数组的子区域</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，可能为GL_TEXTURE_3D或者GL_TEXTURE_2D_ARRAY description#&gt;</span></span><br><span class="line"><span class="comment"> @param level#&gt; 指定加载的mip级别 description#&gt;</span></span><br><span class="line"><span class="comment"> @param xoffset#&gt; 开始更新的纹素x索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param yoffset#&gt; 开始更新的纹素y索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param zoffset#&gt; 开始更新的纹素z索引 description#&gt;</span></span><br><span class="line"><span class="comment"> @param x#&gt; 读取的帧缓冲区矩形左下角的x窗口坐标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param y#&gt; 读取的帧缓冲区矩形左下角的y窗口坐标 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 读取区域的宽度，以像素数表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 读取区域的高度，以像素数表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glCopyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);</span><br></pre></td></tr></table></figure>
+<p>对于上述函数要记住一点，即纹理图像格式的分量不能多于颜色缓冲区。换句话说，复制颜色缓冲区的数据时，可以转换为分量较少的格式，但是不能转换为分量较多的格式。</p>
+<h1 id="采样器对象">采样器对象</h1>
+<p>之前介绍了用<code>glTexParameter[i|f][v]</code>设置纹理参数（如过滤模式、纹理坐标包装模式和LOD设置）的方法。使用<code>glTexParameter[i|f][v]</code>的问题是它可能造成大量不必要的API开销。应用程序经常在大量纹理上使用相同的设置，在这种情况下，用<code>glTexParameter[i|f][v]</code>为每个纹理对象设置采样器状态可能造成大量额外开销。为了缓解这一问题，OpenGL ES 3.0引入采样器对象，将采样器状态和纹理状态分离。简言之，所有可用<code>glTexParameter[i|f][v]</code>进行的设置都可以对采样器对象进行，可以在一次函数调用中与纹理单元绑定使用。采样器对象可以用于许多纹理，从而降低API开销。</p>
+<p>用于生成采样器对象的函数是：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 生成采样器对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param count#&gt; 指定生成的采样器对象数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param samplers#&gt; 一个无符号整数数组，将容纳n个采样器对象ID description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glGenSamplers(GLsizei count, GLuint *samplers);</span><br></pre></td></tr></table></figure>
+<p>采样器对象在应用程序不再需要它们时也需要删除：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 删除采样器对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param count#&gt; 指定要删除的采样器对象 description#&gt;</span></span><br><span class="line"><span class="comment"> @param samplers#&gt; 一个无符号整数数组，容纳要删除的n个采样器对象ID description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glDeleteSamplers(GLsizei count, <span class="keyword">const</span> GLuint *samplers);</span><br></pre></td></tr></table></figure>
+<p>当生成采样器对象ID之后，应用程序必须绑定采样器对象以使用其状态。采样器对象绑定到纹理单元，这种绑定取代了用<code>glTexParameter[i|f][v]</code>进行的所有纹理对象状态设置：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 采样器对象绑定到纹理单元</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param unit#&gt; 指定采样器对象绑定到的纹理单元 description#&gt;</span></span><br><span class="line"><span class="comment"> @param sampler#&gt; 所要绑定的采样器对象的句柄 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glBindSampler(GLuint unit, GLuint sampler);</span><br></pre></td></tr></table></figure>
+<p>如果传递给<code>glBindSampler</code>的<code>sampler</code>为0（默认采样器），则使用为纹理对象设置的状态。采样器对象状态可以用<code>glSampler[f|i][v]</code>设置。可以用<code>glSamplerParameter[f|i][v]</code>设置的参数与用<code>glTexParameter[i|f][v]</code>设置的相同，唯一的区别是状态被设置到采样器对象，而非纹理对象：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">glSamplerParameteri(GLuint sampler, GLenum pname, GLint param);</span><br><span class="line">glSamplerParameteriv(GLuint sampler, GLenum pname, <span class="keyword">const</span> GLint *param);</span><br><span class="line">glSamplerParameterf(GLuint sampler, GLenum pname, GLfloat param);</span><br><span class="line">glSamplerParameterfv(GLuint sampler, GLenum pname, <span class="keyword">const</span> GLfloat *param);</span><br></pre></td></tr></table></figure>
+<h1 id="不可变纹理">不可变纹理</h1>
+<p>OpenGL ES 3.0中引入的另一种有助于改进应用程序性能的功能是不可变纹理。正如前面所介绍的，应用程序使用<code>glTexImage2D</code>和<code>glTexImage3D</code>等函数独立地指定纹理的每个mip贴图级别。这对OpenGL ES驱动程序造成的问题是驱动程序在绘图之前无法确定纹理是否已经完全指定。也就是说，它必须检查每个mip贴图级别或者子图像的格式是否相符、每个级别的大小是否正确以及是否有足够的内存。这种绘图时检查可能代价很高，而使用不可变纹理可以避免这种情形。</p>
+<p>不可变纹理的思路很简单：应用程序在加载数据之前指定纹理的格式和大小。这样做之后，纹理格式变成不可改变的，OpenGL ES驱动程序可以预先进行所有一致性和内存检查。一旦纹理不可变，它的格式和大小就不会再变化。但是，应用程序仍然可以通过使用<code>glTexSubImage2D</code>、<code>glTexSubImage3D</code>、<code>glGenerateMipMap</code>或者渲染到纹理加载图像数据。<br>
+为了创建不可变纹理，应用程序将使用<code>glBindTexture</code>绑定纹理，然后用<code>glTexStorage2D</code>或<code>glTexStorage3D</code>分配不可变存储：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 创建不可变纹理</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param target#&gt; 指定纹理目标，可能是GL_TEXTURE_2D、GL_TEXTURE_CUBE_MAP_*或者GL_TEXTURE_3D、GL_TEXTURE_2D_ARRAY description#&gt;</span></span><br><span class="line"><span class="comment"> @param levels#&gt; 指定mip贴图级别数量 description#&gt;</span></span><br><span class="line"><span class="comment"> @param internalformat#&gt; 确定大小的纹理存储内部格式 description#&gt;</span></span><br><span class="line"><span class="comment"> @param width#&gt; 基本图形宽度，以像素数表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @param height#&gt; 基本图像高度，以像素数表示 description#&gt;</span></span><br><span class="line"><span class="comment"> @return void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">glTexStorage2D/<span class="number">3</span>D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);</span><br></pre></td></tr></table></figure>
+<p>一旦创建了不可变纹理，在纹理对象上调用<code>glTexImage*</code>、<code>glCompressedTexImage*</code>、<code>glCopyTexImage*</code>或<code>glTexStorage*</code>就会无效。这样做将生成<code>GL_INVALID_OPERATION</code>错误。要用图像数据填充不可变纹理，应用程序需要使用<code>glTexSubImage2D</code>、<code>glTexSubImage3D</code>、<code>glGenerateMipMap</code>或者渲染到纹理图像（通过将其作为帧缓冲区对象附着使用来实现）。<br>
+使用<code>glTexStorage*</code>时，OpenGL ES内部通过将<code>GL_TEXTURE_IMMUTABLE_FORMAT</code>设置为<code>GL_TRUE</code>，将<code>GL_TEXTURE_IMMUTABLE_LEVELS</code>设置为传递给<code>glTexStorage*</code>的数字，将纹理对象标记为不可变。应用程序可以使用<code>glGetTexParameter[i|f][v]</code>查询这些值，但是它无法直接设置这些值。必须使用<code>glTexStorage*</code>函数设置不可变纹理参数。</p>
+<h1 id="像素解包缓冲区对象">像素解包缓冲区对象</h1>
+<p>缓冲区对象可以在服务器端（或者GPU）内存中存储数据，而不是在客户端（或者主机）内存。使用缓冲区对象的好处是减少了从CPU到GPU的数据传送，因而能够改进性能（并降低内存占用率）。OpenGL ES 3.0还引入了像素解包缓冲区对象，这种对象与<code>GL_PIXEL_UNPACK_BUFFER</code>目标绑定指定。像素解包缓冲区对象允许纹理数据规格保存在服务器端内存。结果是，像素解包操作<code>glTexImage*</code>、<code>glTexSubImage*</code>、<code>glCompressedTexImage*</code>和<code>glCompressedTexSubImage*</code>可以直接来自缓冲区对象。如果像素解包缓冲区对象在这类调用期间绑定，则数据指针是像素解包缓冲区中的一个偏移量，而不是指向客户端内存的指针，这与使用<code>glVertexAttribPointer</code>的VBO很相似。<br>
+像素解包缓冲区对象可以用于将纹理数据流传输到GPU。应用程序可以分配一个像素解包缓冲区，然后为更新映射缓冲区区域。当进行加载数据到OpenGL的调用（例如<code>glTexSubImage*</code>）时，这些函数可能立即返回。因为数据已经存在于GPU（或者可以在稍后复制，但是立即复制不需要像客户端数据那样进行）。我们建议在纹理上传操作的性能/内存占用对应用程序很重要的情况下使用像素解包缓冲区对象。</p>
+<h1 id="总结">总结</h1>
+<p>这篇文章主要介绍了OpenGL ES 3.0中使用纹理的方法。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2019/opengl-es-fragment-shader-0815/" data-toggle="tooltip" data-placement="top" title="OpenGL ES学习--片段着色器">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/opengl-es-vertex-shader-0803/" data-toggle="tooltip" data-placement="top" title="OpenGL ES学习--顶点着色器">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#纹理基础"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x7EB9;&#x7406;&#x57FA;&#x7840;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2d纹理"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">2D&#x7EB9;&#x7406;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#立方图纹理"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x7ACB;&#x65B9;&#x56FE;&#x7EB9;&#x7406;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3d纹理"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">3D&#x7EB9;&#x7406;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2d纹理数组"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">2D&#x7EB9;&#x7406;&#x6570;&#x7EC4;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#纹理对象和纹理的加载"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">&#x7EB9;&#x7406;&#x5BF9;&#x8C61;&#x548C;&#x7EB9;&#x7406;&#x7684;&#x52A0;&#x8F7D;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#纹理过滤和mip贴图"><span class="toc-nav-number">1.6.</span> <span class="toc-nav-text">&#x7EB9;&#x7406;&#x8FC7;&#x6EE4;&#x548C;mip&#x8D34;&#x56FE;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#无缝立方图过滤"><span class="toc-nav-number">1.6.1.</span> <span class="toc-nav-text">&#x65E0;&#x7F1D;&#x7ACB;&#x65B9;&#x56FE;&#x8FC7;&#x6EE4;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#自动mip贴图生成"><span class="toc-nav-number">1.7.</span> <span class="toc-nav-text">&#x81EA;&#x52A8;mip&#x8D34;&#x56FE;&#x751F;&#x6210;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#纹理坐标包装"><span class="toc-nav-number">1.8.</span> <span class="toc-nav-text">&#x7EB9;&#x7406;&#x5750;&#x6807;&#x5305;&#x88C5;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#纹理调配"><span class="toc-nav-number">1.9.</span> <span class="toc-nav-text">&#x7EB9;&#x7406;&#x8C03;&#x914D;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#纹理细节级别"><span class="toc-nav-number">1.10.</span> <span class="toc-nav-text">&#x7EB9;&#x7406;&#x7EC6;&#x8282;&#x7EA7;&#x522B;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#深度纹理对比百分比渐进过滤"><span class="toc-nav-number">1.11.</span> <span class="toc-nav-text">&#x6DF1;&#x5EA6;&#x7EB9;&#x7406;&#x5BF9;&#x6BD4;&#xFF08;&#x767E;&#x5206;&#x6BD4;&#x6E10;&#x8FDB;&#x8FC7;&#x6EE4;&#xFF09;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#纹理格式"><span class="toc-nav-number">1.12.</span> <span class="toc-nav-text">&#x7EB9;&#x7406;&#x683C;&#x5F0F;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#规范化纹理格式"><span class="toc-nav-number">1.12.1.</span> <span class="toc-nav-text">&#x89C4;&#x8303;&#x5316;&#x7EB9;&#x7406;&#x683C;&#x5F0F;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#浮点纹理格式"><span class="toc-nav-number">1.12.2.</span> <span class="toc-nav-text">&#x6D6E;&#x70B9;&#x7EB9;&#x7406;&#x683C;&#x5F0F;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#整数纹理格式"><span class="toc-nav-number">1.12.3.</span> <span class="toc-nav-text">&#x6574;&#x6570;&#x7EB9;&#x7406;&#x683C;&#x5F0F;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#共享指数纹理格式"><span class="toc-nav-number">1.12.4.</span> <span class="toc-nav-text">&#x5171;&#x4EAB;&#x6307;&#x6570;&#x7EB9;&#x7406;&#x683C;&#x5F0F;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#srgb纹理格式"><span class="toc-nav-number">1.12.5.</span> <span class="toc-nav-text">sRGB&#x7EB9;&#x7406;&#x683C;&#x5F0F;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#深度纹理格式"><span class="toc-nav-number">1.12.6.</span> <span class="toc-nav-text">&#x6DF1;&#x5EA6;&#x7EB9;&#x7406;&#x683C;&#x5F0F;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#在着色器中使用纹理"><span class="toc-nav-number">1.13.</span> <span class="toc-nav-text">&#x5728;&#x7740;&#x8272;&#x5668;&#x4E2D;&#x4F7F;&#x7528;&#x7EB9;&#x7406;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用立方图纹理的示例"><span class="toc-nav-number">1.14.</span> <span class="toc-nav-text">&#x4F7F;&#x7528;&#x7ACB;&#x65B9;&#x56FE;&#x7EB9;&#x7406;&#x7684;&#x793A;&#x4F8B;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#加载3d纹理和2d纹理数组"><span class="toc-nav-number">1.15.</span> <span class="toc-nav-text">&#x52A0;&#x8F7D;3D&#x7EB9;&#x7406;&#x548C;2D&#x7EB9;&#x7406;&#x6570;&#x7EC4;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#压缩纹理"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x538B;&#x7F29;&#x7EB9;&#x7406;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#纹理子图像规范"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x7EB9;&#x7406;&#x5B50;&#x56FE;&#x50CF;&#x89C4;&#x8303;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#从颜色缓冲区复制纹理数据"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x4ECE;&#x989C;&#x8272;&#x7F13;&#x51B2;&#x533A;&#x590D;&#x5236;&#x7EB9;&#x7406;&#x6570;&#x636E;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#采样器对象"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x91C7;&#x6837;&#x5668;&#x5BF9;&#x8C61;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#不可变纹理"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">&#x4E0D;&#x53EF;&#x53D8;&#x7EB9;&#x7406;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#像素解包缓冲区对象"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">&#x50CF;&#x7D20;&#x89E3;&#x5305;&#x7F13;&#x51B2;&#x533A;&#x5BF9;&#x8C61;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">&#x603B;&#x7ED3;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/opengl-es-texture-0810/";
+    <!-- var disqus_url = "/article/2019/opengl-es-texture-0810/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

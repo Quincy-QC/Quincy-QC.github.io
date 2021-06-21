@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Kth Smallest/Largest Element in ... - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/leetcode-kth-problems-1216/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS - Swift" title="iOS - Swift">iOS - Swift</a>
+                            
+                        </div>
+                        <h1>Kth Smallest/Largest Element in ...</h1>
+                        <h2 class="subheading">Leet Code</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-12-16
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="introduction">Introduction</h1>
+<p>Here is the summary about the kth problems in LeetCode.</p>
+<h1 id="kth-largest-element-in-an-array">Kth Largest Element in an Array</h1>
+<p>Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: [3,2,1,5,6,4] and k = 2</span><br><span class="line">Output: 5</span><br></pre></td></tr></table></figure>
+<p><strong>Example 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: [3,2,3,1,2,4,5,5,6] and k = 4</span><br><span class="line">Output: 4</span><br></pre></td></tr></table></figure>
+<p><strong>Algorithm</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">findKthLargest</span><span class="params">(<span class="number">_</span> nums: [Int], <span class="number">_</span> k: Int)</span></span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">func</span> <span class="title">quickSort</span><span class="params">(<span class="number">_</span> nums: <span class="keyword">inout</span> [Int], <span class="number">_</span> l: Int, <span class="number">_</span> r: Int)</span></span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">            <span class="keyword">var</span> l = l, r = r</span><br><span class="line">            <span class="keyword">let</span> key = nums[l]</span><br><span class="line">            <span class="keyword">while</span> l &lt; r &#123;</span><br><span class="line">                <span class="keyword">while</span> l &lt; r, key &gt;= nums[r] &#123;</span><br><span class="line">                    r -= <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">                nums[l] = nums[r]</span><br><span class="line">                <span class="keyword">while</span> l &lt; r, key &lt;= nums[l] &#123;</span><br><span class="line">                    l += <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">                nums[r] = nums[l]</span><br><span class="line">            &#125;</span><br><span class="line">            nums[l] = key</span><br><span class="line">            <span class="keyword">return</span> l</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> l = <span class="number">0</span>, r = nums.<span class="built_in">count</span>-<span class="number">1</span>, nums = nums</span><br><span class="line">        <span class="keyword">while</span> l &lt; r &#123;</span><br><span class="line">            <span class="keyword">let</span> index = <span class="built_in">quickSort</span>(&amp;nums, l, r)</span><br><span class="line">            <span class="keyword">switch</span> index &#123;</span><br><span class="line">            <span class="keyword">case</span> k - <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> nums[index]</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span>..&lt;k-<span class="number">1</span>:</span><br><span class="line">                l = index + <span class="number">1</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                r = index - <span class="number">1</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> nums[k-<span class="number">1</span>]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>From leetCode <a href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank" rel="noopener">215. Kth Largest Element in an Array</a></p>
+<h1 id="kth-smallest-element-in-a-bst">Kth Smallest Element in a BST</h1>
+<p>Given a binary search tree, write a function kthSmallest to find the kth smallest element in it.</p>
+<p><strong>Note:</strong></p>
+<p>You may assume k is always valid, 1 ≤ k ≤ BST’s total elements.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Input: root = [3,1,4,null,2], k = 1</span><br><span class="line">   3</span><br><span class="line">  / \</span><br><span class="line"> 1   4</span><br><span class="line">  \</span><br><span class="line">   2</span><br><span class="line">Output: 1</span><br></pre></td></tr></table></figure>
+<p><strong>Exapmle 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Input: root = [5,3,6,2,4,null,null,1], k = 3</span><br><span class="line">       5</span><br><span class="line">      / \</span><br><span class="line">     3   6</span><br><span class="line">    / \</span><br><span class="line">   2   4</span><br><span class="line">  /</span><br><span class="line"> 1</span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure>
+<p><strong>Algorithm:</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">var</span> val: <span class="type">Int</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">var</span> <span class="keyword">left</span>: <span class="type">TreeNode</span>?</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">var</span> <span class="keyword">right</span>: <span class="type">TreeNode</span>?</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">init</span>(<span class="number">_</span> val: <span class="type">Int</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.val = val</span><br><span class="line">        <span class="keyword">self</span>.<span class="keyword">left</span> = <span class="literal">nil</span></span><br><span class="line">        <span class="keyword">self</span>.<span class="keyword">right</span> = <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">kthSmallest</span><span class="params">(<span class="number">_</span> root: TreeNode?, <span class="number">_</span> k: Int)</span></span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> stack = [<span class="type">TreeNode</span>]()</span><br><span class="line">        <span class="keyword">var</span> cur = root</span><br><span class="line">        <span class="keyword">var</span> k = k</span><br><span class="line">        <span class="keyword">while</span> cur != <span class="literal">nil</span> || !stack.isEmpty &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> temp = cur &#123;</span><br><span class="line">                stack.append(temp)</span><br><span class="line">                cur = temp.<span class="keyword">left</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> last = stack.removeLast()</span><br><span class="line">                k -= <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> k == <span class="number">0</span> &#123;</span><br><span class="line">                    <span class="keyword">return</span> last.val</span><br><span class="line">                &#125;</span><br><span class="line">                cur = last.<span class="keyword">right</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>From leetCode <a href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/" target="_blank" rel="noopener">230. Kth Smallest Element in a BST</a></p>
+<h1 id="find-k-pairs-with-smallest-sums">Find K Pairs with Smallest Sums</h1>
+<p>You are given two integer arrays nums1 and nums2 sorted in ascending order and an integer k.</p>
+<p>Define a pair (u,v) which consists of one element from the first array and one element from the second array.</p>
+<p>Find the k pairs (u1,v1),(u2,v2) …(uk,vk) with the smallest sums.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Input: nums1 = [1,7,11], nums2 = [2,4,6], k = 3</span><br><span class="line">Output: [[1,2],[1,4],[1,6]] </span><br><span class="line">Explanation: The first 3 pairs are returned from the sequence: </span><br><span class="line">             [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]</span><br></pre></td></tr></table></figure>
+<p><strong>Example 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Input: nums1 = [1,1,2], nums2 = [1,2,3], k = 2</span><br><span class="line">Output: [1,1],[1,1]</span><br><span class="line">Explanation: The first 2 pairs are returned from the sequence: </span><br><span class="line">             [1,1],[1,1],[1,2],[2,1],[1,2],[2,2],[1,3],[1,3],[2,3]</span><br></pre></td></tr></table></figure>
+<p><strong>Example 3:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: nums1 = [1,2], nums2 = [3], k = 3</span><br><span class="line">Output: [1,3],[2,3]</span><br><span class="line">Explanation: All possible pairs are returned from the sequence: [1,3],[2,3]</span><br></pre></td></tr></table></figure>
+<p><strong>Algorithm:</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">kSmallestPairs</span><span class="params">(<span class="number">_</span> nums1: [Int], <span class="number">_</span> nums2: [Int], <span class="number">_</span> k: Int)</span></span> -&gt; [[<span class="type">Int</span>]] &#123;</span><br><span class="line">        <span class="keyword">guard</span> !nums1.isEmpty, !nums2.isEmpty, k &gt;= <span class="number">0</span> <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">func</span> <span class="title">insert</span><span class="params">(<span class="number">_</span> arr: <span class="keyword">inout</span> [<span class="params">(Int, Int, Int)</span></span></span>], <span class="number">_</span> new: (<span class="type">Int</span>, <span class="type">Int</span>, <span class="type">Int</span>)) &#123;</span><br><span class="line">            <span class="keyword">var</span> s = <span class="number">0</span>, e = arr.<span class="built_in">count</span>-<span class="number">1</span></span><br><span class="line">            <span class="keyword">while</span> s &lt;= e &#123;</span><br><span class="line">                <span class="keyword">let</span> mid = (s + e) &gt;&gt; <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> (mid == <span class="number">0</span> &amp;&amp; new.<span class="number">0</span> &lt;= arr[mid].<span class="number">0</span>) ||</span><br><span class="line">                    (mid &gt; <span class="number">0</span> &amp;&amp; new.<span class="number">0</span> &gt;= arr[mid-<span class="number">1</span>].<span class="number">0</span> &amp;&amp; new.<span class="number">0</span> &lt;= arr[mid].<span class="number">0</span>) &#123;</span><br><span class="line">                    arr.insert(new, at: mid)</span><br><span class="line">                    <span class="keyword">return</span></span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> new.<span class="number">0</span> &gt; arr[mid].<span class="number">0</span> &#123;</span><br><span class="line">                    s = mid + <span class="number">1</span></span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    e = mid - <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            arr.insert(new, at: arr.<span class="built_in">count</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> arr = [(<span class="type">Int</span>, <span class="type">Int</span>, <span class="type">Int</span>)]()</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> nums1.<span class="built_in">indices</span> &#123;</span><br><span class="line">            arr.append((nums1[i]+nums2[<span class="number">0</span>], i, <span class="number">0</span>))</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> res = [[<span class="type">Int</span>]]()</span><br><span class="line">        <span class="keyword">while</span> !arr.isEmpty, res.<span class="built_in">count</span> &lt; k &#123;</span><br><span class="line">            <span class="keyword">let</span> (<span class="number">_</span>, i, j) = arr.removeFirst()</span><br><span class="line">            res.append([nums1[i], nums2[j]])</span><br><span class="line">            <span class="keyword">if</span> j &lt; nums2.<span class="built_in">count</span>-<span class="number">1</span> &#123;</span><br><span class="line">                insert(&amp;arr, (nums1[i]+nums2[j+<span class="number">1</span>], i, j+<span class="number">1</span>))</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Comment:</strong></p>
+<p>Here is a simple example demonstrate how this algorithm works:</p>
+<p><img src="/img/article/20191216/1.png" alt="example"></p>
+<p>From leetCode <a href="https://leetcode.com/problems/find-k-pairs-with-smallest-sums/" target="_blank" rel="noopener">373. Find K Pairs with Smallest Sums</a></p>
+<h1 id="kth-smallest-element-in-a-sorted-matrix">Kth Smallest Element in a Sorted Matrix</h1>
+<p>Given a n x n matrix where each of the rows and columns are sorted in ascending order, find the kth smallest element in the matrix.</p>
+<p>Note that it is the kth smallest element in the sorted order, not the kth distinct element.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">matrix = [</span><br><span class="line">   [ 1,  5,  9],</span><br><span class="line">   [10, 11, 13],</span><br><span class="line">   [12, 13, 15]</span><br><span class="line">],</span><br><span class="line">k = 8,</span><br><span class="line"></span><br><span class="line">return 13.</span><br></pre></td></tr></table></figure>
+<p><strong>Algorithm:</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">kthSmallest</span><span class="params">(<span class="number">_</span> matrix: [[Int]], <span class="number">_</span> k: Int)</span></span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">        <span class="keyword">guard</span> !matrix.isEmpty, !matrix.first!.isEmpty, k &gt; <span class="number">0</span> <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">func</span> <span class="title">insert</span><span class="params">(<span class="number">_</span> arr: <span class="keyword">inout</span> [<span class="params">(Int, Int, Int)</span></span></span>], <span class="number">_</span> new: (<span class="type">Int</span>, <span class="type">Int</span>, <span class="type">Int</span>)) &#123;</span><br><span class="line">            <span class="keyword">var</span> s = <span class="number">0</span>, e = arr.<span class="built_in">count</span>-<span class="number">1</span></span><br><span class="line">            <span class="keyword">while</span> s &lt;= e &#123;</span><br><span class="line">                <span class="keyword">let</span> mid = (s + e) &gt;&gt; <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> (mid == <span class="number">0</span> &amp;&amp; new.<span class="number">0</span> &lt;= arr[mid].<span class="number">0</span>) ||</span><br><span class="line">                    (mid &gt; <span class="number">0</span> &amp;&amp; new.<span class="number">0</span> &gt; arr[mid-<span class="number">1</span>].<span class="number">0</span> &amp;&amp; new.<span class="number">0</span> &lt;= arr[mid].<span class="number">0</span>) &#123;</span><br><span class="line">                    arr.insert(new, at: mid)</span><br><span class="line">                    <span class="keyword">return</span></span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> new.<span class="number">0</span> &gt; arr[mid].<span class="number">0</span> &#123;</span><br><span class="line">                    s = mid + <span class="number">1</span></span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    e = mid - <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            arr.insert(new, at: arr.<span class="built_in">count</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> arr = [(<span class="type">Int</span>, <span class="type">Int</span>, <span class="type">Int</span>)]()</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> matrix.<span class="built_in">indices</span> &#123;</span><br><span class="line">            arr.append((matrix[i][<span class="number">0</span>], i, <span class="number">0</span>))</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> k = k, i = <span class="number">0</span>, j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> !arr.isEmpty, k &gt; <span class="number">0</span> &#123;</span><br><span class="line">            (<span class="number">_</span>, i, j) = arr.removeFirst()</span><br><span class="line">            <span class="keyword">if</span> j &lt; matrix.first!.<span class="built_in">count</span>-<span class="number">1</span> &#123;</span><br><span class="line">                insert(&amp;arr, (matrix[i][j+<span class="number">1</span>], i, j+<span class="number">1</span>))</span><br><span class="line">            &#125;</span><br><span class="line">            k -= <span class="number">1</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matrix[i][j]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">kthSmallest</span><span class="params">(<span class="number">_</span> matrix: [[Int]], <span class="number">_</span> k: Int)</span></span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">        <span class="keyword">guard</span> !matrix.isEmpty <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> n = matrix.<span class="built_in">count</span>-<span class="number">1</span></span><br><span class="line">        <span class="keyword">var</span> lo = matrix[<span class="number">0</span>][<span class="number">0</span>], hi = matrix[n][n]</span><br><span class="line">        <span class="keyword">while</span> lo &lt; hi &#123;</span><br><span class="line">            <span class="keyword">let</span> mid = (lo + hi) &gt;&gt; <span class="number">1</span></span><br><span class="line">            <span class="keyword">var</span> <span class="built_in">count</span> = <span class="number">0</span>, j = n</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>...n &#123;</span><br><span class="line">                <span class="keyword">while</span> j &gt;= <span class="number">0</span>, matrix[i][j] &gt; mid &#123;</span><br><span class="line">                    j -= <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="built_in">count</span> += j + <span class="number">1</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">count</span> &lt; k &#123;</span><br><span class="line">                lo = mid + <span class="number">1</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                hi = mid</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lo</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>From leetCode <a href="https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/" target="_blank" rel="noopener">378. Kth Smallest Element in a Sorted Matrix</a></p>
+<h1 id="kth-smallest-number-in-multiplication-table">Kth Smallest Number in Multiplication Table</h1>
+<p>Nearly every one have used the Multiplication Table. But could you find out the k-th smallest number quickly from the multiplication table?</p>
+<p>Given the height m and the length n of a m * n Multiplication Table, and a positive integer k, you need to return the k-th smallest number in this table.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Input: m = 3, n = 3, k = 5</span><br><span class="line">Output: </span><br><span class="line">Explanation: </span><br><span class="line">The Multiplication Table:</span><br><span class="line">1	2	3</span><br><span class="line">2	4	6</span><br><span class="line">3	6	9</span><br><span class="line"></span><br><span class="line">The 5-th smallest number is 3 (1, 2, 2, 3, 3).</span><br></pre></td></tr></table></figure>
+<p><strong>Example 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Input: m = 2, n = 3, k = 6</span><br><span class="line">Output: </span><br><span class="line">Explanation: </span><br><span class="line">The Multiplication Table:</span><br><span class="line">1	2	3</span><br><span class="line">2	4	6</span><br><span class="line"></span><br><span class="line">The 6-th smallest number is 6 (1, 2, 2, 3, 4, 6).</span><br></pre></td></tr></table></figure>
+<p><strong>Note:</strong></p>
+<ol>
+<li>The m and n will be in the range [1, 30000].</li>
+<li>The k will be in the range [1, m * n]</li>
+</ol>
+<p><strong>Algorithm:</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">findKthNumber</span><span class="params">(<span class="number">_</span> m: Int, <span class="number">_</span> n: Int, <span class="number">_</span> k: Int)</span></span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">        <span class="keyword">guard</span> m &gt; <span class="number">0</span>, n &gt; <span class="number">0</span>, k &gt; <span class="number">0</span> <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> lo = <span class="number">1</span>, hi = m * n</span><br><span class="line">        <span class="keyword">while</span> lo &lt; hi &#123;</span><br><span class="line">            <span class="keyword">let</span> mid = (lo + hi) &gt;&gt; <span class="number">1</span></span><br><span class="line">            <span class="keyword">var</span> <span class="built_in">count</span> = <span class="number">0</span>, nN = n</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>...m &#123;</span><br><span class="line">                <span class="keyword">while</span> nN &gt; <span class="number">0</span>, i * nN &gt; mid &#123;</span><br><span class="line">                    nN -= <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="built_in">count</span> += nN</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">count</span> &lt; k &#123;</span><br><span class="line">                lo = mid + <span class="number">1</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                hi = mid</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lo</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>From leetCode <a href="https://leetcode.com/problems/kth-smallest-number-in-multiplication-table/" target="_blank" rel="noopener">668. Kth Smallest Number in Multiplication Table</a></p>
+<h1 id="find-k-th-smallest-pair-distance">Find K-th Smallest Pair Distance</h1>
+<p>Given an integer array, return the k-th smallest distance among all the pairs. The distance of a pair (A, B) is defined as the absolute difference between A and B.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Input:</span><br><span class="line">nums = [1,3,1]</span><br><span class="line">k = 1</span><br><span class="line">Output: 0 </span><br><span class="line">Explanation:</span><br><span class="line">Here are all the pairs:</span><br><span class="line">(1,3) -&gt; 2</span><br><span class="line">(1,1) -&gt; 0</span><br><span class="line">(3,1) -&gt; 2</span><br><span class="line">Then the 1st smallest distance pair is (1,1), and its distance is 0.</span><br></pre></td></tr></table></figure>
+<p><strong>Note:</strong></p>
+<ol>
+<li>2 &lt;= len(nums) &lt;= 10000.</li>
+<li>0 &lt;= nums[i] &lt; 1000000.</li>
+<li>1 &lt;= k &lt;= len(nums) * (len(nums) - 1) / 2.</li>
+</ol>
+<p><strong>Algorithm:</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">smallestDistancePair</span><span class="params">(<span class="number">_</span> nums: [Int], <span class="number">_</span> k: Int)</span></span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">        <span class="keyword">guard</span> nums.<span class="built_in">count</span> &gt; <span class="number">1</span> <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> sortedNums = nums.sorted()</span><br><span class="line">        <span class="keyword">var</span> lo = <span class="number">0</span>, hi = sortedNums.last! - sortedNums.first!</span><br><span class="line">        <span class="keyword">while</span> lo &lt; hi &#123;</span><br><span class="line">            <span class="keyword">let</span> mid = (lo + hi) &gt;&gt; <span class="number">1</span></span><br><span class="line">            <span class="keyword">var</span> <span class="built_in">count</span> = <span class="number">0</span>, i = <span class="number">0</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..&lt;sortedNums.<span class="built_in">count</span> &#123;</span><br><span class="line">                <span class="keyword">while</span> i &lt; sortedNums.<span class="built_in">count</span>, sortedNums[j] - sortedNums[i] &gt; mid &#123;</span><br><span class="line">                    i += <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="built_in">count</span> += j-i</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">count</span> &lt; k &#123;</span><br><span class="line">                lo = mid + <span class="number">1</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                hi = mid</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lo</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>From leetCode <a href="https://leetcode.com/problems/find-k-th-smallest-pair-distance/" target="_blank" rel="noopener">719. Find K-th Smallest Pair Distance</a></p>
+<h1 id="k-th-smallest-prime-fraction">K-th Smallest Prime Fraction</h1>
+<p>A sorted list A contains 1, plus some number of primes.  Then, for every p &lt; q in the list, we consider the fraction p/q.</p>
+<p>What is the K-th smallest fraction considered?  Return your answer as an array of ints, where answer[0] = p and answer[1] = q.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Input: A = [1, 2, 3, 5], K = 3</span><br><span class="line">Output: [2, 5]</span><br><span class="line">Explanation:</span><br><span class="line">The fractions to be considered in sorted order are:</span><br><span class="line">1/5, 1/3, 2/5, 1/2, 3/5, 2/3.</span><br><span class="line">The third fraction is 2/5.</span><br><span class="line"></span><br><span class="line">Input: A = [1, 7], K = 1</span><br><span class="line">Output: [1, 7]</span><br></pre></td></tr></table></figure>
+<p><strong>Note:</strong></p>
+<ul>
+<li>A will have length between 2 and 2000.</li>
+<li>Each A[i] will be between 1 and 30000.</li>
+<li>K will be between 1 and A.length * (A.length - 1) / 2.</li>
+</ul>
+<p><strong>Algorithm:</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">kthSmallestPrimeFraction</span><span class="params">(<span class="number">_</span> A: [Int], <span class="number">_</span> K: Int)</span></span> -&gt; [<span class="type">Int</span>] &#123;</span><br><span class="line">        <span class="keyword">let</span> n = <span class="type">A</span>.<span class="built_in">count</span></span><br><span class="line">        <span class="keyword">guard</span> n &gt; <span class="number">1</span>, <span class="type">K</span> &gt; <span class="number">0</span> <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> lo = <span class="number">0.0</span>, hi = <span class="number">1.0</span></span><br><span class="line">        <span class="keyword">while</span> lo &lt; hi &#123;</span><br><span class="line">            <span class="keyword">let</span> mid = (lo + hi) / <span class="number">2</span></span><br><span class="line">            <span class="keyword">var</span> j = <span class="number">1</span>, <span class="built_in">count</span> = <span class="number">0</span>, maxVal = <span class="number">0.0</span>, res = (<span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..&lt;n-<span class="number">1</span> &#123;</span><br><span class="line">                <span class="keyword">while</span> j &lt; n, <span class="type">Double</span>(<span class="type">A</span>[i]) &gt; mid * <span class="type">Double</span>(<span class="type">A</span>[j]) &#123;</span><br><span class="line">                    j += <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> n == j &#123;</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="built_in">count</span> += n-j</span><br><span class="line">                <span class="keyword">let</span> val = <span class="type">Double</span>(<span class="type">A</span>[i]) / <span class="type">Double</span>(<span class="type">A</span>[j])</span><br><span class="line">                <span class="keyword">if</span> val &gt; maxVal &#123;</span><br><span class="line">                    res = (i, j)</span><br><span class="line">                    maxVal = val</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">count</span> &lt; <span class="type">K</span> &#123;</span><br><span class="line">                lo = mid</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="built_in">count</span> == <span class="type">K</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> [<span class="type">A</span>[res.<span class="number">0</span>], <span class="type">A</span>[res.<span class="number">1</span>]]</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                hi = mid</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>From leetCode <a href="https://leetcode.com/problems/k-th-smallest-prime-fraction/" target="_blank" rel="noopener">786. K-th Smallest Prime Fraction</a></p>
+<h1 id="minimum-cost-to-hire-k-workers">Minimum Cost to Hire K Workers</h1>
+<p>There are N workers.  The i-th worker has a quality[i] and a minimum wage expectation wage[i].</p>
+<p>Now we want to hire exactly K workers to form a paid group.  When hiring a group of K workers, we must pay them according to the following rules:</p>
+<ol>
+<li>Every worker in the paid group should be paid in the ratio of their quality compared to other workers in the paid group.</li>
+<li>Every worker in the paid group must be paid at least their minimum wage expectation.</li>
+</ol>
+<p>Return the least amount of money needed to form a paid group satisfying the above conditions.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: quality = [10,20,5], wage = [70,50,30], K = 2</span><br><span class="line">Output: 105.00000</span><br><span class="line">Explanation: We pay 70 to 0-th worker and 35 to 2-th worker.</span><br></pre></td></tr></table></figure>
+<p><strong>Example 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: quality = [3,1,10,10,1], wage = [4,8,2,2,7], K = 3</span><br><span class="line">Output: 30.66667</span><br><span class="line">Explanation: We pay 4 to 0-th worker, 13.33333 to 2-th and 3-th workers seperately.</span><br></pre></td></tr></table></figure>
+<p><strong>Note:</strong></p>
+<ol>
+<li>1 &lt;= K &lt;= N &lt;= 10000, where N = quality.length = wage.length</li>
+<li>1 &lt;= quality[i] &lt;= 10000</li>
+<li>1 &lt;= wage[i] &lt;= 10000</li>
+<li>Answers within 10^-5 of the correct answer will be considered correct.</li>
+</ol>
+<p><strong>Algorithm:</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">mincostToHireWorkers</span><span class="params">(<span class="number">_</span> quality: [Int], <span class="number">_</span> wage: [Int], <span class="number">_</span> K: Int)</span></span> -&gt; <span class="type">Double</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">func</span> <span class="title">insert</span>&lt;T: Comparable&gt;<span class="params">(<span class="number">_</span> new: <span class="params">(T, Int)</span></span></span>, <span class="number">_</span> arr: <span class="keyword">inout</span> [(<span class="type">T</span>, <span class="type">Int</span>)]) &#123;</span><br><span class="line">            <span class="keyword">var</span> l = <span class="number">0</span>, r = arr.<span class="built_in">count</span>-<span class="number">1</span></span><br><span class="line">            <span class="keyword">while</span> l &lt;= r &#123;</span><br><span class="line">                <span class="keyword">let</span> mid = (l+r) &gt;&gt; <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> (mid == <span class="number">0</span> &amp;&amp; new.<span class="number">0</span> &lt;= arr[mid].<span class="number">0</span>) ||</span><br><span class="line">                    (mid &gt; <span class="number">0</span> &amp;&amp; new.<span class="number">0</span> &lt;= arr[mid].<span class="number">0</span> &amp;&amp; new.<span class="number">0</span> &gt; arr[mid-<span class="number">1</span>].<span class="number">0</span>) &#123;</span><br><span class="line">                    arr.insert(new, at: mid)</span><br><span class="line">                    <span class="keyword">return</span></span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> new.<span class="number">0</span> &gt; arr[mid].<span class="number">0</span> &#123;</span><br><span class="line">                    l = mid + <span class="number">1</span></span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    r = mid - <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            arr.insert(new, at: arr.<span class="built_in">count</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> arr = [(<span class="type">Double</span>, <span class="type">Int</span>)]()</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> quality.<span class="built_in">indices</span> &#123;</span><br><span class="line">            insert((<span class="type">Double</span>(wage[i]) / <span class="type">Double</span>(quality[i]), i), &amp;arr)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> res = pow(<span class="number">10.0</span>, <span class="number">10.0</span>)</span><br><span class="line">        <span class="keyword">var</span> qualities = [(<span class="type">Int</span>, <span class="type">Int</span>)]()</span><br><span class="line">        <span class="keyword">var</span> sump = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..&lt;arr.<span class="built_in">count</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> temp = quality[arr[i].<span class="number">1</span>]</span><br><span class="line">            insert((temp, arr[i].<span class="number">1</span>), &amp;qualities)</span><br><span class="line">            sump += temp</span><br><span class="line">            <span class="keyword">if</span> qualities.<span class="built_in">count</span> &gt; <span class="type">K</span> &#123;</span><br><span class="line">                sump -= qualities.popLast()!.<span class="number">0</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> qualities.<span class="built_in">count</span> == <span class="type">K</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> ratio = arr[i].<span class="number">0</span></span><br><span class="line">                res = <span class="built_in">min</span>(res, <span class="type">Double</span>(sump) * ratio)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>From leetCode <a href="https://leetcode.com/problems/minimum-cost-to-hire-k-workers/" target="_blank" rel="noopener">857. Minimum Cost to Hire K Workers</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2020/talk-about-map-flatmap-compactmap-0119/" data-toggle="tooltip" data-placement="top" title="细谈map，flatMap和compactMap">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/swift-package-manager-1122/" data-toggle="tooltip" data-placement="top" title="使用Swift Package Manager管理依赖项">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#introduction"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Introduction</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#kth-largest-element-in-an-array"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Kth Largest Element in an Array</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#kth-smallest-element-in-a-bst"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Kth Smallest Element in a BST</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#find-k-pairs-with-smallest-sums"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Find K Pairs with Smallest Sums</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#kth-smallest-element-in-a-sorted-matrix"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Kth Smallest Element in a Sorted Matrix</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#kth-smallest-number-in-multiplication-table"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">Kth Smallest Number in Multiplication Table</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#find-k-th-smallest-pair-distance"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">Find K-th Smallest Pair Distance</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#k-th-smallest-prime-fraction"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">K-th Smallest Prime Fraction</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#minimum-cost-to-hire-k-workers"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">Minimum Cost to Hire K Workers</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/leetcode-kth-problems-1216/";
+    <!-- var disqus_url = "/article/2019/leetcode-kth-problems-1216/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

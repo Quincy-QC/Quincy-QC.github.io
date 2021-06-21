@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          图形渲染与动画基础 -- Core Animation - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/core-animation-study-0503/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                            
+                        </div>
+                        <h1>图形渲染与动画基础 -- Core Animation</h1>
+                        <h2 class="subheading">About Core Animation</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-05-03
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="introduction">Introduction</h1>
+<p>Core Animation是iOS与OS X平台上的图形渲染和动画基础设施，可以在应用中使视图和其他可见元素产生动画。使用Core Animation，绘制动画的每一帧所需的大部分工作都已经实现。我们所需要做的是配置少量动画参数同时启动动画，Core Animation会完成其余部分，将大部分实际绘图工作交给图形硬件实现加速渲染，这种自动图形加速产生高帧率平滑的动画而不会负担CPU和使应用卡顿。<br>
+当我们在写iOS代码时，不管是否知道我们都在使用Core Animation，如果是OS X，则可以非常轻松的利用Core Animation。Core Animation位于AppKit和UIKit下，被紧密集成到Cocoa和Cocoa Touch的视图流中。当然，Core Animation也有一些应用视图暴露的扩展功能接口，可以让我们更细致控制应用程序的动画。</p>
+<p><img src="/img/article/20190503/1.png" alt="Core Animation"></p>
+<h1 id="core-animation-basics">Core Animation Basics</h1>
+<p>Core Animation提供一个视图和其他可见元素动画的通用系统，它不是View的替代品，相反，他是一种与视图结合，提供更好性能、为视图提供动画的技术。它将视图的内容缓存到可以直接被图形硬件操作的位图中，在一些情况下，这个缓存操作可能会让我们重新思考我们如何呈现和管理我们的应用内容，但是大多数情况我们不需要知道。除了缓存视图内容，Core Animation同样定义了一种方式，指定任意可视内容，结合视图上的内容，让他和其他任意东西一起动起来。</p>
+<h2 id="layers提供绘图与动画的基础">Layers提供绘图与动画的基础</h2>
+<p>Layer对象是三维空间中的二维表面，是Core Animation所做事情的核心。与View一样的是，层级管理其表面的几何、内容、视觉属性信息。与View不同的是，层级不定义他们自己的外观。一个层级仅仅管理位图周围的状态信息，位图本身可以是视图绘制本身的结果，也可以是指定的固定图形的结果。因此，应用中的主要层级被被认为是模型对象，因为他们主要管理数据。这个概念很重要，因为他们影响到动画表现。</p>
+<h3 id="层级绘制模型">层级绘制模型</h3>
+<p>多数层级不是真的绘图，相反，一个Layer捕获内容然后缓存到位图，有时也被称为<strong>后备存储器</strong>。当我们修改一个层级的属性，我们所做的只是修改关联层级的状态信息。当一项改变触发动画，Core Animation将层级的位图和状态信息传递给图形硬件，图形硬件使用新的信息渲染位图。在硬件中操作位图比在软件中可以更快的生成动画。</p>
+<p><img src="/img/article/20190503/2.png" alt="How Core Animation draws content"></p>
+<p>因为它操作静态位图，图层绘图与更传统的视图绘图有很大的不同。使用视图绘图，视图本身的修改经常会出发<code>drawRect:</code>方法的调用，使用新参数重新绘制内容，但这种方式绘图代价很高因为是在主线程使用CPU完成的。Core Animation尽可能通过在硬件中操作缓存位图来达到相同或类似的效果，以此避免这种开销。</p>
+<p>尽管Core Animation尽可能地使用缓存内容，但应用任然必须提供初始内容并不时更新。</p>
+<h3 id="层级动画">层级动画</h3>
+<p>层对象的数据和状态信息与改层内容在屏幕上的可视化表现相互解耦，这种解耦为Core Animation提供的一种方法，使它自我干预，并创建新旧状态的动画。例如，修改一个层级的位置属性会使Core Animation移动层级从当前位置到新状态的位置。</p>
+<p><img src="/img/article/20190503/3.png" alt="Examples of animations I can perform on layers"></p>
+<p>在动画制作过程中，Core Animation会在硬件上逐帧完成绘图。我们所要做的就是指定动画的起点与终点，让Core Animation完成剩下的工作，如有必要，可以同样指定自定义的时间信息和动画参数，如果不提供，Core Animation有合适的默认值。</p>
+<h2 id="层级对象定义自身的几何结构">层级对象定义自身的几何结构</h2>
+<p>一个层级的工作就是管理内容的视觉几何结构，视觉几何结构由内容的bounds，屏幕上的位置信息，是否旋转、缩放、位移的信息构成。和View一样，层级有frame和bounds来定位位置，同样，层级也有View没有的属性，比如锚点坐标。指定层级几何的某些方面的方式也和视图指定信息的方式不同。</p>
+<h3 id="layers使用两种坐标系统">Layers使用两种坐标系统</h3>
+<p>Layers同时使用point-based坐标系和unit坐标系来指定内容的位置。使用哪种坐标系统根据传递信息的类型。当指定直接映射到屏幕坐标系的值或者必须相对于另一个层级的指定，就需要用point-based坐标系，比如一个层级的位置属性。当值与屏幕坐标系无关时使用unit坐标系，比如层级的锚点属性，指定相对于层级自身边界的点。</p>
+<p>point-based坐标系最常见的使用就是指定曾记得大小（bounds）和位置（position）属性，当然也有frame属性，这个属性是由boudns和position属性中派生出来的值，使用频率较低。bounds和frame的坐标系方向：</p>
+<p><img src="/img/article/20190503/4.png" alt="The default layer geometries for iOS and OS X"></p>
+<p>图中的position属性在层级的中点位置，这个属性是根据层级锚点属性中的值更改定义的几个属性之一。锚点是几个使用unit坐标系的属性之一，Core Animation使用unit坐标系表示在层级大小修改时可能受影响的属性，我们可以将unit坐标系看作是总值的百分比，每个unit坐标系中的值在0.0-1.0之间。</p>
+<p><img src="/img/article/20190503/5.png" alt="The default unit coordinate systems for iOS and OS X"></p>
+<h3 id="锚点坐标影响几何操作">锚点坐标影响几何操作</h3>
+<p>一个层级的相关几何操作的发生与层级的锚点相关，我们可以使用锚点属性访问。当操作层级的位置或位移属性时，锚点的作用会更加可见。下图展示了锚点的改变对位置属性的改变：</p>
+<p><img src="/img/article/20190503/6.png" alt="How the anchor point affects the layer's position property"></p>
+<p>下图是锚点对于旋转属性的影响：</p>
+<p><img src="/img/article/20190503/7.png" alt="How the anchor point affects layer transformations"></p>
+<h2 id="层级树反应出动画状态的不同方面">层级树反应出动画状态的不同方面</h2>
+<p>一个使用Core Animation的应用有三种层级对象：</p>
+<ul>
+<li>Objects in the model layer tree：应用中互动最多的层级，模型对象存储动画的目标值，当我们改变层级的属性时，就使用这个对象</li>
+<li>Objects in the presentation tree：包含运行动画中的值，虽然模型层级树包含动画的目标值，但是呈现层级树反应动画的当前值。我们不应该修改这个值</li>
+<li>Objects in the render tree：真正动画实现的层级，Core Animation的私有对象</li>
+</ul>
+<p>每个层级对象被组织成已给层级结构，和应用中的视图一样。事实上，当为所有视图启用层级，每个树的层级结构与视图结构完全匹配。但是，一个应用可以添加额外的层级对象，层级和视图并不是相匹配的。在某些情况下，我们可能会这样这样操作来优化不需要视图而造成的开销。</p>
+<p><img src="/img/article/20190503/8.png" alt="The layer trees for a window"></p>
+<h2 id="layers与views的关系">Layers与Views的关系</h2>
+<p>Layers不能代替Views–我们不能基于层级对象创建可视界面。Layers为Views提供基础，具体地说，Layers可以使视图内容的绘制与动画更加简单有效的同时保证高帧率。当然，Layers不能处理事件，绘制内容，参与响应链等等。</p>
+<h1 id="settign-up-layer-objects">Settign Up Layer Objects</h1>
+<p>Layer对象是Core Animation的核心，层级管理应用的可见内容和提供修改样式和可见外观的选项。</p>
+<h2 id="修改view的layer对象">修改View的Layer对象</h2>
+<p>iOS默认情况下，View会自动创建CALayer类的实例，大多数情况下我们不需要其他类型的层积类。但是，Core Animation提供了不同的层级类，提供可能对我们有用的层级类。<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/CoreAnimation_guide/SettingUpLayerObjects/SettingUpLayerObjects.html#//apple_ref/doc/uid/TP40004514-CH13-SW25" target="_blank" rel="noopener">不同的Layer</a></p>
+<p>修改View的Layer类型：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="keyword">var</span> layer: <span class="type">CALayer</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="type">CAShapeLayer</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="提供layer的content">提供Layer的Content</h2>
+<p>Layers是管理内容的数据对象，一个层级的内容包含我们想要展示可视数据的位图，有以下三种方式提供位图的内容：</p>
+<ul>
+<li>直接给<code>contents</code>属性赋值（适用于层级内容基本不会改变的情况）</li>
+<li>实现Layer的代理方法完成内容的绘制（适用于层级内容可能周期性改变并且可以有外部对象提供，比如View）</li>
+<li>定义一个Layer的子类同时复写<code>drawing</code>方法来自己提供内容（适用于自定义Layer子类或者想要改变层级的基本会话操作）</li>
+</ul>
+<h3 id="content赋值图片">Content赋值图片</h3>
+<p>因为一个层级只是管理位图的容器，我们可以直接给<code>Contents</code>属性赋值图片。层级可以直接使用提供的图片，而不用拷贝一份图片，这个操作可以让图片在不同地方使用时节约内存。赋值的图片类型必须是<em>CGImageRef</em>类型，同时图片的分辨率要适配原生设备。允许的话，需要适当调整图片的<code>ContentsScale</code>属性。</p>
+<h3 id="通过代理提供content">通过代理提供Content</h3>
+<p>如果需要动态修改层级的Content，我们可以使用提供的代理。在显示时，层级会调用以下代理方法：</p>
+<ul>
+<li><code>displayLayer:</code>方法，该实现负责创建位图并将其分配给<code>contents</code>属性</li>
+<li><code>drawLayer:inContext:</code>方法，Core Animation创建一个位图，创建一个图形上下文来绘制位图，然后调用这个方法填充位图。这个方法就是在提供的图形上下文绘图。</li>
+</ul>
+<p>代理必须实现<code>displayLayer:</code>和<code>drawLayer:inContext</code>两种方法之一，如果同时实现，只会调用<code>displayLayer</code>方法。</p>
+<p>当应用程序是在想要显示的地方加载或创建位图时，复写<code>displayLayer:</code>方法更加合适：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)displayLayer:(<span class="built_in">CALayer</span> *)theLayer &#123;</span><br><span class="line">    <span class="comment">// Check the value of some state property</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.displayYesImage) &#123;</span><br><span class="line">        <span class="comment">// Display the Yes image</span></span><br><span class="line">        theLayer.contents = [someHelperObject loadStateYesImage];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Display the No image</span></span><br><span class="line">        theLayer.contents = [someHelperObject loadStateNoImage];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>PS：本来这边有个问题，但是后面苹果也自己概述了，对于UIKit下的视图（层支持），我们直接用默认的<code>drawRect</code>方法进行绘制内容。而对于OS X环境下，Layer与View不是直接相关联的，<code>drawRect</code>与<code>drawLayer</code>方法两者之间的区别。<code>drawRect</code>是View的视图渲染方法，<code>drawLayer</code>是Layer的代理方法，两者都可以绘图。目前的调用机制是这样：同时实现两个方法会只调用<code>drawLayer</code>里的实现；无法单独实现<code>drawLayer</code>方法，必须空实现<code>drawRect</code>方法；<code>drawLayer</code>方法也可以由<code>setNeedsDisplay</code>方法调用，同<code>drawRect</code>方法一样。两者用法的区别：是否需要获取视图在动画过程中的Layer属性，<code>drawLayer</code>方法中实现的内容可以实时获取Layer的属性值，<code>drawRect</code>方法只能获取Layer的结果值。<a href="https://stackoverflow.com/questions/4979192/ios-using-uiviews-drawrect-vs-its-layers-delegate-drawlayerincontext/36050120#36050120" target="_blank" rel="noopener">是否对仍待考究</a></p>
+</blockquote>
+<p>如果没有预先编码的图片或者对象来创建位图，可以使用<code>drawLayer</code>方法动态绘制内容：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)drawLayer:(<span class="built_in">CALayer</span> *)theLayer inContext:(<span class="built_in">CGContextRef</span>)theContext &#123;</span><br><span class="line">    <span class="built_in">CGMutablePathRef</span> thePath = <span class="built_in">CGPathCreateMutable</span>();</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">CGPathMoveToPoint</span>(thePath,<span class="literal">NULL</span>,<span class="number">15.0</span>f,<span class="number">15.</span>f);</span><br><span class="line">    <span class="built_in">CGPathAddCurveToPoint</span>(thePath,</span><br><span class="line">                          <span class="literal">NULL</span>,</span><br><span class="line">                          <span class="number">15.</span>f,<span class="number">250.0</span>f,</span><br><span class="line">                          <span class="number">295.0</span>f,<span class="number">250.0</span>f,</span><br><span class="line">                          <span class="number">295.0</span>f,<span class="number">15.0</span>f);</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">CGContextBeginPath</span>(theContext);</span><br><span class="line">    <span class="built_in">CGContextAddPath</span>(theContext, thePath);</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">CGContextSetLineWidth</span>(theContext, <span class="number">5</span>);</span><br><span class="line">    <span class="built_in">CGContextStrokePath</span>(theContext);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// Release the path</span></span><br><span class="line">    <span class="built_in">CFRelease</span>(thePath);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于带有自定义内容的层支持视图，我们应该继续复写视图方法来进行绘图。层支持的绘图自动使自己成为其层的委托，并实现委托所需的委托方法，我们不应该更改这个配置，所以，对于UIView我们还是实现<code>drawRect</code>方法来绘制内容.</p>
+<h3 id="通过子类提供content">通过子类提供Content</h3>
+<p>当实现一个自定义Layer类时，我们可以复写Layer类的绘图方法来进行任何绘图：</p>
+<ul>
+<li>复写<code>display</code>方法，直接设置<code>contents</code>属性</li>
+<li>复写<code>drawInContext:</code>方法，在提供的图形上下文绘制</li>
+</ul>
+<h3 id="调整content">调整Content</h3>
+<p>当我们设置一个图层的<code>contents</code>属性时，<code>contentsGravity</code>属性决定了如何操作该图片来适应边界。默认情况下，如果一张图片大于当前边界，图层对象会缩放图片以适应可用空间。如果图层边界的宽高比与图像的宽高比不同，就会导致图像的失真。<br>
+<code>contentsGravity</code>属性可以被分为以下两类：</p>
+<ul>
+<li>基于位置的重力常量允许我们将图片固定在边缘或角落上，无需缩放图片</li>
+<li>基于缩放的重力常量允许我们使用几种选项之一来拉伸图像，可以保持宽高比，也可以拉伸</li>
+</ul>
+<p>Position-based gravity constants for layers:<br>
+<img src="/img/article/20190503/9.png" alt="Position-based gravity constants for layers"></p>
+<p>Scaling-based gravity constants for layers:<br>
+<img src="/img/article/20190503/10.png" alt="Scaling-based gravity constants for layers"></p>
+<h2 id="调整layer的视觉样式和外观">调整Layer的视觉样式和外观</h2>
+<p>层级对象内置视觉装饰，比如边框、背景色，我们可以用来补充图层的内容。因为这些视觉装饰不需要我们做渲染，所以在某些情况下可以将层作为独立实体使用。我们需要做的就是设置属性，层级会处理必要的绘画，包括动画。</p>
+<h3 id="layers有自己的背景和边框">Layers有自己的背景和边框</h3>
+<p>除了基于图像的内容外，层级可以显示填充背景和边框。背景色在层级内容图片背后渲染，边框在图片上面渲染，如果层级包含子层级，他们也在边框下面。因为背景色位于图像后面，所以这种颜色通过图像的任何透明部分发光。</p>
+<p>如果设置不透明的背景色，考虑设置层级的<code>opaque</code>属性为YES，这样做可以在屏幕上合成图层时提高性能，就不需要使用图层的后备存储来管理alpha通道。但是，如果一个层的角半价不为零，则不能设为不透明。</p>
+<h3 id="layers支持倒角">Layers支持倒角</h3>
+<p>我们可以为层级创建一个圆角矩形效果，倒角是一种视觉装饰，它掩盖了层级边界矩形的部分角，允许底层内容显示。因为它涉及到透明层蒙版，除非<code>maskToBounds</code>属性设置为YES，否则倒角不会影响图层图像。但是，倒角总是影响图层的背景颜色和边框的绘制。</p>
+<h3 id="layers支持内置阴影">Layers支持内置阴影</h3>
+<p>CALayer类包含几种配置阴影效果的属性。阴影通过增加深度使其看起来像漂浮在底层内容之上，这是另一种类型的视觉装饰。我们可以控制阴影颜色，相对于图层内容的位置，不透明度和形状。</p>
+<p>层级阴影的不透明度默认为0，这样可以有效地隐藏阴影。将不透明度修改为非零值会使Core Animation绘制阴影。因为阴影默认直接位于层级的最下方，所以需要更改阴影的偏移量才能看到它。但是务必记住，阴影的偏移量是使用图层的本机坐标系。</p>
+<p><img src="/img/article/20190503/11.png" alt="Applying a shadow to a layer"></p>
+<p>当向图层添加阴影时，阴影是图层内容的一部分，但实际上扩展到图层的边界之外，所以，当图层启用<code>maskToBounds</code>属性时，阴影效果会被剪切到边缘。如果图层包含透明内容，这是会产生一个奇怪的效果，直接在图层下面的阴影部分仍然是可见的，但是超出部分不可见。所以，这是如果想要一个阴影，但也想用<code>maskTobounds</code>属性，我们可以使用两层层级，将该图层嵌入到相同大小应用阴影效果的图层中去。</p>
+<h1 id="animating-layer-content">Animating Layer Content</h1>
+<p>Core Animation提供的基础设施可以让我们更加容易的创建层级动画，扩展到拥有层级的所有视图。</p>
+<h2 id="对图层属性的简单修改动画">对图层属性的简单修改动画</h2>
+<p>简单动画包含隐式动画和显示动画。隐式动画使用默认的时间和动画属性，显式动画需要提供属性的配置。简单动画包含修改层级属性，在时间内完成动画，层级定义了很多影响可见外观的属性，改变其中一个属性会让其产生外观动画。</p>
+<p>只需要更新层级属性就能触发隐式动画，层级的视觉外观不会立即改变，相反，Core Animation会根据属性变化作为触发器来创建调度一个或多个隐式动画执行。因此，像如下代码所示的改变会让Core Animation创建一个动画对象，并在下一个更新周期执行动画。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theLayer.opacity = <span class="number">0.0</span></span><br></pre></td></tr></table></figure>
+<p>如果想要显式做出如上改变可以创建<em>CABasicAnimation</em>对象同时配置动画参数，可以在添加动画前设置动画的起始与结束值，改变持续时间，或者修改其他动画参数。下面代码展示了如何使用一个对话对象淡化一个层级，创建对象时，指定我们想要动画的属性路径，然后设置动画参数。使用<code>addAnimation:forKey:</code>方法调用动画。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fadeAnimation = <span class="type">CABasicAnimation</span>(keyPath: <span class="string">"opacity"</span>)</span><br><span class="line">fadeAnimation.fromValue = <span class="number">1.0</span></span><br><span class="line">fadeAnimation.toValue = <span class="number">0.0</span></span><br><span class="line">fadeAnimation.duration = <span class="number">1.0</span></span><br><span class="line">layer.add(fadeAnimation, forKey: <span class="string">"opacity"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Change the actual data value in the layer to the final layer</span></span><br><span class="line">layer.opacity = <span class="number">0.0</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Tip：当创建显式动画时，推荐使用<code>fromValue</code>属性。如果没有指定这个属性，Core Animation默认使用层级的当前值作为初始值。如果已经当前值等于初始值，可能不会得到想要的效果。</p>
+</blockquote>
+<p>和隐式动画不同，显式动画不会改变层级的真正属性值，显式动画只提供动画。在动画的最后，Core Animation移除动画对象，在层级上使用当前值重新绘制。如果我们想要显式动画是永久更改，还必须更新层级的属性。</p>
+<p>显式和隐式动画在当前runloop结束后开始执行，当前线程必须应用runloop才能让动画执行。如果层级修改多项属性或添加多个动画，所有的动画会在同时执行。</p>
+<h2 id="使用关键帧动画修改层级属性">使用关键帧动画修改层级属性</h2>
+<p>基于属性的动画将属性从初始值更改为结束值，<em>CAKeyframeAnimation</em>对象允许我们通过一组目标值进行动画处理，其方式可能是线性的，也可能不是线性的。关键帧动画包含一组目标数据和每个值对应的时间组成。在最简单的配置中，使用指定值和时间。对于层位置的改变，我们还可以使用路径作为改变。动画对象获取指定关键帧，并通过给定时间段内从一个值穿插下一个值来构建动画。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> path = <span class="type">CGMutablePath</span>()</span><br><span class="line">path.move(to: <span class="type">CGPoint</span>(x: <span class="number">0</span>, y: <span class="number">0</span>))</span><br><span class="line">path.addCurve(to: <span class="type">CGPoint</span>(x: <span class="number">300</span>, y: <span class="number">600</span>), control1: <span class="type">CGPoint</span>(x: <span class="number">200</span>, y: <span class="number">50</span>), control2: <span class="type">CGPoint</span>(x: <span class="number">400</span>, y: <span class="number">350</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> animation = <span class="type">CAKeyframeAnimation</span>(keyPath: <span class="string">"position"</span>)</span><br><span class="line">animation.path = path</span><br><span class="line">animation.duration = <span class="number">2.0</span></span><br><span class="line">myView.layer.add(animation, forKey: <span class="string">"position"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="指定关键帧数值">指定关键帧数值</h3>
+<p>关键帧数值在动画中是重要组成部分，这些值定义了动画在执行过程中的行为，指定关键帧的主要方式是将数组指定为包含<em>CGPoint</em>数据类型的值，当然也可以用<em>CGPathRef</em>代替。当指定一组数值，根据属性需要的数据类型提供数据，可以直接添加一些对象，但是一些对象需要转换成id类型，并且所有标量类型或结构体必须由对象包装：</p>
+<ul>
+<li>对于<em>CGRect</em>属性，将每个矩形转换成<em>NSValue</em>对象</li>
+<li>对于层级的转换属性，将<em>CATransform3D</em>矩阵转换成<em>NSValue</em>对象。</li>
+<li>对于<em>borderColo</em>属性，每个<em>CGColorRef</em>数据类型转换成<em>id</em>类型，然后添加到数组中</li>
+<li>对于<em>CGFloat</em>值的属性，将值转换为<em>NSNumber</em>对象添加到数组中</li>
+<li>对于层级的<em>Contents</em>属性，指定一组<em>CGImageRef</em>类型的数据</li>
+</ul>
+<p>对于<em>CGPoint</em>类型数据的属性，可以创建<em>NSValue</em>对象的数组或者创建<em>CGPathRef</em>对象来指定路径。当我们指定一组点，关键帧动画会在每个连续的点之间画一条线并沿着这条路动画。当我们指定一个<em>CGPathRef</em>对象，动画将从路径的起始点开始，并遵循其轮廓，包括沿着任何曲面。</p>
+<h3 id="指定关键帧动画的时间点">指定关键帧动画的时间点</h3>
+<p>关键帧动画的时间和节奏比基本动画更复杂，我们可以使用以下属性控制它：</p>
+<ul>
+<li><em>calculationMode</em>属性定义了用于计算动画计时的算法，这个属性值影响其他与时间相关属性的使用。
+<ol>
+<li>线性和立方动画 – 当<em>calculationMode</em>属性设置为<em>kCAAnimationLinear</em>或者*kCAAnimationCubic`时的动画 – 通过提供的时间信息生成动画，这个模式可以让我们最大程度控制动画时间</li>
+<li>定步动画 – 当<em>calculationMode</em>属性设置为<em>kCAAnimationPaced</em>或者<em>kCAAnimationCubicPaced</em>时的动画 – 不依赖<em>keyTimes</em>或<em>timingFunctions</em>属性提供的外部计时值，相反，计时值是隐式的，以提供恒定速度的动画</li>
+<li>离散动画 – 当<em>calculationMode</em>属性设置为<em>kCAAnimationDiscrete</em>时的动画 – 将动画属性从一个关键帧值直接跳转到另一个，而不需要任何中间值。这种计算模式使用<em>keyTimes</em>属性中的值，但忽略<em>timeingFunctions</em>属性</li>
+</ol>
+</li>
+<li><em>keyTimes</em>属性指定应用每个关键帧值的时间标记，仅当计算模式为<em>kCAAnimationLinear</em>，<em>kCAAnimationDiscrete</em>, <em>kCAAnimationCubic</em>时使用，他不是用于定步动画</li>
+<li><em>timingFunctions</em>属性指定每个关键帧段使用的计时曲线</li>
+</ul>
+<h2 id="停止正在运行的显式动画">停止正在运行的显式动画</h2>
+<p>动画正常运行到结束，但我们可以使用以下技术提前停止动画：</p>
+<ul>
+<li>从层级移除一个单独的动画对象，可以调用<code>removeAnimationForKey:</code>方法。这个方法使用的键是<code>addAnimation:forKey</code>方法传递进去的标识符，不可为空</li>
+<li>从层级移除所有动画，可以调用<code>removeAllAnimations</code>方法。这个方法立即移除所有动画同时使用原始状态重绘层级</li>
+</ul>
+<h2 id="同时运行多个动画">同时运行多个动画</h2>
+<p>如果想要在层级同时运行多个动画，我们可以使用<em>CAAnimationGroup</em>对象整合他们。使用一个组对象简化了对多个动画的管理，应用于组的时间和持续时间将腐败当个动画中的相同值。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> path = <span class="type">CGMutablePath</span>()</span><br><span class="line">path.move(to: <span class="type">CGPoint</span>(x: <span class="number">0</span>, y: <span class="number">0</span>))</span><br><span class="line">path.addCurve(to: <span class="type">CGPoint</span>(x: <span class="number">300</span>, y: <span class="number">600</span>), control1: <span class="type">CGPoint</span>(x: <span class="number">200</span>, y: <span class="number">50</span>), control2: <span class="type">CGPoint</span>(x: <span class="number">400</span>, y: <span class="number">350</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> positionAnimation = <span class="type">CAKeyframeAnimation</span>(keyPath: <span class="string">"position"</span>)</span><br><span class="line">positionAnimation.path = path</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> colorAnimation = <span class="type">CAKeyframeAnimation</span>(keyPath: <span class="string">"backgroundColor"</span>)</span><br><span class="line"><span class="keyword">let</span> colorValues = [<span class="type">UIColor</span>.red.cgColor, <span class="type">UIColor</span>.yellow.cgColor, <span class="type">UIColor</span>.cyan.cgColor]</span><br><span class="line">colorAnimation.values = colorValues</span><br><span class="line">colorAnimation.calculationMode = .paced</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> group = <span class="type">CAAnimationGroup</span>()</span><br><span class="line">group.animations = [positionAnimation, colorAnimation]</span><br><span class="line">group.duration = <span class="number">5.0</span></span><br><span class="line">myView.layer.add(group, forKey: <span class="string">"group"</span>)</span><br></pre></td></tr></table></figure>
+<p>使用组动画的进阶方法是使用<em>CATransaction</em>对象，后面讨论。</p>
+<h2 id="监测动画的结束">监测动画的结束</h2>
+<p>Core Animation提供动画起始与结束的监测，这些通知是执行与动画相关任务的好时机。有两种方式监听动画的状态：</p>
+<ul>
+<li>对于<em>CATransaction</em>的类方法，设置<code>setCompletionBlock:</code>方法，在动画结束后会执行回调</li>
+<li>对于<em>CAAnimation</em>对象，可以实现他的代理方法<code>animationDidStart:</code>和<code>animationDidStop:finished:</code></li>
+</ul>
+<p>如果想要一个动画接着一个动画执行，不要使用动画监听。可以使用<em>beginTime</em>属性开始一个动画，设置另一个动画的开始时间是这个动画的结束时间。</p>
+<h2 id="如何在layer-backed的视图上动画">如何在Layer-Backed的视图上动画</h2>
+<p>如果一个层级属于视图，创建动画推荐的方法是使用UIKit提供的基于视图的动画接口。有一些方法可以直接使用Core Animation接口对层进行动画处理。</p>
+<p>对于<em>UIView</em>类，总有一个Layer与之对应，类本身直接从层级派生出它的大部分数据，因此，对层级做出的更改也会自动由视图显示出来，这就意味着我们可以同时使用Core Animation或者UIView提供的接口来动画。</p>
+<p>如果想要使用Core Animation类来初始化动画，必须在基于视图的动画块中调用Core Animation的方法，<em>UIView</em>默认禁止图层动画，但在动画块中重新启动他们。一次，在动画块之外所有的任何更改都不是动画。(针对隐式动画，允许在动画块中启动)</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">UIView</span>.animate(withDuration: <span class="number">2.0</span>) &#123;</span><br><span class="line">    <span class="keyword">self</span>.view.layer.opacity = <span class="number">0.0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="advanced-animation-tricks">Advanced Animation Tricks</h1>
+<p>有很多种方法可以配置基于属性或者关键帧的动画，如果想要同时或顺序运行多种动画时可以使用更高级的方式来同步这些动画的时间将他们链接在一起，我们可以使用其他类型的动画对象来创建视觉转换和一些其他有趣的效果。</p>
+<h2 id="支持对层级视觉改变的转换动画">支持对层级视觉改变的转换动画</h2>
+<p>如题所示，一个转换动画对象为层级创建视觉动画，转换对象的常见用法是协调一个层级显示和另一个层级消失的动画。不同于修改层级属性的动画，一个转换动画操作层级的缓存图片创建视觉效果，仅通过修改属性是难以做到的。标准类型的转换允许我们只想显示、推送、移动、渐入渐出等动画。</p>
+<p>要执行转换动画，需要创建<em>CATransition</em>对象并将其添加到与之转换相关的层级上，我们可以使用转换动画指定要执行的转换类型以及动画的起点终点。我们也不需要使用整个转换动画，转换对象可以让我们指定动画时使用的开始与结束进度值，这些值让我们在中点位置开始或者结束动画。</p>
+<p>下面代码在两个视图中创建推送转换动画，myView1与myView2在父视图的同一个位置但只有一个视图可见，推送转换会导致一个视图从当前位置往左偏移消失而另一个视图从右边开始偏移到位置显示。更新<em>isHidden</em>属性用于视图在动画后的正确显示。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> transition = <span class="type">CATransition</span>()</span><br><span class="line">transition.startProgress = <span class="number">0.0</span></span><br><span class="line">transition.endProgress = <span class="number">1.0</span></span><br><span class="line">transition.type = .push</span><br><span class="line">transition.subtype = .fromRight</span><br><span class="line">transition.duration = <span class="number">2.0</span></span><br><span class="line"></span><br><span class="line">myView1.layer.add(transition, forKey: <span class="string">"transition"</span>)</span><br><span class="line">myView2.layer.add(transition, forKey: <span class="string">"transition"</span>)</span><br><span class="line"></span><br><span class="line">myView1.isHidden = <span class="literal">false</span></span><br><span class="line">myView2.isHidden = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>这里可以使用同一种转换动画，也可以根据需要使用不同的转换动画。</p>
+<h2 id="自定义动画的时间">自定义动画的时间</h2>
+<p>时间控制是动画的重要组成部分，Core Animation可以通过<em>CAMediaTiming</em>代理的方法和属性来指定动画的时间信息。<em>CAAnimation</em>和<em>CALayer</em>都已经遵循了这个代理，但是封装这些动画的隐式转换对象通常提供了优先级默认的时间信息。</p>
+<p>在考虑时间与动画时，理解层级与动画的合作关系是关键的，每个层级有自己的用于管理动画计时的本地时间。通常情况下，两个不同层级的本地时间是相近的，我们可以为每个层级指定相同的时间值而用户不会注意到，但是，一个层级的本地时间会由它的父级或它自己的时间参数改变。例如，改变层级的<em>speed</em>属性会导致该图层及其子层级的持续时间按比例改变。</p>
+<p>为了帮助我们确定给定层级适应的时间值，<em>CALayer</em>类定义了<code>convertTime:fromLayer:</code>与<code>convertTime:toLayer:</code>方法。我们可以使用这些方法将固定时间转换成层级的本地时间或者从一个层级的时间转换成另一个层级的。这个方法描述了可能影响层级本地时间，返回我们可能在其他层级使用的媒体时间属性。下面代码展示了从层级获取当前本地时间的例子，<code>CACurrentMediaTime</code>是返回电脑当前时间的方法，用来转换方法获取并转换成层级时间。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> localLayerTime = view.layer.convertTime(<span class="type">CACurrentMediaTime</span>(), from: <span class="literal">nil</span>)</span><br></pre></td></tr></table></figure>
+<p>一旦获取到了层级的本地时间，我们可以使用这个值来更新有关时间属性的动画或层级，比如如下操作：</p>
+<ul>
+<li><em>beginTime</em>属性设置动画的启动时间，通常情况下，动画会在下一轮更新开始，但我们可以用来延迟动画的开始。可以用这个属性来合并两个动画，将一个动画的启动时间设置为另一个时间的结束时间。如果需要延迟动画启动，需要我们将<em>fillMode</em>设置为<em>kCAFillModeBackwards</em>，这个模式会使动画从初始值启动，如果没有设置，动画会在执行之前跳转到结束位置。</li>
+<li><em>autoreverses</em>属性使动画在指定的持续时间内执行，然后返回到动画的初始值。可以将这个属性与<em>repeatCount</em>属性结合，在开始与结束值之间来回动画。设置循环次数是整数时，动画会在初始值的位置停止，设置循环次数为额外的一半时（如1.5），会让动画在结束为止停止。</li>
+<li><em>timeOffset</em>属性适用于组动画启动一些动画在其他动画之后的时间启动</li>
+</ul>
+<h2 id="暂停-恢复动画">暂停、恢复动画</h2>
+<p>暂停动画，可以利用实现<em>CAMediaTiming</em>协议的层级设置动画速度为0.0，直到重新修改动画速度恢复动画。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">pauseLayer</span><span class="params">(layer: CALayer)</span></span> &#123;</span><br><span class="line">    <span class="keyword">let</span> pausedTime = layer.convertTime(<span class="type">CACurrentMediaTime</span>(), from: <span class="literal">nil</span>)</span><br><span class="line">    layer.speed = <span class="number">0.0</span></span><br><span class="line">    layer.timeOffset = pausedTime   <span class="comment">// 动画暂停时的时间偏移量</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">resumeLayer</span><span class="params">(layer: CALayer)</span></span> &#123;</span><br><span class="line">    <span class="keyword">let</span> pausedTime = layer.timeOffset</span><br><span class="line">    layer.speed = <span class="number">1.0</span></span><br><span class="line">    layer.timeOffset = <span class="number">0.0</span></span><br><span class="line">    layer.beginTime = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">let</span> timeSincePause = layer.convertTime(<span class="type">CACurrentMediaTime</span>(), from: <span class="literal">nil</span>) - pausedTime</span><br><span class="line">    layer.beginTime = timeSincePause    <span class="comment">// 动画延迟执行时间</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="修改动画参数的显式transactions">修改动画参数的显式Transactions</h2>
+<p>对层做的每一项操作必须是Transactions的一部分，<em>CATransaction</em>类管理动画的创建与分组，并在适当的实际执行他们。多数情况下，我们不需要自己创建Transactions，当对层级添加隐式或显式动画时，Core Animation自动创建隐式transaction。当然，我们也可以创建显式transactions更精确的管理动画。</p>
+<p>我们可以通过<em>CATransaction</em>类创建和管理transactions，调用<code>begin</code>方法开始一个新的transaction（隐式），<code>commit</code>方法结束transaction。在这些调用之间是我们希望对transaction的一部分改变。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">CATransaction</span>.begin()</span><br><span class="line">myView.layer.zPosition = <span class="number">200.0</span></span><br><span class="line">myView.layer.opacity = <span class="number">0.0</span></span><br><span class="line"><span class="type">CATransaction</span>.commit()</span><br></pre></td></tr></table></figure>
+<p>使用transactions的主要原因之一是在显式transaction的范围内，可以修改持续时间、计时函数和其他参数。我们也可以为整个transaction安排一个完成回调，在一组动画完成后发出通知。修改动画参数需要使用<code>setValue:forKey:</code>方法修改字典中对应的键。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">CATransaction</span>.begin()</span><br><span class="line"><span class="type">CATransaction</span>.setValue(<span class="number">10.0</span>, forKey: kCATransactionAnimationDuration)</span><br><span class="line"><span class="comment">// perform the animations</span></span><br><span class="line"><span class="type">CATransaction</span>.commit()</span><br></pre></td></tr></table></figure>
+<p>我们可以在为不同动画集提供不同的默认值的情况下嵌套transactions，通过再次调用<em>begin</em>方法可以嵌套另一个transaction，每个<em>begin</em>方法必须对应<em>commit</em>方法。只有在提交最外层transaction后，Core Animation才会开始相关动画。</p>
+<h2 id="为动画添加透视">为动画添加透视</h2>
+<p>应用程序可以在三维空间操作图层，但为了简单起见，Core Animation使用并行投影显示图层，实际上试讲场景压成二维平面，这种默认行为导致具有不同<em>zPosition</em>值的层以相同的大小出现，尽管他们在z方向上距离很远。我们可以通过修改转换矩阵来更改该行为，以包含透视信息。</p>
+<p>修改场景的透视图时，需要修改包含被查看视图的父层级的<em>sublayerTransform</em>矩阵，修改父层级将相同的透视信息运用于所有子层级可以简化代码，他还能确保透视图被正确的应用在不同平面上相互重叠的兄弟层级。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var perspective = CATransform3DIdentity</span><br><span class="line">perspective.m34 = -1.0/eyePosition</span><br><span class="line">view.layer.sublayerTransform = perspective</span><br></pre></td></tr></table></figure>
+<h1 id="changing-a-layers-default-bahavior">Changing a Layer’s Default Bahavior</h1>
+<p>Core Animation使用action对象实现它的隐式层级动画行为。action对象是实现<em>CAAction</em>协议的对象，它定义了一些要在层上执行的相关行为。所有<em>CAAnimation</em>对象实现了该协议，当一个层级属性变化时，这些对象就被安排来执行修改。</p>
+<p>动画属性是action的一种，但我们可以定义大多数我们想要操作的actions，不过要做到这一点，我们必须定义action对象并与应用层级对象关联。</p>
+<h2 id="自定义实现caaction协议的action对象">自定义实现CAAction协议的Action对象</h2>
+<p>创建自己的action对象，需要一个类实现<em>CAAction</em>协议并实现<code>runActionForKey:object:arguments:</code>方法，在这个方法中，使用可用的信息来执行我们想要在该层上执行的任何操作。我们可能用这个方法添加一个动画或者一些其他任务。</p>
+<p>当我们定义一个action对象，我们需要觉得触发的条件，这个action的触发是我们用来注册这个action使用的key，也可以在以下情况下被触发：</p>
+<ul>
+<li>层级的一个属性改变了，可以是层级的任意属性，不仅仅是动画的这个（我们还可以把自定义属性的actions和层级相关联），标识action的键是这个属性的名字</li>
+<li>层级变得可见或者添加到层级结构中，标识的键为<em>kCAOnOrderIn</em></li>
+<li>层级从层级结构移除，标识的键为<em>kCAOnOrderOut</em></li>
+<li>层级涉及转换动画，标识的键为<em>kCATransition</em></li>
+</ul>
+<h2 id="action对象必须在层级上才能产生效果">action对象必须在层级上才能产生效果</h2>
+<p>在action操作之前，层级需要找到相应的action对象，层级相关action的键是正在修改属性的名称或特殊字符。当适当的事件发生在层级，层级调用*actionForKey:*方法查找对应键的action对象，我们可以在搜索过程中插入多个点并为该键提供相关的action对象。</p>
+<p>Core Animation查找action对象的顺序如下：</p>
+<ol>
+<li>如果层级的代理实现了<code>actionForLayer:forKey:</code>方法，层级会调用这个方法。代理必须执行以下一项：
+<ul>
+<li>返回给定键的action对象</li>
+<li>返回nil，如果不处理action，查找继续</li>
+<li>返回NSNull对象，查找结束</li>
+</ul>
+</li>
+<li>层级在actions字典中查找对应的键</li>
+<li>层级在<a href="https://developer.apple.com/documentation/quartzcore/calayer/1410875-style" target="_blank" rel="noopener">style</a>字典中包含该键的actions字典（换句话说，包含actions键的style字典也是字典，层级在第二层字典查找对应键）</li>
+<li>层级调用<code>defaultActionForKey:</code>方法</li>
+<li>层级执行Core Animation定义的隐式action</li>
+</ol>
+<p>如果我们在任意查询点提供了action对象，层级将停止查询并执行返回的action对象。当查找到一个action对象，层级调用<code>runActionForKey:object:arguments:</code>方法执行操作。如果给定键定义的action已经是<em>CAAnimation</em>类的实例，则可以使用这个方法的默认实现执行动画。如果是我们自定义实现<em>CAAction</em>协议的对象，则必须使用该方法对象实现来执行适当的操作。</p>
+<p>在何处安装action对象取决于我们如何修改层级：</p>
+<ul>
+<li>对于可能只在特定环境应用的actions，或对于已经使用代理的对象，提供代理并实现<code>actionForLayer:forKey</code>方法</li>
+<li>对于层级对象补偿使用代理，可以添加action到层级的actions字典中</li>
+<li>对于与层对象上定义的自定义属性相关的actions，可以在style字典中包含该action</li>
+<li>对于层行为的基本actions，继承层级并复写<code>defaultActionForKey:</code>方法</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">id</span>&lt;<span class="built_in">CAAction</span>&gt;)actionForLayer:(<span class="built_in">CALayer</span> *)theLayer</span><br><span class="line">                        forKey:(<span class="built_in">NSString</span> *)theKey &#123;</span><br><span class="line">    <span class="built_in">CATransition</span> *theAnimation=<span class="literal">nil</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> ([theKey isEqualToString:<span class="string">@"contents"</span>]) &#123;</span><br><span class="line"> </span><br><span class="line">        theAnimation = [[<span class="built_in">CATransition</span> alloc] init];</span><br><span class="line">        theAnimation.duration = <span class="number">1.0</span>;</span><br><span class="line">        theAnimation.timingFunction = [<span class="built_in">CAMediaTimingFunction</span> functionWithName:kCAMediaTimingFunctionEaseIn];</span><br><span class="line">        theAnimation.type = kCATransitionPush;</span><br><span class="line">        theAnimation.subtype = kCATransitionFromRight;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> theAnimation;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="使用catransaction类临时禁用actions">使用CATransaction类临时禁用actions</h2>
+<p>我们可以使用<em>CATransaction</em>类临时禁用actions，当修改一个层级的属性时，Core Animation通常会创建隐式transaction执行修改，如果不想修改，我们可以创建显式transaction并设置<em>kCATransactionDisableActions</em>属性为true禁用隐式动画。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[<span class="built_in">CATransaction</span> begin];</span><br><span class="line">[<span class="built_in">CATransaction</span> setValue:(<span class="keyword">id</span>)kCFBooleanTrue</span><br><span class="line">                 forKey:kCATransactionDisableActions];</span><br><span class="line">[aLayer removeFromSuperlayer];</span><br><span class="line">[<span class="built_in">CATransaction</span> commit];</span><br></pre></td></tr></table></figure>
+<h1 id="ending">Ending</h1>
+<p>这一章主要是对于Layer动画的内容、概念的学习，毕竟要熟练运用需要到实际场景中反复使用，其实更关键的是数学模型，有了数学模型生成的路径、时间规划，才能有绚丽的动画。</p>
+<h1 id="reference">Reference</h1>
+<blockquote>
+<p><a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004514-CH1-SW1" target="_blank" rel="noopener">About Core Animation</a></p>
+</blockquote>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2019/opengl-es-study-0519/" data-toggle="tooltip" data-placement="top" title="OpenGL ES基础学习">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/core-image-study-0425/" data-toggle="tooltip" data-placement="top" title="图像处理与分析 -- Core Image">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#introduction"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Introduction</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#core-animation-basics"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Core Animation Basics</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#layers提供绘图与动画的基础"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">Layers&#x63D0;&#x4F9B;&#x7ED8;&#x56FE;&#x4E0E;&#x52A8;&#x753B;&#x7684;&#x57FA;&#x7840;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#层级绘制模型"><span class="toc-nav-number">2.1.1.</span> <span class="toc-nav-text">&#x5C42;&#x7EA7;&#x7ED8;&#x5236;&#x6A21;&#x578B;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#层级动画"><span class="toc-nav-number">2.1.2.</span> <span class="toc-nav-text">&#x5C42;&#x7EA7;&#x52A8;&#x753B;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#层级对象定义自身的几何结构"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">&#x5C42;&#x7EA7;&#x5BF9;&#x8C61;&#x5B9A;&#x4E49;&#x81EA;&#x8EAB;&#x7684;&#x51E0;&#x4F55;&#x7ED3;&#x6784;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#layers使用两种坐标系统"><span class="toc-nav-number">2.2.1.</span> <span class="toc-nav-text">Layers&#x4F7F;&#x7528;&#x4E24;&#x79CD;&#x5750;&#x6807;&#x7CFB;&#x7EDF;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#锚点坐标影响几何操作"><span class="toc-nav-number">2.2.2.</span> <span class="toc-nav-text">&#x951A;&#x70B9;&#x5750;&#x6807;&#x5F71;&#x54CD;&#x51E0;&#x4F55;&#x64CD;&#x4F5C;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#层级树反应出动画状态的不同方面"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">&#x5C42;&#x7EA7;&#x6811;&#x53CD;&#x5E94;&#x51FA;&#x52A8;&#x753B;&#x72B6;&#x6001;&#x7684;&#x4E0D;&#x540C;&#x65B9;&#x9762;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#layers与views的关系"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">Layers&#x4E0E;Views&#x7684;&#x5173;&#x7CFB;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#settign-up-layer-objects"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Settign Up Layer Objects</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#修改view的layer对象"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">&#x4FEE;&#x6539;View&#x7684;Layer&#x5BF9;&#x8C61;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#提供layer的content"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">&#x63D0;&#x4F9B;Layer&#x7684;Content</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#content赋值图片"><span class="toc-nav-number">3.2.1.</span> <span class="toc-nav-text">Content&#x8D4B;&#x503C;&#x56FE;&#x7247;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#通过代理提供content"><span class="toc-nav-number">3.2.2.</span> <span class="toc-nav-text">&#x901A;&#x8FC7;&#x4EE3;&#x7406;&#x63D0;&#x4F9B;Content</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#通过子类提供content"><span class="toc-nav-number">3.2.3.</span> <span class="toc-nav-text">&#x901A;&#x8FC7;&#x5B50;&#x7C7B;&#x63D0;&#x4F9B;Content</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#调整content"><span class="toc-nav-number">3.2.4.</span> <span class="toc-nav-text">&#x8C03;&#x6574;Content</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#调整layer的视觉样式和外观"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">&#x8C03;&#x6574;Layer&#x7684;&#x89C6;&#x89C9;&#x6837;&#x5F0F;&#x548C;&#x5916;&#x89C2;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#layers有自己的背景和边框"><span class="toc-nav-number">3.3.1.</span> <span class="toc-nav-text">Layers&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x80CC;&#x666F;&#x548C;&#x8FB9;&#x6846;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#layers支持倒角"><span class="toc-nav-number">3.3.2.</span> <span class="toc-nav-text">Layers&#x652F;&#x6301;&#x5012;&#x89D2;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#layers支持内置阴影"><span class="toc-nav-number">3.3.3.</span> <span class="toc-nav-text">Layers&#x652F;&#x6301;&#x5185;&#x7F6E;&#x9634;&#x5F71;</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#animating-layer-content"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Animating Layer Content</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#对图层属性的简单修改动画"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">&#x5BF9;&#x56FE;&#x5C42;&#x5C5E;&#x6027;&#x7684;&#x7B80;&#x5355;&#x4FEE;&#x6539;&#x52A8;&#x753B;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用关键帧动画修改层级属性"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">&#x4F7F;&#x7528;&#x5173;&#x952E;&#x5E27;&#x52A8;&#x753B;&#x4FEE;&#x6539;&#x5C42;&#x7EA7;&#x5C5E;&#x6027;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#指定关键帧数值"><span class="toc-nav-number">4.2.1.</span> <span class="toc-nav-text">&#x6307;&#x5B9A;&#x5173;&#x952E;&#x5E27;&#x6570;&#x503C;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#指定关键帧动画的时间点"><span class="toc-nav-number">4.2.2.</span> <span class="toc-nav-text">&#x6307;&#x5B9A;&#x5173;&#x952E;&#x5E27;&#x52A8;&#x753B;&#x7684;&#x65F6;&#x95F4;&#x70B9;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#停止正在运行的显式动画"><span class="toc-nav-number">4.3.</span> <span class="toc-nav-text">&#x505C;&#x6B62;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x7684;&#x663E;&#x5F0F;&#x52A8;&#x753B;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#同时运行多个动画"><span class="toc-nav-number">4.4.</span> <span class="toc-nav-text">&#x540C;&#x65F6;&#x8FD0;&#x884C;&#x591A;&#x4E2A;&#x52A8;&#x753B;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#监测动画的结束"><span class="toc-nav-number">4.5.</span> <span class="toc-nav-text">&#x76D1;&#x6D4B;&#x52A8;&#x753B;&#x7684;&#x7ED3;&#x675F;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#如何在layer-backed的视图上动画"><span class="toc-nav-number">4.6.</span> <span class="toc-nav-text">&#x5982;&#x4F55;&#x5728;Layer-Backed&#x7684;&#x89C6;&#x56FE;&#x4E0A;&#x52A8;&#x753B;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#advanced-animation-tricks"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Advanced Animation Tricks</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#支持对层级视觉改变的转换动画"><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">&#x652F;&#x6301;&#x5BF9;&#x5C42;&#x7EA7;&#x89C6;&#x89C9;&#x6539;&#x53D8;&#x7684;&#x8F6C;&#x6362;&#x52A8;&#x753B;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#自定义动画的时间"><span class="toc-nav-number">5.2.</span> <span class="toc-nav-text">&#x81EA;&#x5B9A;&#x4E49;&#x52A8;&#x753B;&#x7684;&#x65F6;&#x95F4;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#暂停-恢复动画"><span class="toc-nav-number">5.3.</span> <span class="toc-nav-text">&#x6682;&#x505C;&#x3001;&#x6062;&#x590D;&#x52A8;&#x753B;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#修改动画参数的显式transactions"><span class="toc-nav-number">5.4.</span> <span class="toc-nav-text">&#x4FEE;&#x6539;&#x52A8;&#x753B;&#x53C2;&#x6570;&#x7684;&#x663E;&#x5F0F;Transactions</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#为动画添加透视"><span class="toc-nav-number">5.5.</span> <span class="toc-nav-text">&#x4E3A;&#x52A8;&#x753B;&#x6DFB;&#x52A0;&#x900F;&#x89C6;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#changing-a-layers-default-bahavior"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">Changing a Layer&#x2019;s Default Bahavior</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#自定义实现caaction协议的action对象"><span class="toc-nav-number">6.1.</span> <span class="toc-nav-text">&#x81EA;&#x5B9A;&#x4E49;&#x5B9E;&#x73B0;CAAction&#x534F;&#x8BAE;&#x7684;Action&#x5BF9;&#x8C61;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#action对象必须在层级上才能产生效果"><span class="toc-nav-number">6.2.</span> <span class="toc-nav-text">action&#x5BF9;&#x8C61;&#x5FC5;&#x987B;&#x5728;&#x5C42;&#x7EA7;&#x4E0A;&#x624D;&#x80FD;&#x4EA7;&#x751F;&#x6548;&#x679C;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用catransaction类临时禁用actions"><span class="toc-nav-number">6.3.</span> <span class="toc-nav-text">&#x4F7F;&#x7528;CATransaction&#x7C7B;&#x4E34;&#x65F6;&#x7981;&#x7528;actions</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#ending"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">Ending</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#reference"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">Reference</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/core-animation-study-0503/";
+    <!-- var disqus_url = "/article/2019/core-animation-study-0503/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

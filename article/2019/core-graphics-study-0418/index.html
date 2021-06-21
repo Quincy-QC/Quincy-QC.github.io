@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          绘图引擎 -- Quartz 2D - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2019/core-graphics-study-0418/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                            
+                        </div>
+                        <h1>绘图引擎 -- Quartz 2D</h1>
+                        <h2 class="subheading">Quartz 2D Programming Guide</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2019-04-18
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>最近在网上看文章的时候，看到了一篇<a href="http://www.lymanli.com/2019/04/05/ios-opengles-filter/" target="_blank" rel="noopener">在 iOS 中使用 GLSL 实现抖音特效</a>的文章，忽然兴趣就来了，然后就看到了一系列图片处理专用名词，这反而更加勾起了我的兴趣，主要是之前也看到一些关于 OpenGL 的字眼的文章，但是都没有花很多精力去研究，刚好眼下又看到了这篇文章，刚好这个博主也有对 OpenGL 的基础介绍，所以本是打算边看边学，把这个 OpenGL 搞懂。<br>
+这个博主对于 OpenGL 的研究文章有3篇，本想着应该问题不大，在完成第一篇的简单使用并绘制图片，到第二篇的对图片进行伸缩，我才发现这里面涵盖的东西非常之广，并不是我想象中那么简单的一个框架，这里面已经涉及到了一个大的领域技术，但是这并没有把我劝退，反而我的内心浮现了一个想法。说实话，作为 iOS 开发者这么多年，我还没有一个可以作为自己专业技术领域的特长，在未来的互联网斗争中如何扩大自己的优势呢，我感觉这个图形处理领域可能会是我进军的领域了。<br>
+所以，我打算从最简单的绘图开始 – iOS 绘图框架 Core Graphics。</p>
+</blockquote>
+<h1 id="introduction">Introduction</h1>
+<p>Quartz 2D是一个二维绘图引擎，可以在 iOS 环境和内核之外的所有 Mac OS X 应用程序环境下使用。我们可以使用 Quartz 2D API 来使用功能，比如基于路径的绘图，具有透明度的绘制，阴影，绘制阴影，透明层，颜色管理，抗锯齿渲染，PDF 文档生成，PDF 元数据访问等。在 iOS 中，Quartz 2D 可以使用所有可用的图形和动画技术，比如 Core Animation, OpenGL ES, UIKit 类等。（只讨论 iOS 范畴）</p>
+<h1 id="concepts">Concepts</h1>
+<h2 id="绘图点the-graphics-context">绘图点：The Graphics Context</h2>
+<p>图形上下文是一种不透明的数据类型（CGContextRef），他封装了 Quartz 用于将图像绘制到输出设备（如 PDF 文件，位图，显示窗口）的信息。图像上下文中的信息包括图像绘制参数和页面上绘制的特定于设备的表示。Quartz 中所有的对象被绘制到或者包含在图像上下文中。<br>
+图像上下文包含以下几种：</p>
+<ol>
+<li>
+<p>A bitmap graphics context：位图图形上下文，允许在位图中绘制 RGB 颜色，CMYK 颜色，灰度模式。位图是像素的矩阵阵列（或光栅），每个像素表示图像中的一个点。位图图形也称为采样图像。</p>
+</li>
+<li>
+<p>A PDF graphics context：PDF 图形上下文，允许创建 PDF 文件。在 PDF 文件中，绘图被保存为一系列命令。PDF 文件与位图之前有以下区别：</p>
+</li>
+</ol>
+<ul>
+<li>PDF 文件不同于位图，可以包含超过一页内容</li>
+<li>当在不同的设备从 PDF 文件中绘制页面时，生成的图像将根据该设备的显示特性进行优化</li>
+<li>PDF 文件本质上是独立于分辨率–在不牺牲图像细节的情况下，他们被绘制的大小可以无限增加或减小；位图图像的用户感知质量与位图的显示分辨率有关</li>
+</ul>
+<ol start="3">
+<li>
+<p>A window graphics context：可以在窗口绘图。（适用于 Mac OS X）</p>
+</li>
+<li>
+<p>A layer context：图层上下文，与另一个图形上下文关联的离屏绘图位置。当将层绘制到创建它的图形上下文时，它的设计是为了获得最佳性能。对于屏幕外绘制，图层上下文比位图图形上下文是更好的选择。</p>
+</li>
+</ol>
+<h2 id="图形状态graphics-states">图形状态：Graphics States</h2>
+<p>Quartz 根据当前图形状态下的参数修改绘图结果。图形上下文包含一组图形状态，当 Quartz 创建上下文，状态是空的，只有当保存图形状态时，才会将图形状态保存到堆栈。当恢复图形状态时，会将当前图形状态从堆栈顶部弹出，弹出状态变为上次保存的状态。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGContextSaveGState</span>();  <span class="comment">// 存储状态</span></span><br><span class="line"><span class="built_in">CGContextRestoreGState</span>();   <span class="comment">// 恢复状态</span></span><br></pre></td></tr></table></figure>
+<h2 id="坐标系quartz-2d-coordinate-systems">坐标系：Quartz 2D Coordinate Systems</h2>
+<p>Quartz 2D坐标系：<br>
+<img src="/img/article/20190418/1.png" alt="Quartz 2D坐标系" title="Quartz 2D坐标系"></p>
+<p>由于不同设备具有不同的底层成像功能，所以必须以与设备无关的方式定义设备的位置和大小。Quartz 通过单独的坐标系统–用户空间–将其映射到输出设备–设备空间–使用当前变换矩阵（CTM）来实现设备的独立性。当前的变换矩阵是一种特殊类型的矩阵，成为仿射变换，他通过应用平移、旋转、缩放（移动、旋转、调整坐标系大小）等操作将点从一个坐标系空间映射到另一个坐标系空间。</p>
+<p>有些技术使用不同于 Quartz 使用的默认坐标系来设置他们的图形上下文，相对于 Quartz，这样的坐标系是经过修改的坐标系，在执行一些 Quartz 绘图操作时必须对其进行补偿。最常见的修改坐标系就是讲原点放在上下文的左上角，并将y轴指向页面底部。比如：</p>
+<ul>
+<li>Mac OS X，继承 NSView 并重写 <em>isFlipped</em> 返回 YES</li>
+<li>iOS，UIView 返回的绘图上下文</li>
+<li>iOS，<em>UIGraphicsBeginImageContextWithOptions</em> 调用返回的绘图上下文</li>
+</ul>
+<p>因为 UIKit 本身使用了不同于 Quartz 的默认坐标系约定，所以修改了绘图上下文坐标系；它将转换应用于它创建的 Quartz 上下文以匹配他们的约定。这些变换会导致一系列问题，比如路径绘制过程中，圆弧在默认坐标系中是顺时针绘制，但如果修改了坐标系，则会变成逆时针绘制，就像镜像反射。</p>
+<h1 id="paths">Paths</h1>
+<p>路径定义了一个或多个形状或子路径。</p>
+<h2 id="一些基本绘图操作">一些基本绘图操作</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 点 Points</span></span><br><span class="line"><span class="built_in">CGContextMoveToPoint</span>(context, x, y);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 线 Lines</span></span><br><span class="line"><span class="built_in">CGContextAddLineToPoint</span>(context, x, y);</span><br><span class="line"><span class="built_in">CGContextAddLines</span>(context, [points], count)</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 圆弧</span></span><br><span class="line"><span class="built_in">CGContextAddArc</span>(context, x, y, radius, startAngle, endAngle, clockwise);</span><br><span class="line"><span class="built_in">CGContextAddArcToPoint</span>(context, x1, y1, x2, y2, radius);    <span class="comment">// 前两个点表示切点</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 曲线 Curves</span></span><br><span class="line"><span class="built_in">CGContextAddCurveToPoint</span>(context, x1, y1, x2, y2, x, y);    <span class="comment">// 前两个点控制切线方向，最后一个点是结点</span></span><br><span class="line"><span class="built_in">CGContextAddQuadCurveToPoint</span>(context, x1, y1, x, y)         <span class="comment">// 第一个点是切点，最后一个点是结点</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 结束一段子路径</span></span><br><span class="line"><span class="built_in">CGContextClosePath</span>(context);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 椭圆 Ellipses</span></span><br><span class="line"><span class="built_in">CGContextAddEllipseInRect</span>(context, rect);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 矩形 Rectangles</span></span><br><span class="line"><span class="built_in">CGContextAddRect</span>(context, rect);</span><br><span class="line"><span class="built_in">CGContextAddRects</span>(context, [rects], count);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 开始绘制路径</span></span><br><span class="line"><span class="built_in">CGContextBeginPath</span>(context);</span><br></pre></td></tr></table></figure>
+<h2 id="创建路径">创建路径</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 获取路径对象</span></span><br><span class="line"><span class="built_in">CGMutablePathRef</span> mutablePath = <span class="built_in">CGPathCreateMutable</span>();</span><br><span class="line"><span class="built_in">CGPathRef</span> path = <span class="built_in">CGContextCopyPath</span>(context);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 移动绘图起始点</span></span><br><span class="line"><span class="built_in">CGPathMoveToPoint</span>(path, <span class="literal">NULL</span>, x, y);    <span class="comment">// 第二个参数，可以修改坐标系（CGContextTranslateCTM, CGContextScaleCTM, or CGContextRotateCTM）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 其余与上述类似 ...</span></span><br></pre></td></tr></table></figure>
+<h2 id="闭合路径">闭合路径</h2>
+<ul>
+<li>影响闭合路径的参数：</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 线条粗细</span></span><br><span class="line"><span class="built_in">CGContextSetLineWidth</span>(context, width);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 线条转折处样式</span></span><br><span class="line"><span class="built_in">CGContextSetLineJoin</span>(context, join);        <span class="comment">// kCGLineJoinMiter (the default), kCGLineJoinRound 圆角, or kCGLineJoinBevel 折角</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 线条转折样式为 Miter 时，</span></span><br><span class="line"><span class="built_in">CGContextSetMiterLimit</span>(context, limit);     <span class="comment">// 斜接的长度除以线的宽度，如果结果大于斜接极限，则样式转换为Bevel。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 线条终起点样式</span></span><br><span class="line"><span class="built_in">CGContextSetLineCap</span>(context, cap);          <span class="comment">// kCGLineCapButt (the default), kCGLineCapRound 圆角, or kCGLineCapSquare 折角</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 线条 虚线样式</span></span><br><span class="line"><span class="built_in">CGContextSetLineDash</span>(context, phase, [lengths], count);     <span class="comment">// phase: 起点处，指定从虚线的哪个位置开始绘制</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 线条颜色</span></span><br><span class="line"><span class="built_in">CGContextSetStrokeColorWithColor</span>(context, color);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>闭合路径的几种方式：</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 闭合</span></span><br><span class="line"><span class="built_in">CGContextStrokePath</span>(context);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 矩形闭合</span></span><br><span class="line"><span class="built_in">CGContextStrokeRect</span>(context, rect);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 特定线粗细矩形闭合</span></span><br><span class="line"><span class="built_in">CGContextStrokeRectWithWidth</span>(context, rect, width);      <span class="comment">// width: 线粗细</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 椭圆闭合</span></span><br><span class="line"><span class="built_in">CGContextStrokeEllipseInRect</span>(context, rect);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 多条线闭合</span></span><br><span class="line"><span class="built_in">CGContextStrokeLineSegments</span>(context, [points], count);      <span class="comment">// points: 每两个点定义点一条线</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 闭合</span></span><br><span class="line"><span class="built_in">CGContextDrawPath</span>(context, kCGPathFillStroke || kCGPathEOFillStroke);</span><br></pre></td></tr></table></figure>
+<h2 id="填充路径">填充路径</h2>
+<p>填充路径的几种方式：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 填充 奇偶规则 even-odd rule</span></span><br><span class="line"><span class="built_in">CGContextEOFillPath</span>(context);   <span class="comment">// 射线穿过图形，穿过路径+1，奇数为路径内部，偶数为路径外部</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 填充 非零圈数规则 nonzero winding number rule</span></span><br><span class="line"><span class="built_in">CGContextFillPath</span>(context);     <span class="comment">// 射线穿过图形，路径从左到右穿过射线+1，从右到左-1，0位路径外部，非0为路径内部</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 矩形填充</span></span><br><span class="line"><span class="built_in">CGContextFillRect</span>(context, rect);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 椭圆填充</span></span><br><span class="line"><span class="built_in">CGContextFillEllipseInRect</span>(context, rect);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 填充</span></span><br><span class="line"><span class="built_in">CGContextDrawPath</span>(context, kCGPathFill || kCGPathEOFill);</span><br></pre></td></tr></table></figure>
+<h2 id="修剪路径">修剪路径</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 修剪 非零圈数规则 nonzero winding number rule</span></span><br><span class="line"><span class="built_in">CGContextClip</span>(context);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 修剪 奇偶规则 even-odd rule</span></span><br><span class="line"><span class="built_in">CGContextEOClip</span>(context);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 矩形修剪</span></span><br><span class="line"><span class="built_in">CGContextClipToRect</span>(context, rect);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 矩形修剪图形</span></span><br><span class="line"><span class="built_in">CGContextClipToMask</span>(context, rect, mask);</span><br></pre></td></tr></table></figure>
+<h1 id="transforms">Transforms</h1>
+<h2 id="修改用户坐标系">修改用户坐标系</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 平移</span></span><br><span class="line"><span class="built_in">CGContextTranslateCTM</span>(context, x, y);</span><br><span class="line">    </span><br><span class="line"><span class="comment">/// 旋转</span></span><br><span class="line"><span class="built_in">CGContextRotateCTM</span>(context, angle);</span><br><span class="line">    </span><br><span class="line"><span class="comment">/// 缩放</span></span><br><span class="line"><span class="built_in">CGContextScaleCTM</span>(context, x, y);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 根据特定矩阵转换用户坐标系</span></span><br><span class="line"><span class="built_in">CGContextConcatCTM</span>(context, transform);</span><br></pre></td></tr></table></figure>
+<h2 id="创建仿射变换">创建仿射变换</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 平移</span></span><br><span class="line"><span class="built_in">CGAffineTransformMakeTranslation</span>(x, y);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 以transform基础进行平移</span></span><br><span class="line"><span class="built_in">CGAffineTransformTranslate</span>(transform, x, y);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 旋转</span></span><br><span class="line"><span class="built_in">CGAffineTransformMakeRotation</span>(angle);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 以transform基础进行旋转</span></span><br><span class="line"><span class="built_in">CGAffineTransformRotate</span>(transform, angle);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 缩放</span></span><br><span class="line"><span class="built_in">CGAffineTransformMakeScale</span>(x, y);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 以transform基础进行缩放</span></span><br><span class="line"><span class="built_in">CGAffineTransformScale</span>(transform, x, y);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 对point进行矩阵变换</span></span><br><span class="line"><span class="built_in">CGPointApplyAffineTransform</span>(point, transform);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 对size进行矩阵变换</span></span><br><span class="line"><span class="built_in">CGSizeApplyAffineTransform</span>(size, transform);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 对rect进行矩阵变换</span></span><br><span class="line"><span class="built_in">CGRectApplyAffineTransform</span>(rect, transform);</span><br></pre></td></tr></table></figure>
+<h2 id="评估仿射变换">评估仿射变换</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 仿射变换是否相同</span></span><br><span class="line"><span class="built_in">CGAffineTransformEqualToTransform</span>(transform1, transform2);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 仿射变换是否为初始状态</span></span><br><span class="line"><span class="built_in">CGAffineTransformIsIdentity</span>(transform);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 初始状态</span></span><br><span class="line"><span class="built_in">CGAffineTransformIdentity</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="用户空间与设备空间转换">用户空间与设备空间转换</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// point转换</span></span><br><span class="line"><span class="built_in">CGContextConvertPointToDeviceSpace</span>(context, point);</span><br><span class="line"><span class="built_in">CGContextConvertPointToUserSpace</span>(context, point);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// size转换</span></span><br><span class="line"><span class="built_in">CGContextConvertSizeToDeviceSpace</span>(context, size);</span><br><span class="line"><span class="built_in">CGContextConvertRectToUserSpace</span>(context, size);</span><br><span class="line"></span><br><span class="line"><span class="comment">/// rect转换</span></span><br><span class="line"><span class="built_in">CGContextConvertRectToDeviceSpace</span>(context, rect);</span><br><span class="line"><span class="built_in">CGContextConvertRectToUserSpace</span>(context, rect);</span><br></pre></td></tr></table></figure>
+<h1 id="patterns">Patterns</h1>
+<p>Pattern 是一组绘图操作序列，这些操作被反复操作到图形上下文中。可以像使用颜色一样使用 Pattern，Quartz 会把页面划分为一组 Pattern 单元格，每个单元格大小与 Pattern 图形相似，并使用提供的回调函数绘制每个单元格。<br>
+<img src="/img/article/20190418/2.png" alt="A Pattern drawn to a window"></p>
+<h2 id="编写一个回调函数来绘制一个着色图案单元格">编写一个回调函数来绘制一个着色图案单元格</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 绘制着色图案单元格的绘图回调</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param info 指向与图案关联的私有数据的泛型指针</span></span><br><span class="line"><span class="comment"> @param myContext 绘图上下文</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">void</span> MyDrawColoredPattern(<span class="keyword">void</span> *info, <span class="built_in">CGContextRef</span> myContext) &#123;</span><br><span class="line">    <span class="built_in">CGFloat</span> subunit = <span class="number">5</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">CGRect</span> myRect1 = &#123;&#123;<span class="number">0</span>, <span class="number">0</span>&#125;, &#123;subunit, subunit&#125;&#125;,</span><br><span class="line">    myRect2 = &#123;&#123;subunit, subunit&#125;, &#123;subunit, subunit&#125;&#125;,</span><br><span class="line">    myRect3 = &#123;&#123;<span class="number">0</span>, subunit&#125;, &#123;subunit, subunit&#125;&#125;,</span><br><span class="line">    myRect4 = &#123;&#123;subunit, <span class="number">0</span>&#125;, &#123;subunit, subunit&#125;&#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">CGContextSetRGBFillColor</span>(myContext, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">.5</span>);</span><br><span class="line">    <span class="built_in">CGContextFillRect</span>(myContext, myRect1);</span><br><span class="line">    <span class="built_in">CGContextSetRGBFillColor</span>(myContext, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">.5</span>);</span><br><span class="line">    <span class="built_in">CGContextFillRect</span>(myContext, myRect2);</span><br><span class="line">    <span class="built_in">CGContextSetRGBFillColor</span>(myContext, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">.5</span>);</span><br><span class="line">    <span class="built_in">CGContextFillRect</span>(myContext, myRect3);</span><br><span class="line">    <span class="built_in">CGContextSetRGBFillColor</span>(myContext, <span class="number">.5</span>, <span class="number">0</span>, <span class="number">.5</span>, <span class="number">.5</span>);</span><br><span class="line">    <span class="built_in">CGContextFillRect</span>(myContext, myRect4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="设置着色图案颜色空间">设置着色图案颜色空间</h2>
+<p>允许<em>MyDrawColoredPattern</em>代码中使用颜色绘制图案单元格的前提是，将基本图案颜色空间设置为NULL。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGColorSpaceRef</span> patternSpace;</span><br><span class="line">patternSpace = <span class="built_in">CGColorSpaceCreatePattern</span>(<span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">CGContextSetFillColorSpace</span>(context, patternSpace);</span><br><span class="line"><span class="built_in">CGColorSpaceRelease</span>(patternSpace);</span><br></pre></td></tr></table></figure>
+<h2 id="建立着色图案剖析">建立着色图案剖析</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 创建图案</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param NULL 传递到*MyDrawColoredPattern*绘图回调中的info</span></span><br><span class="line"><span class="comment"> @param patternRect 图案rect</span></span><br><span class="line"><span class="comment"> @param CGAffineTransformIdentity 图形变换</span></span><br><span class="line"><span class="comment"> @param 16 单元格之间的水平位移（可以理解为单元格宽）</span></span><br><span class="line"><span class="comment"> @param 18 单元格之间的竖直位移（可以理解为单元格高）</span></span><br><span class="line"><span class="comment"> @param kCGPatternTilingConstantSpacing 拼接方式</span></span><br><span class="line"><span class="comment"> @param YES 是否为着色模式（否则为模板模式，应该是印刷模式）</span></span><br><span class="line"><span class="comment"> @param callbacks 绘图回调函数</span></span><br><span class="line"><span class="comment"> @return 图案</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">CGPatternRef</span> myPattern = <span class="built_in">CGPatternCreate</span>(<span class="literal">NULL</span>, patternRect, <span class="built_in">CGAffineTransformIdentity</span>, <span class="number">16</span>, <span class="number">18</span>, kCGPatternTilingConstantSpacing, <span class="literal">YES</span>, &amp;callbacks);</span><br></pre></td></tr></table></figure>
+<h2 id="将着色图案填充-描边">将着色图案填充、描边</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGFloat</span> alpha = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">CGContextSetFillPattern</span>(context, myPattern, &amp;alpha);</span><br></pre></td></tr></table></figure>
+<h2 id="完整的彩绘封装">完整的彩绘封装</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> MyColorPatternPainting(<span class="built_in">CGContextRef</span> myContext, <span class="built_in">CGRect</span> rect) &#123;</span><br><span class="line">    <span class="built_in">CGPatternRef</span> pattern;</span><br><span class="line">    <span class="built_in">CGColorSpaceRef</span> patternSpace;</span><br><span class="line">    <span class="built_in">CGFloat</span> alpha = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="built_in">CGPatternCallbacks</span> callbacks = &#123;<span class="number">0</span>, &amp;MyDrawColoredPattern, <span class="literal">NULL</span>&#125;;</span><br><span class="line">    <span class="built_in">CGContextSaveGState</span>(myContext);</span><br><span class="line">    patternSpace = <span class="built_in">CGColorSpaceCreatePattern</span>(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">CGContextSetFillColorSpace</span>(myContext, patternSpace);</span><br><span class="line">    <span class="built_in">CGColorSpaceRelease</span>(patternSpace);</span><br><span class="line">    </span><br><span class="line">    pattern = <span class="built_in">CGPatternCreate</span>(<span class="literal">NULL</span>, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">16</span>, <span class="number">18</span>), <span class="built_in">CGAffineTransformMake</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="number">16</span>, <span class="number">18</span>, kCGPatternTilingConstantSpacing, <span class="literal">true</span>, &amp;callbacks);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">CGContextSetFillPattern</span>(myContext, pattern, &amp;alpha);</span><br><span class="line">    <span class="built_in">CGPatternRelease</span>(pattern);</span><br><span class="line">    <span class="built_in">CGContextFillRect</span>(myContext, rect);</span><br><span class="line">    <span class="built_in">CGContextRestoreGState</span>(myContext);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> MyDrawColoredPattern(<span class="keyword">void</span> *info, <span class="built_in">CGContextRef</span> myContext) &#123;</span><br><span class="line">    <span class="built_in">CGFloat</span> subunit = <span class="number">5</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">CGRect</span> myRect1 = &#123;&#123;<span class="number">0</span>, <span class="number">0</span>&#125;, &#123;subunit, subunit&#125;&#125;,</span><br><span class="line">    myRect2 = &#123;&#123;subunit, subunit&#125;, &#123;subunit, subunit&#125;&#125;,</span><br><span class="line">    myRect3 = &#123;&#123;<span class="number">0</span>, subunit&#125;, &#123;subunit, subunit&#125;&#125;,</span><br><span class="line">    myRect4 = &#123;&#123;subunit, <span class="number">0</span>&#125;, &#123;subunit, subunit&#125;&#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">CGContextSetRGBFillColor</span>(myContext, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">.5</span>);</span><br><span class="line">    <span class="built_in">CGContextFillRect</span>(myContext, myRect1);</span><br><span class="line">    <span class="built_in">CGContextSetRGBFillColor</span>(myContext, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">.5</span>);</span><br><span class="line">    <span class="built_in">CGContextFillRect</span>(myContext, myRect2);</span><br><span class="line">    <span class="built_in">CGContextSetRGBFillColor</span>(myContext, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">.5</span>);</span><br><span class="line">    <span class="built_in">CGContextFillRect</span>(myContext, myRect3);</span><br><span class="line">    <span class="built_in">CGContextSetRGBFillColor</span>(myContext, <span class="number">.5</span>, <span class="number">0</span>, <span class="number">.5</span>, <span class="number">.5</span>);</span><br><span class="line">    <span class="built_in">CGContextFillRect</span>(myContext, myRect4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="shadows">Shadows</h1>
+<h2 id="阴影的使用">阴影的使用</h2>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGContextSaveGState</span>(context);</span><br><span class="line"><span class="built_in">CGContextSetShadow</span>(context, offsetsize, blur);  <span class="comment">// offset：偏移量（UIKit下：x向右为正，y向下为正），blur：阴影量，颜色默认为（0, 0, 0, 1.0/3.0）</span></span><br><span class="line"><span class="built_in">CGContextSetShadowWithColor</span>(context, offsetsize, blur, color);</span><br><span class="line"><span class="comment">/* 其他绘图操作 */</span></span><br><span class="line"><span class="built_in">CGContextRestoreGState</span>(context);</span><br></pre></td></tr></table></figure>
+<h1 id="gradients">Gradients</h1>
+<p>Quartz 提供两种数据类型创建渐变色 – <em>CGShadingRef</em> 和 <em>CGGradientRef</em>。同时，这两种数据类型又可以分别创建轴向(axial)或者径向(radial)的渐变线。</p>
+<p>An axial gradient(a linear gradient) – 在定义的两个端点之间沿轴向变化，所有垂直于该轴向的直线上的点具有相同的色值。<br>
+A radial gradient – 在定义的两个端点（通常都是圆）之间沿轴向径向变化的填充，所有圆心落在轴线上圆的圆周上的点具有相同的色值，梯度的圆截面半径由两端半径确定，半径从一端到另一端呈线性变化。</p>
+<h2 id="cgshading-与-cggradient-比较">CGShading 与 CGGradient 比较</h2>
+<p>CGShadingRef – 可以自己控制渐变中每个点颜色值的计算，非常细节。在创建CGShading对象之前，必须先创建CGFunction对象来定义梯度颜色计算的函数，自定义的函数可以更自由的创建更流畅的颜色梯度。</p>
+<p>CGRadientRef – 是CGShadingRef的子类，使用更加方便。Quartz为我们计算渐变中每个点的颜色，不需要我们提供计算函数，只需要提供作用域和颜色值，Quartz会自动计算每个连续位置的颜色梯度。</p>
+<h2 id="cggradient">CGGradient</h2>
+<h3 id="轴向渐变线">轴向渐变线</h3>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGGradientRef</span> myGradient;</span><br><span class="line"><span class="built_in">CGColorSpaceRef</span> myColorspace;</span><br><span class="line">size_t num_locations = <span class="number">2</span>;</span><br><span class="line"><span class="built_in">CGFloat</span> locations[<span class="number">2</span>] = &#123; <span class="number">0.0</span>, <span class="number">1.0</span> &#125;;</span><br><span class="line"><span class="built_in">CGFloat</span> components[<span class="number">8</span>] = &#123;</span><br><span class="line">    <span class="number">1.0</span>, <span class="number">0.5</span>, <span class="number">0.4</span>, <span class="number">1.0</span>,  <span class="comment">// Start color</span></span><br><span class="line">    <span class="number">0.8</span>, <span class="number">0.8</span>, <span class="number">0.3</span>, <span class="number">1.0</span>   <span class="comment">// End color</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">CGPoint</span> myStartPoint, myEndPoint;</span><br><span class="line">myColorspace = <span class="built_in">CGColorSpaceCreateWithName</span>(kCGColorSpaceGenericRGB);</span><br><span class="line">myGradient = <span class="built_in">CGGradientCreateWithColorComponents</span>(myColorspace, components, locations, num_locations);</span><br><span class="line"><span class="built_in">CGContextDrawLinearGradient</span>(context, myGradient, myStartPoint, myEndPoint, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);</span><br></pre></td></tr></table></figure>
+<h3 id="径向渐变线">径向渐变线</h3>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGGradientRef</span> myGradient;</span><br><span class="line"><span class="built_in">CGColorSpaceRef</span> myColorspace;</span><br><span class="line">size_t num_locations = <span class="number">2</span>;</span><br><span class="line"><span class="built_in">CGFloat</span> locations[<span class="number">2</span>] = &#123; <span class="number">0.0</span>, <span class="number">1.0</span> &#125;;</span><br><span class="line"><span class="built_in">CGFloat</span> components[<span class="number">8</span>] = &#123;</span><br><span class="line">    <span class="number">1.0</span>, <span class="number">0.5</span>, <span class="number">0.4</span>, <span class="number">1.0</span>,  <span class="comment">// Start color</span></span><br><span class="line">    <span class="number">0.8</span>, <span class="number">0.8</span>, <span class="number">0.3</span>, <span class="number">1.0</span>   <span class="comment">// End color</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">CGFloat</span> myStartRadius, myEndRadius;</span><br><span class="line"><span class="built_in">CGPoint</span> myStartPoint, myEndPoint;</span><br><span class="line">myColorspace = <span class="built_in">CGColorSpaceCreateWithName</span>(kCGColorSpaceGenericRGB);</span><br><span class="line">myGradient = <span class="built_in">CGGradientCreateWithColorComponents</span>(myColorspace, components, locations, num_locations);</span><br><span class="line"><span class="built_in">CGContextDrawRadialGradient</span>(context, myGradient, myStartPoint, myStartRadius, myEndPoint, myEndRadius, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="cgshading">CGShading</h2>
+<p>暂不予考虑</p>
+<h1 id="transparency-layers">Transparency Layers</h1>
+<p>当多个对象组合成复合图形，如何将复合图形视为单一对象，形成如同单一对象般的应用效果，这就要用到透明层这个概念。</p>
+<p><img src="/img/article/20190418/3.png" alt="Transparency Layers"></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGContextSetShadow</span>(context, <span class="built_in">CGSizeMake</span>(<span class="number">10</span>, <span class="number">20</span>), <span class="number">10</span>);</span><br><span class="line"><span class="built_in">CGContextBeginTransparencyLayer</span>(context, <span class="literal">NULL</span>);</span><br><span class="line"><span class="comment">// your drawing code</span></span><br><span class="line"><span class="built_in">CGContextEndTransparencyLayer</span>(context);</span><br></pre></td></tr></table></figure>
+<h1 id="ending">Ending</h1>
+<p>当然，Quartz 2D的内容不止这么多，我现在整理的也只是一些简单易用的皮毛，针对于 iOS 应用的一些简易图形绘制应该是没有问题了，总的说来，学无止境，后面可能要继续对Core Image的学习。</p>
+<h1 id="reference">Reference</h1>
+<blockquote>
+<p><a href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_overview/dq_overview.html#//apple_ref/doc/uid/TP30001066-CH202-TPXREF101" target="_blank" rel="noopener">Quartz 2D Programming Guide</a></p>
+</blockquote>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2019/core-image-study-0425/" data-toggle="tooltip" data-placement="top" title="图像处理与分析 -- Core Image">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2019/talk-about-design-pattern-0326/" data-toggle="tooltip" data-placement="top" title="设计模式那点事">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#introduction"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Introduction</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#concepts"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Concepts</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#绘图点the-graphics-context"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">&#x7ED8;&#x56FE;&#x70B9;&#xFF1A;The Graphics Context</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#图形状态graphics-states"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">&#x56FE;&#x5F62;&#x72B6;&#x6001;&#xFF1A;Graphics States</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#坐标系quartz-2d-coordinate-systems"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">&#x5750;&#x6807;&#x7CFB;&#xFF1A;Quartz 2D Coordinate Systems</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#paths"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Paths</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一些基本绘图操作"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">&#x4E00;&#x4E9B;&#x57FA;&#x672C;&#x7ED8;&#x56FE;&#x64CD;&#x4F5C;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#创建路径"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">&#x521B;&#x5EFA;&#x8DEF;&#x5F84;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#闭合路径"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">&#x95ED;&#x5408;&#x8DEF;&#x5F84;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#填充路径"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">&#x586B;&#x5145;&#x8DEF;&#x5F84;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#修剪路径"><span class="toc-nav-number">3.5.</span> <span class="toc-nav-text">&#x4FEE;&#x526A;&#x8DEF;&#x5F84;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#transforms"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Transforms</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#修改用户坐标系"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">&#x4FEE;&#x6539;&#x7528;&#x6237;&#x5750;&#x6807;&#x7CFB;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#创建仿射变换"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">&#x521B;&#x5EFA;&#x4EFF;&#x5C04;&#x53D8;&#x6362;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#评估仿射变换"><span class="toc-nav-number">4.3.</span> <span class="toc-nav-text">&#x8BC4;&#x4F30;&#x4EFF;&#x5C04;&#x53D8;&#x6362;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#用户空间与设备空间转换"><span class="toc-nav-number">4.4.</span> <span class="toc-nav-text">&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x4E0E;&#x8BBE;&#x5907;&#x7A7A;&#x95F4;&#x8F6C;&#x6362;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#patterns"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Patterns</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#编写一个回调函数来绘制一个着色图案单元格"><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">&#x7F16;&#x5199;&#x4E00;&#x4E2A;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x6765;&#x7ED8;&#x5236;&#x4E00;&#x4E2A;&#x7740;&#x8272;&#x56FE;&#x6848;&#x5355;&#x5143;&#x683C;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#设置着色图案颜色空间"><span class="toc-nav-number">5.2.</span> <span class="toc-nav-text">&#x8BBE;&#x7F6E;&#x7740;&#x8272;&#x56FE;&#x6848;&#x989C;&#x8272;&#x7A7A;&#x95F4;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#建立着色图案剖析"><span class="toc-nav-number">5.3.</span> <span class="toc-nav-text">&#x5EFA;&#x7ACB;&#x7740;&#x8272;&#x56FE;&#x6848;&#x5256;&#x6790;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#将着色图案填充-描边"><span class="toc-nav-number">5.4.</span> <span class="toc-nav-text">&#x5C06;&#x7740;&#x8272;&#x56FE;&#x6848;&#x586B;&#x5145;&#x3001;&#x63CF;&#x8FB9;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#完整的彩绘封装"><span class="toc-nav-number">5.5.</span> <span class="toc-nav-text">&#x5B8C;&#x6574;&#x7684;&#x5F69;&#x7ED8;&#x5C01;&#x88C5;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#shadows"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">Shadows</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#阴影的使用"><span class="toc-nav-number">6.1.</span> <span class="toc-nav-text">&#x9634;&#x5F71;&#x7684;&#x4F7F;&#x7528;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#gradients"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">Gradients</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#cgshading-与-cggradient-比较"><span class="toc-nav-number">7.1.</span> <span class="toc-nav-text">CGShading &#x4E0E; CGGradient &#x6BD4;&#x8F83;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#cggradient"><span class="toc-nav-number">7.2.</span> <span class="toc-nav-text">CGGradient</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#轴向渐变线"><span class="toc-nav-number">7.2.1.</span> <span class="toc-nav-text">&#x8F74;&#x5411;&#x6E10;&#x53D8;&#x7EBF;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#径向渐变线"><span class="toc-nav-number">7.2.2.</span> <span class="toc-nav-text">&#x5F84;&#x5411;&#x6E10;&#x53D8;&#x7EBF;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#cgshading"><span class="toc-nav-number">7.3.</span> <span class="toc-nav-text">CGShading</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#transparency-layers"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">Transparency Layers</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#ending"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">Ending</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#reference"><span class="toc-nav-number">10.</span> <span class="toc-nav-text">Reference</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2019/core-graphics-study-0418/";
+    <!-- var disqus_url = "/article/2019/core-graphics-study-0418/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2021 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
