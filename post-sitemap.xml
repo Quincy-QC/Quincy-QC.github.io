@@ -15,6 +15,14 @@
     </url>
 
     <url>
+        <loc>/article/2019/ubuntu-core-update-and-bbr-accelerate-1101/</loc>
+        <lastmod>2021-06-21T12:34:52.099Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>/article/2020/load-pdf-with-signature-0226/</loc>
         <lastmod>2021-06-21T12:34:52.099Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -24,14 +32,6 @@
 
     <url>
         <loc>/article/2020/nstimer-circular-reference-issue-0330/</loc>
-        <lastmod>2021-06-21T12:34:52.099Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/ubuntu-core-update-and-bbr-accelerate-1101/</loc>
         <lastmod>2021-06-21T12:34:52.099Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -63,7 +63,7 @@
     </url>
 
     <url>
-        <loc>/article/2019/talk-about-design-pattern-0326/</loc>
+        <loc>/article/2019/swift-package-manager-1122/</loc>
         <lastmod>2021-06-21T12:34:52.098Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -71,7 +71,7 @@
     </url>
 
     <url>
-        <loc>/article/2019/swift-package-manager-1122/</loc>
+        <loc>/article/2019/talk-about-design-pattern-0326/</loc>
         <lastmod>2021-06-21T12:34:52.098Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -175,14 +175,6 @@
     </url>
 
     <url>
-        <loc>/article/2019/core-image-study-0425/</loc>
-        <lastmod>2021-06-21T12:34:52.092Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>/article/2019/create-github-pages-0212/</loc>
         <lastmod>2021-06-21T12:34:52.092Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -192,6 +184,14 @@
 
     <url>
         <loc>/article/2019/leetcode-kth-problems-1216/</loc>
+        <lastmod>2021-06-21T12:34:52.092Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2019/core-image-study-0425/</loc>
         <lastmod>2021-06-21T12:34:52.092Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -215,6 +215,14 @@
     </url>
 
     <url>
+        <loc>/article/2019/core-animation-study-0503/</loc>
+        <lastmod>2021-06-21T12:34:52.091Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>/article/2019/cocoapods-create-pods-1121/</loc>
         <lastmod>2021-06-21T12:34:52.091Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -224,14 +232,6 @@
 
     <url>
         <loc>/article/2019/core-graphics-study-0418/</loc>
-        <lastmod>2021-06-21T12:34:52.091Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/core-animation-study-0503/</loc>
         <lastmod>2021-06-21T12:34:52.091Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
