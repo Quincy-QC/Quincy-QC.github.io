@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Ubuntu内核升级与开启BBR加速 - Quincy-QC | Blog
+          RealityKit坐标系与光照 - Quincy-QC | Blog
         
     </title>
 
-    <link rel="canonical" href="/article/2019/ubuntu-core-update-and-bbr-accelerate-1101/">
+    <link rel="canonical" href="/article/2021/realitykit-coordinate-light-0830/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Tech" title="Tech">Tech</a>
+                              <a class="tag" href="/tags/#iOS - Swift" title="iOS - Swift">iOS - Swift</a>
                             
                         </div>
-                        <h1>Ubuntu内核升级与开启BBR加速</h1>
-                        <h2 class="subheading">BBR Accelerate</h2>
+                        <h1>RealityKit坐标系与光照</h1>
+                        <h2 class="subheading">RealityKit Coordinate System and Lights</h2>
                         <span class="meta">
                             Posted by Quincy-QC on
-                            2019-11-01
+                            2021-08-30
                         </span>
                     </div>
                 
@@ -212,34 +212,8 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="introduction">Introduction</h1>
-<p>BBR（新的TCP拥塞控制算法Bottleneck Bandwidth and RTT）是个好东西。</p>
-<p>众所周知，Ubuntu开启BBR的前提是内核必须高于或等于4.9，所以想要使用它需要先看看我们的内核是否在4.9或以上。</p>
-<p>查看命令：<code>uname -a</code></p>
-<p>如果内核版本已经在4.9或以上，那么就可以跳过内核升级这一步骤。如何在4.9以下，那么就需要更新一下内核了。（很遗憾，GCE官方默认搭载的镜像，内核是4.4版本的，所以默认情况下都是需要升级的）</p>
-<h1 id="ubuntu内核升级">Ubuntu内核升级</h1>
-<p>升级过程比较简单，先确定系统是32位还是64位，可用<code>getconf LONG_BIT</code>查看。</p>
-<p>确认系统之后，需要下载必要的升级程序包，可以在<a href="http://kernel.ubuntu.com/~kernel-ppa/mainline/" target="_blank" rel="noopener">kernel.ubuntu.com</a>查找最新的程序包，根据自己的需要使用<code>wget</code>命令来下载服务器。</p>
-<p>比如我的服务器是64位，安装4.10.2的内核：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo wget http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.10.2/linux-image-4.10.2-041002-generic_4.10.2-041002.201703120131_amd64.deb</span><br><span class="line">（拥有root权限的话可以去掉命令前面的“sudo”）</span><br></pre></td></tr></table></figure>
-<p>然后切换到下载目录，执行命令升级：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i linux-image-4.10.2-041002-generic_4.10.2-041002.201703120131_amd64.deb</span><br></pre></td></tr></table></figure>
-<p>最后执行命令更新grub引导装入程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo update-grub</span><br></pre></td></tr></table></figure>
-<p>一旦各方面完成，就可以重启服务器。系统重启后，可以执行<code>uname -a</code>查看内核版本，确保更新成功。</p>
-<h1 id="开启tcp-bbr">开启TCP BBR</h1>
-<p>修改系统变量：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;net.core.default_qdisc=fq&quot; &gt;&gt; /etc/sysctl.conf</span><br><span class="line">echo &quot;net.ipv4.tcp_congestion_control=bbr&quot; &gt;&gt; /etc/sysctl.conf</span><br></pre></td></tr></table></figure>
-<p>如果执行以上命令显示拒绝访问，可以尝试以下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo bash -c &apos;echo &quot;net.core.default_qdisc=fq&quot; &gt;&gt; /etc/sysctl.conf&apos;</span><br><span class="line">sudo bash -c &apos;echo &quot;net.ipv4.tcp_congestion_control=bbr&quot; &gt;&gt; /etc/sysctl.conf&apos;</span><br></pre></td></tr></table></figure>
-<p>保存生效：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl -p</span><br></pre></td></tr></table></figure>
-<p>执行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl net.ipv4.tcp_available_congestion_control</span><br></pre></td></tr></table></figure>
-<p>如果返回结果，那么就表示RRB开启成功了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_available_congestion_control = bbr cubic reno</span><br></pre></td></tr></table></figure>
-<p>也可以执行<code>lsmod | grep bbr</code>来检测BBR是否真的开启成功。</p>
-<p>至此，我们的服务器BBR就开启成功了，赶紧试一试吧。</p>
+                <h1 id="前言">前言</h1>
+<p>有了<img src="./realitykit-0621.md" alt="上一篇">对于<code>RealityKit</code>的基础概念介绍，现在我们直接对于实景AR进行一个简单实现。</p>
 
                 
 
@@ -247,13 +221,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/article/2019/cocoapods-create-pods-1121/" data-toggle="tooltip" data-placement="top" title="基于Cocoapods创建私有公有库">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/article/2019/leetcode-substring-search-problems-1007/" data-toggle="tooltip" data-placement="top" title="Sliding Window algorithm - substring search problems">Next Post &rarr;</a>
+                            <a href="/article/2021/realitykit-0621/" data-toggle="tooltip" data-placement="top" title="RealityKit基础概念">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -307,7 +277,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#introduction"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Introduction</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#ubuntu内核升级"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Ubuntu&#x5185;&#x6838;&#x5347;&#x7EA7;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#开启tcp-bbr"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x5F00;&#x542F;TCP BBR</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#前言"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x524D;&#x8A00;</span></a></li></ol>
         
         </div>
       </aside>
@@ -337,8 +307,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "quincy-qc";
-    var disqus_identifier = "/article/2019/ubuntu-core-update-and-bbr-accelerate-1101/";
-    <!-- var disqus_url = "/article/2019/ubuntu-core-update-and-bbr-accelerate-1101/"; -->
+    var disqus_identifier = "/article/2021/realitykit-coordinate-light-0830/";
+    <!-- var disqus_url = "/article/2021/realitykit-coordinate-light-0830/"; -->
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
