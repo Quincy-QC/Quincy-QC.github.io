@@ -134,6 +134,13 @@
 
                         
                         <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
                             <a href="/about/">About</a>
                         </li>
                         
@@ -142,13 +149,6 @@
                         
                         <li>
                             <a href="/archive/">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -211,17 +211,20 @@
 
 <div class="post-preview">
 
-    <a href="/article/2021/realitykit-coordinate-light-0830/">
+    <a href="/article/2021/realitykit-live-ar-0830/">
         <h2 class="post-title">
-            RealityKit坐标系与光照
+            RealityKit - 实景AR
         </h2>
         <h3 class="post-subtitle">
-            RealityKit Coordinate System and Lights
+            RealityKit AR with the Device's Camera
         </h3>
         <div class="post-content-preview">
             前言
-有了对于RealityKit的基础概念介绍，现在我们直接对于实景AR进行一个简单实现。
-...
+有了上一篇对于RealityKit的基础概念介绍，现在我们直接对于实景AR水平平面放置物品进行一个简单实现。
+初始化
+ARView
+我们首先需要创建一个通过设备相机创建的现实场景，可以通过创建一个arView属性，同时设置cameraMode为ar（这边是个枚举，如果选择nonAr就是一个使用虚拟相机的场景）：
+123456private lazy var arView: ARView......
         </div>
     </a>
     
@@ -243,7 +246,7 @@
 
     <a href="/article/2021/realitykit-0621/">
         <h2 class="post-title">
-            RealityKit基础概念
+            RealityKit - 基础概念
         </h2>
         <h3 class="post-subtitle">
             RealityKit Experience
@@ -625,11 +628,11 @@ Given a string s and a non-empty string p, find all the start indices......
     <ul>
       
         <li>
-          <a href="/article/2021/realitykit-coordinate-light-0830/">RealityKit坐标系与光照</a>
+          <a href="/article/2021/realitykit-live-ar-0830/">RealityKit - 实景AR</a>
         </li>
       
         <li>
-          <a href="/article/2021/realitykit-0621/">RealityKit基础概念</a>
+          <a href="/article/2021/realitykit-0621/">RealityKit - 基础概念</a>
         </li>
       
         <li>
