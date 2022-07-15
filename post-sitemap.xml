@@ -7,24 +7,8 @@
     </url>
 
     <url>
-        <loc>/article/2021/realitykit-live-ar-0830/</loc>
-        <lastmod>2021-08-31T10:43:27.557Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2021/realitykit-0621/</loc>
-        <lastmod>2021-08-31T06:44:07.485Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/ubuntu-core-update-and-bbr-accelerate-1101/</loc>
-        <lastmod>2021-06-21T12:34:52.099Z</lastmod>
+        <loc>/article/2022/property-wrapper-0627/</loc>
+        <lastmod>2022-07-12T10:24:36.900Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -32,7 +16,7 @@
 
     <url>
         <loc>/article/2020/load-pdf-with-signature-0226/</loc>
-        <lastmod>2021-06-21T12:34:52.099Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.545Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -40,7 +24,7 @@
 
     <url>
         <loc>/article/2020/talk-about-map-flatmap-compactmap-0119/</loc>
-        <lastmod>2021-06-21T12:34:52.099Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.545Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -48,7 +32,31 @@
 
     <url>
         <loc>/article/2020/nstimer-circular-reference-issue-0330/</loc>
-        <lastmod>2021-06-21T12:34:52.099Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.545Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2021/realitykit-live-ar-0830/</loc>
+        <lastmod>2022-06-24T09:02:16.545Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2022/bitmap-0110/</loc>
+        <lastmod>2022-06-24T09:02:16.545Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2021/realitykit-0621/</loc>
+        <lastmod>2022-06-24T09:02:16.545Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -56,31 +64,7 @@
 
     <url>
         <loc>/article/2019/opengl-es-vertex-shader-0803/</loc>
-        <lastmod>2021-06-21T12:34:52.098Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/swift-package-manager-1122/</loc>
-        <lastmod>2021-06-21T12:34:52.098Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/refactoring-massive-app-delegate-0215/</loc>
-        <lastmod>2021-06-21T12:34:52.098Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/talk-about-design-pattern-0326/</loc>
-        <lastmod>2021-06-21T12:34:52.098Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.544Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -88,7 +72,39 @@
 
     <url>
         <loc>/article/2019/opengl-es-vertex-0720/</loc>
-        <lastmod>2021-06-21T12:34:52.097Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.544Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2019/refactoring-massive-app-delegate-0215/</loc>
+        <lastmod>2022-06-24T09:02:16.544Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2019/swift-package-manager-1122/</loc>
+        <lastmod>2022-06-24T09:02:16.544Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2019/ubuntu-core-update-and-bbr-accelerate-1101/</loc>
+        <lastmod>2022-06-24T09:02:16.544Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2019/talk-about-design-pattern-0326/</loc>
+        <lastmod>2022-06-24T09:02:16.544Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -96,7 +112,7 @@
 
     <url>
         <loc>/article/2019/opengl-es-texture-0810/</loc>
-        <lastmod>2021-06-21T12:34:52.097Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.544Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -104,23 +120,7 @@
 
     <url>
         <loc>/article/2019/opengl-es-sync-and-fence-0821/</loc>
-        <lastmod>2021-06-21T12:34:52.096Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/opengl-es-study-0519/</loc>
-        <lastmod>2021-06-21T12:34:52.096Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/opengl-es-primitive-0801/</loc>
-        <lastmod>2021-06-21T12:34:52.095Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.543Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -128,7 +128,15 @@
 
     <url>
         <loc>/article/2019/opengl-es-shader-and-program-0706/</loc>
-        <lastmod>2021-06-21T12:34:52.095Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.543Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2019/opengl-es-study-0519/</loc>
+        <lastmod>2022-06-24T09:02:16.543Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -136,15 +144,7 @@
 
     <url>
         <loc>/article/2019/opengl-es-glsl-0715/</loc>
-        <lastmod>2021-06-21T12:34:52.094Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/opengl-es-framebuffer-0819/</loc>
-        <lastmod>2021-06-21T12:34:52.094Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.542Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -152,15 +152,23 @@
 
     <url>
         <loc>/article/2019/opengl-es-illuminate-0902/</loc>
-        <lastmod>2021-06-21T12:34:52.094Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.542Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>/article/2019/opengl-es-fragment-operation-0816/</loc>
-        <lastmod>2021-06-21T12:34:52.093Z</lastmod>
+        <loc>/article/2019/opengl-es-primitive-0801/</loc>
+        <lastmod>2022-06-24T09:02:16.542Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2019/opengl-es-framebuffer-0819/</loc>
+        <lastmod>2022-06-24T09:02:16.542Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -168,7 +176,7 @@
 
     <url>
         <loc>/article/2019/opengl-es-draw-triangles-0606/</loc>
-        <lastmod>2021-06-21T12:34:52.093Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.541Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -176,31 +184,15 @@
 
     <url>
         <loc>/article/2019/opengl-es-fragment-shader-0815/</loc>
-        <lastmod>2021-06-21T12:34:52.093Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.541Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>/article/2019/leetcode-kth-problems-1216/</loc>
-        <lastmod>2021-06-21T12:34:52.092Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/core-image-study-0425/</loc>
-        <lastmod>2021-06-21T12:34:52.092Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>/article/2019/leetcode-substring-search-problems-1007/</loc>
-        <lastmod>2021-06-21T12:34:52.092Z</lastmod>
+        <loc>/article/2019/opengl-es-fragment-operation-0816/</loc>
+        <lastmod>2022-06-24T09:02:16.541Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -208,7 +200,23 @@
 
     <url>
         <loc>/article/2019/create-github-pages-0212/</loc>
-        <lastmod>2021-06-21T12:34:52.092Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.540Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2019/leetcode-kth-problems-1216/</loc>
+        <lastmod>2022-06-24T09:02:16.540Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2019/core-image-study-0425/</loc>
+        <lastmod>2022-06-24T09:02:16.540Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -216,15 +224,15 @@
 
     <url>
         <loc>/article/2019/opengl-es-coordinated-system-0825/</loc>
-        <lastmod>2021-06-21T12:34:52.092Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.540Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>/article/2019/cocoapods-create-pods-1121/</loc>
-        <lastmod>2021-06-21T12:34:52.091Z</lastmod>
+        <loc>/article/2019/leetcode-substring-search-problems-1007/</loc>
+        <lastmod>2022-06-24T09:02:16.540Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -232,7 +240,7 @@
 
     <url>
         <loc>/article/2019/core-animation-study-0503/</loc>
-        <lastmod>2021-06-21T12:34:52.091Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.539Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -240,7 +248,15 @@
 
     <url>
         <loc>/article/2019/core-graphics-study-0418/</loc>
-        <lastmod>2021-06-21T12:34:52.091Z</lastmod>
+        <lastmod>2022-06-24T09:02:16.539Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>/article/2019/cocoapods-create-pods-1121/</loc>
+        <lastmod>2022-06-24T09:02:16.539Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

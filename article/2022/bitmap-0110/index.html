@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Bitmap - 位的映射 - Quincy-QC | Blog
+        
+    </title>
+
+    <link rel="canonical" href="/article/2022/bitmap-0110/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#iOS - Swift" title="iOS - Swift">iOS - Swift</a>
+                            
+                        </div>
+                        <h1>Bitmap - 位的映射</h1>
+                        <h2 class="subheading">A mapping from some domain (for example, a range of integers) to bits</h2>
+                        <span class="meta">
+                            Posted by Quincy-QC on
+                            2022-01-10
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Quincy-QC</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="前言">前言</h1>
+<p><code>BitMap</code>从字面的意思，很多人认为是位图，其实更准确的来说，是位的映射。下面我们分别从位映射算法和绘图中的绘图这两块内容来介绍<code>Bitmap</code>。</p>
+<h1 id="bitmap-算法">Bitmap 算法</h1>
+<p><code>Bitmap</code>的基本思想就是用一个<code>bit</code>位来标记某个元素对应的<code>Value</code>，而<code>Key</code>即是该元素。由于采用<code>bit</code>为单位来存储数据，所以在存储空间方面，可以大大节约空间。</p>
+<p>假设有这样一个需求：在20亿个随机整数中找出某个数是否存在，那么：</p>
+<ul>
+<li>如果每个数字用<code>UInt32</code>存储，占用的空间为<code>2_000_000_000 * 4 / 1024 / 1024 / 1024 ≈ 7.25G</code></li>
+<li>如果按位存储，20亿个数字就是20亿位，占用空间为<code>2_000_000_000 / 8 / 1024 / 1024 / 1024 ≈ 0.23G</code><br>
+所以我们可以看出，按位存储在数据存储中所占有的优势。</li>
+</ul>
+<h2 id="数据存储">数据存储</h2>
+<p>那么我们如果表示一个数呢？<br>
+既然我们是按位存储，那么每一位就代表当前位置的数据是否存在，可以用0或者1表示，正好符合二进制。<br>
+那么，我们就可以通过二进制表示数字，比如<code>{1, 3, 5, 7}</code>：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center">0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><font color="red">7</font></td>
+<td style="text-align:center">6</td>
+<td style="text-align:center"><font color="red">5</font></td>
+<td style="text-align:center">4</td>
+<td style="text-align:center"><font color="red">3</font></td>
+<td style="text-align:center">2</td>
+<td style="text-align:center"><font color="red">1</font></td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<p>计算机内存分配的最小单位是字节，也就是8位，所以很容易表示小于8的数，那么对于<code>{10, 11, 14}</code>的数，可以在另一个8位上表示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center">0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><font color="red">7</font></td>
+<td style="text-align:center">6</td>
+<td style="text-align:center"><font color="red">5</font></td>
+<td style="text-align:center">4</td>
+<td style="text-align:center"><font color="red">3</font></td>
+<td style="text-align:center">2</td>
+<td style="text-align:center"><font color="red">1</font></td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">0</th>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center">0</th>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center"><font color="red">1</font></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center">0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center"><font color="red">14</font></td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center"><font color="red">11</font></td>
+<td style="text-align:center"><font color="red">10</font></td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">8</td>
+</tr>
+</tbody>
+</table>
+<p>一个<code>Int32</code>占32位，那么一个<code>Int32</code>可以存储32个数字，那么对于需要存储数字的最大值<code>N</code>，可以得到需要申请一个<code>let tmp: [Int32]</code>数组长度为<code>(1 + N / 32)</code>即可存储：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tmp[<span class="number">0</span>]：可以表示<span class="number">0</span>~<span class="number">31</span></span><br><span class="line">tmp[<span class="number">1</span>]：可以表示<span class="number">31</span>~<span class="number">63</span></span><br><span class="line">tmp[<span class="number">2</span>]：可以表示<span class="number">64</span>~<span class="number">95</span></span><br><span class="line">。。。</span><br></pre></td></tr></table></figure>
+<h2 id="添加">添加</h2>
+<p>那我们如何将一个数字<code>P</code>放进去呢？<br>
+我们就可以通过位运算<code>|或</code>，对于是存储在哪一个<code>Int32</code>，可以通过<code>P / 32</code>计算出。所以在<code>{1, 3, 5, 7}</code>中插入数字<code>6</code>：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x10101010</span> | (<span class="number">1</span> &lt;&lt; <span class="number">6</span>) = <span class="number">0x10101010</span> | <span class="number">0x01000000</span> = <span class="number">0x11101010</span></span><br><span class="line"><span class="comment">// 转换为十进制：</span></span><br><span class="line"><span class="number">170</span> | <span class="number">64</span> = <span class="number">234</span></span><br></pre></td></tr></table></figure>
+<p>所以可以总结为：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tmp[<span class="type">P</span>/<span class="number">8</span>] |= <span class="number">1</span> &lt;&lt; (<span class="type">P</span> % <span class="number">8</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="删除">删除</h2>
+<p>那么我们删除一个数字<code>Q</code>呢？<br>
+我们可以通过位运算<code>&amp;与</code>，与上同理找到对于存储的位置，然后对应删除数字<code>6</code>：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x11101010</span> &amp; ~(<span class="number">1</span> &lt;&lt; <span class="number">6</span>) = <span class="number">0x11101010</span> &amp; <span class="number">0x10111111</span> = <span class="number">0x10101010</span></span><br><span class="line"><span class="comment">// 转换为十进制</span></span><br><span class="line"><span class="number">234</span> &amp; ~<span class="number">64</span> = <span class="number">170</span></span><br></pre></td></tr></table></figure>
+<p>所以可以总结为：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tmp[<span class="type">Q</span>/<span class="number">8</span>] &amp;= ~(<span class="number">1</span> &lt;&lt; (<span class="type">Q</span> % <span class="number">8</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="查找">查找</h2>
+<p>查找数字<code>R</code>就更简单了，可以通过位运算<code>&amp;与</code>，判断<code>tmp[R/8] &amp; (1 &lt;&lt; (R % 8))</code>的结果值，如果为<code>1</code>则存在，<code>0</code>则不存在。</p>
+<h2 id="用途">用途</h2>
+<p>那么这种<code>Bitmap</code>有什么用呢？<br>
+可以进行大量数据的快速排序、查找和去重等等，那么我们就抓到了他的关键点，对于大量数据的存储和查找，这就可以引入到我们位图的概念。</p>
+<h1 id="bitmap-位图">Bitmap 位图</h1>
+<h2 id="概念">概念</h2>
+<p><strong>位图</strong>，又称<strong>栅格图(Raster Graphics)<strong>或</strong>点阵图</strong>，是使用像素阵列(Pixel-array/Dot-matrix点阵)来表示的图像。</p>
+<p>位图的像素都分配有特定的位置和颜色值，每个像素的颜色信息由RGB组合或者灰度值表示。</p>
+<p>根据位深度,可将位图分为1、4、8、16、24及32位图像等。每个像素使用的信息位数越多，可用的颜色就越多，颜色表现就越逼真，相应的数据量越大。例如，位深度为 1 的像素位图只有两个可能的值（黑色和白色），所以又称为二值位图。位深度为 8 的图像有 2^8（即 256）个可能的值。位深度为 8 的灰度模式图像有 256 个可能的灰色值。</p>
+<p>RGB图像由三个颜色通道组成。8 位/通道的 RGB 图像中的每个通道有 256 个可能的值，这意味着该图像有 1600 万个以上可能的颜色值。有时将带有 8 位/通道 (bpc) 的 RGB 图像称作 24 位图像（8 位 x 3 通道 = 24 位数据/像素）。通常将使用24位RGB组合数据位表示的的位图称为真彩色位图。</p>
+<h2 id="ios中的bitmap">iOS中的Bitmap</h2>
+<p>在iOS中，<code>Bitmap</code>的数据由<code>CGImageRef</code>封装。如果要使用<code>Bitmap</code>对图片进行各种处理，就需要先创建位图上下文：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">createContext</span><span class="params">(<span class="number">_</span> image: CGImage)</span></span> -&gt; <span class="type">CGContext</span>? &#123;</span><br><span class="line">    <span class="keyword">let</span> w = <span class="type">Int</span>(image.width)</span><br><span class="line">    <span class="keyword">let</span> h = <span class="type">Int</span>(image.height)</span><br><span class="line">    <span class="keyword">let</span> bitsPerComponent = <span class="number">8</span></span><br><span class="line">    <span class="keyword">let</span> bytesPerRow = w * <span class="number">4</span></span><br><span class="line">    <span class="keyword">let</span> space = <span class="type">CGColorSpaceCreateDeviceRGB</span>()</span><br><span class="line">    <span class="keyword">let</span> bitmapInfo = <span class="type">CGImageAlphaInfo</span>.premultipliedLast.rawValue | <span class="type">CGBitmapInfo</span>.byteOrder32Big.rawValue</span><br><span class="line">    <span class="keyword">let</span> data = <span class="type">UnsafeMutablePointer</span>&lt;<span class="type">UInt32</span>&gt;.allocate(capacity: w * h)</span><br><span class="line">    <span class="keyword">let</span> context = <span class="type">CGContext</span>(data: data,</span><br><span class="line">                            width: w,</span><br><span class="line">                            height: h,</span><br><span class="line">                            bitsPerComponent: bitsPerComponent,</span><br><span class="line">                            bytesPerRow: bytesPerRow,</span><br><span class="line">                            space: space,</span><br><span class="line">                            bitmapInfo: bitmapInfo)</span><br><span class="line">    <span class="keyword">return</span> context</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参数说明注释：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">CGContext</span> </span>&#123;</span><br><span class="line">    <span class="comment">/// - Parameters:</span></span><br><span class="line">    <span class="comment">///   - data: 用于存放位图的点阵数组指针，当生成上下文并调用上下文的`draw`方法将指定图片或层级绘制到上下文后，data指针就会存储该图片的位图像素信息；我们可以对data里面的数据进行操作，通过创建`CGDataProvider`实例并调用`CGImage`的初始化方法重新生成图片</span></span><br><span class="line">    <span class="comment">///   - width: 位图宽</span></span><br><span class="line">    <span class="comment">///   - height: 位图高</span></span><br><span class="line">    <span class="comment">///   - bitsPerComponent: 每个颜色组件或alpha组件占用的`bite`值，对于32位图像值为8</span></span><br><span class="line">    <span class="comment">///   - bytesPerRow: 位图每一行占的字节数，对于32位图像一个像素有4`byte`(rgba)，值为w * 4</span></span><br><span class="line">    <span class="comment">///   - space: 颜色空间，RGBA -&gt; CGColorSpaceCreateDeviceRGB(), CMYK -&gt; CGColorSpaceCreateDeviceCMYK(), 灰度 -&gt; CGColorSpaceCreateDeviceGray()</span></span><br><span class="line">    <span class="comment">///   - bitmapInfo: 一个常量，通常多枚举做或运算，描述位图上下文所对应的基本信息，具体见`CGBitmapInfo`和`CGImageAlphaInfo`描述</span></span><br><span class="line">    <span class="meta">@available</span>(iOS <span class="number">2.0</span>, *)</span><br><span class="line">    <span class="keyword">public</span> <span class="comment">/*not inherited*/</span> <span class="keyword">init</span>?(data: <span class="type">UnsafeMutableRawPointer</span>?, width: <span class="type">Int</span>, height: <span class="type">Int</span>, bitsPerComponent: <span class="type">Int</span>, bytesPerRow: <span class="type">Int</span>, space: <span class="type">CGColorSpace</span>, bitmapInfo: <span class="type">UInt32</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="cgbitmapinfo-和-cgimagealphainfo">CGBitmapInfo 和 CGImageAlphaInfo</h3>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">CGBitmapInfo</span> : <span class="title">OptionSet</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">init</span>(rawValue: <span class="type">UInt32</span>)</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> alphaInfoMask: <span class="type">CGBitmapInfo</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> floatInfoMask: <span class="type">CGBitmapInfo</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> floatComponents: <span class="type">CGBitmapInfo</span> &#123; <span class="keyword">get</span> &#125;    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> byteOrderMask: <span class="type">CGBitmapInfo</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> byteOrder16Little: <span class="type">CGBitmapInfo</span> &#123; <span class="keyword">get</span> &#125; <span class="comment">// 16位小端模式</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> byteOrder32Little: <span class="type">CGBitmapInfo</span> &#123; <span class="keyword">get</span> &#125; <span class="comment">// 32位小端模式</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> byteOrder16Big: <span class="type">CGBitmapInfo</span> &#123; <span class="keyword">get</span> &#125; <span class="comment">// 16位大端模式</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> byteOrder32Big: <span class="type">CGBitmapInfo</span> &#123; <span class="keyword">get</span> &#125; <span class="comment">// 32位大端模式</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">CGImageAlphaInfo</span> : <span class="title">UInt32</span> </span>&#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="keyword">none</span> = <span class="number">0</span> <span class="comment">/* For example, RGB. */</span></span><br><span class="line">    <span class="keyword">case</span> premultipliedLast = <span class="number">1</span> <span class="comment">/* For example, premultiplied RGBA */</span></span><br><span class="line">    <span class="keyword">case</span> premultipliedFirst = <span class="number">2</span> <span class="comment">/* For example, premultiplied ARGB */</span></span><br><span class="line">    <span class="keyword">case</span> last = <span class="number">3</span> <span class="comment">/* For example, non-premultiplied RGBA */</span></span><br><span class="line">    <span class="keyword">case</span> first = <span class="number">4</span> <span class="comment">/* For example, non-premultiplied ARGB */</span></span><br><span class="line">    <span class="keyword">case</span> noneSkipLast = <span class="number">5</span> <span class="comment">/* For example, RBGX. */</span></span><br><span class="line">    <span class="keyword">case</span> noneSkipFirst = <span class="number">6</span> <span class="comment">/* For example, XRGB. */</span></span><br><span class="line">    <span class="keyword">case</span> alphaOnly = <span class="number">7</span> <span class="comment">/* No color data, alpha data only */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面就是对于<code>CGBitmapInfo</code>和<code>CGImageAlphaInfo</code>的定义。</p>
+<p>我们先关注<code>CGImageAlphaInfo</code>，像素构成类型：</p>
+<ul>
+<li><code>last</code>和<code>first</code>分别代表<code>alpha</code>的分量在前置位还是后置位，在数据读取时是按照<code>RGBA</code>还是<code>ARGB</code>来读取的。</li>
+<li><code>premultiplied</code>代表预乘透明，比如对应<code>RGBA</code>为(0.5, 0.5, 0.5, 0.5)的色值，在预乘之后变为(0.25, 0.25, 0.25, 0.5)；所以带有<code>premultiplied</code>时，说明在图片解码压缩的时候，就将<code>alpha</code>通道的值分别乘到了颜色分量上，我们知道<code>alpha</code>就会影响颜色的透明度，我们如果在压缩的时候就将这步做完了，那么渲染的时候就不必再处理<code>alpha</code>通道了，这样在显示位图的时候直接显示就行了，这样就提高了性能。</li>
+<li><code>noneSkip</code>就代表了虽然有<code>alpha</code>分量，但是忽略<code>alpha</code>的值，相当于透明度不起作用；这样的话，我们可以获取到图片的<code>RGB</code>原始值。</li>
+</ul>
+<p>然后我们看一下<code>CGBitmapInfo</code>，像素存储格式：</p>
+<ul>
+<li><code>byteOrder16Big</code>和<code>byteOrder32Big</code>分别代表16和32位的大端模式
+<ul>
+<li>大端模式(Big-Endian)：高位字节排放在内存的低地址端，低位字节排放在内存的高地址段</li>
+<li><code>0x12 | 0x34 | 0x56 | 0x78</code>（低到高）</li>
+<li>对于<code>RGBA</code>在内存中的存放则是为<code>R | G | B | A</code></li>
+</ul>
+</li>
+<li><code>byteOrder16Little</code>和<code>byteOrder32Little</code>分别代表16和32位的小端模式
+<ul>
+<li>小端模式(Little-Endian)：低位字节排放在内存的低地址端，高位字节排放在内存的高地址段</li>
+<li><code>0x78 | 0x56 | 0x34 | 0x12</code>（低到高）</li>
+<li>对于<code>RGBA</code>在内存中的存放则是为<code>A | B | G | R</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="代码实践">代码实践</h2>
+<h3 id="获取图片中点击位置的颜色">获取图片中点击位置的颜色</h3>
+<ul>
+<li>获取<code>ImageView</code>控件的<code>bounds</code>作为像素范围大小</li>
+<li>通过<code>CGPoint</code>参数计算出该点对应与像素索引位置的像素数据</li>
+<li>逐个字节解析出rgb颜色分量和alpha分量值最后生成UIColor最为结果返回</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIImageView</span> </span>&#123;</span><br><span class="line">    <span class="comment">/// 工具坐标点获取颜色</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">color</span><span class="params">(<span class="keyword">for</span> point: CGPoint)</span></span> -&gt; <span class="type">UIColor</span>? &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> pixels = pixels,</span><br><span class="line">              <span class="keyword">let</span> index = indexForPixel(point)</span><br><span class="line">        <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> color(<span class="keyword">for</span>: pixels[index])</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/// 解析像素点颜色</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">color</span><span class="params">(<span class="keyword">for</span> pixel: UInt32)</span></span> -&gt; <span class="type">UIColor</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> a = <span class="type">CGFloat</span>(pixel &amp; <span class="number">0xff</span>) / <span class="number">255.0</span></span><br><span class="line">        <span class="keyword">let</span> r = <span class="type">CGFloat</span>((pixel &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xff</span>) / <span class="number">255.0</span></span><br><span class="line">        <span class="keyword">let</span> g = <span class="type">CGFloat</span>((pixel &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xff</span>) / <span class="number">255.0</span></span><br><span class="line">        <span class="keyword">let</span> b = <span class="type">CGFloat</span>((pixel &gt;&gt; <span class="number">24</span>) &amp; <span class="number">0xff</span>) / <span class="number">255.0</span></span><br><span class="line">        <span class="keyword">return</span> <span class="type">UIColor</span>(red: r, green: g, blue: b, alpha: a)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/// 获取对应像素点索引</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">indexForPixel</span><span class="params">(<span class="number">_</span> point: CGPoint)</span></span> -&gt; <span class="type">Int</span>? &#123;</span><br><span class="line">        <span class="keyword">guard</span> bounds.<span class="built_in">contains</span>(point) <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="type">Int</span>(bounds.width) * <span class="type">Int</span>(point.y) + <span class="type">Int</span>(point.x)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/// 获取图片像素数据</span></span><br><span class="line">    <span class="keyword">var</span> pixels: [<span class="type">UInt32</span>]? &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> image = image?.cgImage <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line">        <span class="keyword">let</span> w = <span class="type">Int</span>(bounds.width)</span><br><span class="line">        <span class="keyword">let</span> h = <span class="type">Int</span>(bounds.height)</span><br><span class="line">        <span class="keyword">let</span> bitsPerComponent = <span class="number">8</span></span><br><span class="line">        <span class="keyword">let</span> bytesPerRow = w * <span class="number">4</span></span><br><span class="line">        <span class="keyword">let</span> space = <span class="type">CGColorSpaceCreateDeviceRGB</span>()</span><br><span class="line">        <span class="keyword">let</span> bitmapInfo = <span class="type">CGImageAlphaInfo</span>.premultipliedFirst.rawValue | <span class="type">CGBitmapInfo</span>.byteOrder32Big.rawValue</span><br><span class="line">        <span class="keyword">var</span> data = [<span class="type">UInt32</span>](repeating: <span class="number">0</span>, <span class="built_in">count</span>: w * h)</span><br><span class="line">        <span class="keyword">let</span> context = <span class="type">CGContext</span>(data: &amp;data, width: w, height: h, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: space, bitmapInfo: bitmapInfo)</span><br><span class="line">        context?.draw(image, <span class="keyword">in</span>: bounds)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意点：</p>
+<ul>
+<li>这边简单操作，真实过程需要判断<code>ImageView</code>的<code>ContentMode</code>模型，根据不同的模式判断图片在视图中的位置</li>
+<li>获取像素数据时机中可以做缓存，没有必要每次都去重新读取</li>
+<li>索引处理先<code>Int</code>转换后再计算，否则会有偏差</li>
+</ul>
+<h3 id="获取图片中点击位置的颜色另一种方法">获取图片中点击位置的颜色(另一种方法)</h3>
+<ul>
+<li>生成只容纳一像素的上下文</li>
+<li>根据点击位置对上下文进行平移并绘制，然后读取对应颜色</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIImageView</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">color2</span><span class="params">(<span class="keyword">for</span> point: CGPoint)</span></span> -&gt; <span class="type">UIColor</span>? &#123;</span><br><span class="line">        <span class="keyword">let</span> w = <span class="number">1</span></span><br><span class="line">        <span class="keyword">let</span> h = <span class="number">1</span></span><br><span class="line">        <span class="keyword">let</span> bitsPerComponent = <span class="number">8</span></span><br><span class="line">        <span class="keyword">let</span> bytesPerRow = w * <span class="number">4</span></span><br><span class="line">        <span class="keyword">let</span> space = <span class="type">CGColorSpaceCreateDeviceRGB</span>()</span><br><span class="line">        <span class="keyword">let</span> bitmapInfo = <span class="type">CGImageAlphaInfo</span>.premultipliedFirst.rawValue | <span class="type">CGBitmapInfo</span>.byteOrder32Big.rawValue</span><br><span class="line">        <span class="keyword">var</span> data = [<span class="type">UInt32</span>](repeating: <span class="number">0</span>, <span class="built_in">count</span>: w * h)</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> context = <span class="type">CGContext</span>(data: &amp;data, width: w, height: h, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: space, bitmapInfo: bitmapInfo)</span><br><span class="line">        <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line">        context.translateBy(x: -point.x, y: -point.y)</span><br><span class="line">        layer.render(<span class="keyword">in</span>: context)</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> component = data.first <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> color(<span class="keyword">for</span>: component)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="设置图片透明度">设置图片透明度</h3>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIImage</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">setAlpha</span><span class="params">(<span class="number">_</span> a: CGFloat)</span></span> -&gt; <span class="type">UIImage</span>? &#123;</span><br><span class="line">        <span class="type">UIGraphicsBeginImageContextWithOptions</span>(size, <span class="literal">false</span>, <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">defer</span> &#123; <span class="type">UIGraphicsEndImageContext</span>() &#125;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> cgImage = cgImage,</span><br><span class="line">              <span class="keyword">let</span> context = <span class="type">UIGraphicsGetCurrentContext</span>()</span><br><span class="line">        <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span> &#125;</span><br><span class="line">        context.scaleBy(x: <span class="number">1</span>, y: -<span class="number">1</span>)</span><br><span class="line">        context.translateBy(x: <span class="number">0</span>, y: -size.height)</span><br><span class="line">        context.setBlendMode(.multiply)</span><br><span class="line">        context.setAlpha(a)</span><br><span class="line">        context.draw(cgImage, <span class="keyword">in</span>: .<span class="keyword">init</span>(origin: .zero, size: size))</span><br><span class="line">        <span class="keyword">return</span> <span class="type">UIGraphicsGetImageFromCurrentImageContext</span>()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="获取图片格式">获取图片格式</h3>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Data</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">ImageFormat</span> </span>&#123;</span><br><span class="line">        <span class="keyword">case</span> unknown</span><br><span class="line">        <span class="keyword">case</span> <span class="type">PNG</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">JPEG</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">GIF</span></span><br><span class="line">        </span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">HeaderData</span> </span>&#123;</span><br><span class="line">            <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">PNG</span>: [<span class="type">UInt8</span>] = [<span class="number">0x89</span>, <span class="number">0x50</span>, <span class="number">0x4E</span>, <span class="number">0x47</span>, <span class="number">0x0D</span>, <span class="number">0x0A</span>, <span class="number">0x1A</span>, <span class="number">0x0A</span>]</span><br><span class="line">            <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">JPEG_SOI</span>: [<span class="type">UInt8</span>] = [<span class="number">0xFF</span>, <span class="number">0xD8</span>]</span><br><span class="line">            <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">JPEG_IF</span>: [<span class="type">UInt8</span>] = [<span class="number">0xFF</span>]</span><br><span class="line">            <span class="keyword">static</span> <span class="keyword">var</span> <span class="type">GIF</span>: [<span class="type">UInt8</span>] = [<span class="number">0x47</span>, <span class="number">0x49</span>, <span class="number">0x46</span>]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> imageFormat: <span class="type">ImageFormat</span> &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="built_in">count</span> &gt; <span class="number">8</span> <span class="keyword">else</span> &#123; <span class="keyword">return</span> .unknown &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">var</span> buffer = [<span class="type">UInt8</span>](repeating: <span class="number">0</span>, <span class="built_in">count</span>: <span class="number">8</span>)</span><br><span class="line">        copyBytes(to: &amp;buffer, <span class="built_in">count</span>: <span class="number">8</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> buffer == <span class="type">ImageFormat</span>.<span class="type">HeaderData</span>.<span class="type">PNG</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> .<span class="type">PNG</span></span><br><span class="line">            </span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> buffer[<span class="number">0</span>] == <span class="type">ImageFormat</span>.<span class="type">HeaderData</span>.<span class="type">JPEG_SOI</span>[<span class="number">0</span>],</span><br><span class="line">                  buffer[<span class="number">1</span>] == <span class="type">ImageFormat</span>.<span class="type">HeaderData</span>.<span class="type">JPEG_SOI</span>[<span class="number">1</span>],</span><br><span class="line">                  buffer[<span class="number">2</span>] == <span class="type">ImageFormat</span>.<span class="type">HeaderData</span>.<span class="type">JPEG_IF</span>[<span class="number">0</span>] &#123;</span><br><span class="line">            <span class="keyword">return</span> .<span class="type">JPEG</span></span><br><span class="line">            </span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> buffer[<span class="number">0</span>] == <span class="type">ImageFormat</span>.<span class="type">HeaderData</span>.<span class="type">GIF</span>[<span class="number">0</span>],</span><br><span class="line">                  buffer[<span class="number">1</span>] == <span class="type">ImageFormat</span>.<span class="type">HeaderData</span>.<span class="type">GIF</span>[<span class="number">1</span>],</span><br><span class="line">                  buffer[<span class="number">2</span>] == <span class="type">ImageFormat</span>.<span class="type">HeaderData</span>.<span class="type">GIF</span>[<span class="number">2</span>] &#123;</span><br><span class="line">            <span class="keyword">return</span> .<span class="type">GIF</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> .unknown</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="总结">总结</h1>
+<p>本篇内容就是有关<code>Bitmap</code>相关的算法与位图相关的知识，也是作为一个总结归纳和知识梳理，也同时收获到了很多新的思路。<br>
+以上。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/2022/property-wrapper-0627/" data-toggle="tooltip" data-placement="top" title="Property Wrapper - 属性包装器">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/2021/realitykit-live-ar-0830/" data-toggle="tooltip" data-placement="top" title="RealityKit - 实景AR">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share" data-disabled="" data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#前言"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#bitmap-算法"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Bitmap &#x7B97;&#x6CD5;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#数据存储"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">&#x6570;&#x636E;&#x5B58;&#x50A8;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#添加"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">&#x6DFB;&#x52A0;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#删除"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">&#x5220;&#x9664;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#查找"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">&#x67E5;&#x627E;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#用途"><span class="toc-nav-number">2.5.</span> <span class="toc-nav-text">&#x7528;&#x9014;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#bitmap-位图"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Bitmap &#x4F4D;&#x56FE;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#概念"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">&#x6982;&#x5FF5;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#ios中的bitmap"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">iOS&#x4E2D;&#x7684;Bitmap</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#cgbitmapinfo-和-cgimagealphainfo"><span class="toc-nav-number">3.2.1.</span> <span class="toc-nav-text">CGBitmapInfo &#x548C; CGImageAlphaInfo</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#代码实践"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">&#x4EE3;&#x7801;&#x5B9E;&#x8DF5;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#获取图片中点击位置的颜色"><span class="toc-nav-number">3.3.1.</span> <span class="toc-nav-text">&#x83B7;&#x53D6;&#x56FE;&#x7247;&#x4E2D;&#x70B9;&#x51FB;&#x4F4D;&#x7F6E;&#x7684;&#x989C;&#x8272;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#获取图片中点击位置的颜色另一种方法"><span class="toc-nav-number">3.3.2.</span> <span class="toc-nav-text">&#x83B7;&#x53D6;&#x56FE;&#x7247;&#x4E2D;&#x70B9;&#x51FB;&#x4F4D;&#x7F6E;&#x7684;&#x989C;&#x8272;(&#x53E6;&#x4E00;&#x79CD;&#x65B9;&#x6CD5;)</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#设置图片透明度"><span class="toc-nav-number">3.3.3.</span> <span class="toc-nav-text">&#x8BBE;&#x7F6E;&#x56FE;&#x7247;&#x900F;&#x660E;&#x5EA6;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#获取图片格式"><span class="toc-nav-number">3.3.4.</span> <span class="toc-nav-text">&#x83B7;&#x53D6;&#x56FE;&#x7247;&#x683C;&#x5F0F;</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x603B;&#x7ED3;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "quincy-qc";
+    var disqus_identifier = "/article/2022/bitmap-0110/";
+    <!-- var disqus_url = "/article/2022/bitmap-0110/"; -->
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        
+            <div style="  display: flex; align-items: center; justify-content: center; margin-bottom: 2em;">
+                <span id="busuanzi_container_page_pv" style="font-size: 0.7em; text-align: center">
+                    本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                </span>
+            </div>
+        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/quincyqc666">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Quincy-QC">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Quincy-QC 2022 
+                    <br>
+                    知之为知之，不知为不知，是知也。
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- 不蒜子 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
